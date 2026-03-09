@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Circle - Social</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+        :root {
+            --primary: #1DA1F2;
+            --gold: #F59E0B;
+            --like: #E0245E;
+            --sidebar-width: 0px;
+            --header-height: 60px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            height: 100dvh; 
+            min-height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- Professional Login Screen --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999;
+            background: radial-gradient(circle at 50% 10%, #2e1065 0%, #000000 100%);
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.6s;
+        }
+
+        #login-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-container {
+            width: 90%;
+            max-width: 380px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+        }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .input-error {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ef4444 !important;
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .login-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 16px;
+            border-radius: 14px;
+            width: 100%;
+            margin-bottom: 16px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .login-input:focus {
+            border-color: var(--primary);
+            background: rgba(29, 161, 242, 0.05);
+            transform: translateY(-1px);
+        }
+        .login-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+        .login-btn {
+            background: white;
+            color: black;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .login-btn:hover { background: #f3f4f6; transform: translateY(-1px); }
+        .login-btn:active { transform: scale(0.98); }
+
+        .auth-toggle {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .auth-toggle:hover { color: white; }
+        .auth-toggle b { color: var(--primary); }
+
+        /* --- App Container --- */
+        #app-root {
+            width: 100%; 
+            height: 100dvh;
+            background-color: #ffffff;
+            position: relative;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            opacity: 0; transition: opacity 0.8s ease;
+            transform: scale(0.98); transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
+        }
+        #app-root.visible { opacity: 1; transform: scale(1); }
+
+        /* Desktop */
+        @media (min-width: 768px) {
+            #app-root { max-width: 1200px; box-shadow: 0 0 50px rgba(0,0,0,0.5); flex-direction: row; }
+            :root { --sidebar-width: 240px; }
+        }
+
+        /* --- Animations & Layout --- */
+        @keyframes heartBurst { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+        .heart-pop { animation: heartBurst 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-entry { animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+
+        .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: var(--header-height); padding-bottom: 70px; overflow-y: auto; scrollbar-width: none; background-color: #fff; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 10; }
+        .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
+        @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 600px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; border-right: 1px solid #f3f4f6; border-left: 1px solid #f3f4f6; display: none; opacity: 1; transform: none; } .page.active { display: block; } header { display: none !important; } }
+
+        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; background: white; border-top: 1px solid #f3f4f6; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; }
+        @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; border-right: 1px solid #f3f4f6; padding: 40px 20px; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item:hover { background-color: #f3f4f6; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
+
+        .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
+        .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+        .modal-sheet { background: white; width: 100%; max-height: 90%; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
+        .modal-backdrop.open .modal-sheet { transform: translateY(0); }
+        @media (min-width: 768px) { .modal-backdrop { align-items: center; } .modal-sheet { width: 600px; max-height: 80%; border-radius: 24px; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; } .modal-backdrop.open .modal-sheet { transform: scale(1); opacity: 1; } }
+
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .fab { position: absolute; bottom: 90px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 24px rgba(29, 161, 242, 0.35); transition: transform 0.2s; z-index: 40; }
+        .fab:active { transform: scale(0.85); }
+        @media (min-width: 768px) { .fab { position: static; width: 100%; height: 50px; border-radius: 30px; margin-top: 20px; font-size: 16px; font-weight: bold; } .fab i { display: none; } .fab::after { content: 'Post'; } }
+
+        .lightbox { position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .lightbox.open { opacity: 1; pointer-events: auto; }
+        .lightbox img { max-width: 100%; max-height: 100%; transform: scale(0.9); transition: transform 0.3s; }
+        .lightbox.open img { transform: scale(1); }
+
+        /* --- Premium Badges --- */
+        .badge-container {
+            display: inline-flex; align-items: center; justify-content: center; position: relative; width: 22px; height: 22px; margin-left: 6px; vertical-align: middle;
+        }
+        /* Admin: Purple */
+        .purple-badge-bg { font-size: 22px; background: radial-gradient(circle at 30% 30%, #e879f9, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 3px rgba(124, 58, 237, 0.4)); }
+        /* Promoted: Gold */
+        .gold-seal-bg { font-size: 22px; background: radial-gradient(circle at 30% 30%, #fde68a, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 3px rgba(217, 119, 6, 0.4)); }
+        
+        .badge-check { position: absolute; color: #fff; font-size: 10px; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
+        
+        /* Sparkles matching the theme */
+        .badge-container.purple::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #e879f9; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(232, 121, 249, 0.8); }
+        .badge-container.gold::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #fde68a; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(253, 230, 138, 0.8); }
+        
+        @keyframes sparkle { 0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(1) rotate(20deg); opacity: 1; } }
+
+        /* --- Notification Badge --- */
+        .nav-badge {
+            position: absolute; top: 5px; right: 15px;
+            background: var(--like); color: white;
+            font-size: 10px; font-weight: bold;
+            padding: 2px 5px; border-radius: 10px;
+            border: 2px solid white;
+        }
+        @media (min-width: 768px) {
+            .nav-badge { top: 10px; right: auto; left: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-container">
+            <div class="mb-8">
+                <i class="fa-solid fa-circle-nodes text-blue-500 text-5xl mb-4"></i>
+                <h1 id="auth-title" class="text-3xl font-black text-white tracking-tight">Welcome Back</h1>
+                <p id="auth-subtitle" class="text-gray-400 text-sm mt-2">Enter your credentials to access Circle.</p>
+            </div>
+            
+            <div class="space-y-4 text-left">
+                <div><input type="text" id="login-username" class="login-input" placeholder="Username"></div>
+                <div><input type="password" id="login-password" class="login-input" placeholder="Password"></div>
+                <button id="auth-btn" onclick="app.handleAuth()" class="login-btn">Sign In</button>
+            </div>
+            <div id="login-error" class="text-red-400 text-sm mt-4 h-4 font-medium text-center"></div>
+            <p class="auth-toggle" onclick="app.toggleAuthMode()"><span id="auth-toggle-text">Don't have an account? <b>Sign Up</b></span></p>
+        </div>
+    </div>
+
+    <div id="app-root">
+        <nav>
+            <div class="nav-logo hidden text-3xl font-black tracking-tighter text-gray-900 cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-4xl leading-none">.</span></div>
+            
+            <button onclick="app.router('feed')" class="nav-item active text-blue-500" data-target="feed">
+                <i class="fa-solid fa-house text-2xl"></i><span class="hidden">Home</span>
+            </button>
+            <button onclick="app.router('search')" class="nav-item text-gray-400 hover:text-gray-900" data-target="search">
+                <i class="fa-solid fa-magnifying-glass text-2xl"></i><span class="hidden">Search</span>
+            </button>
+            <button onclick="app.router('notifications')" class="nav-item text-gray-400 hover:text-gray-900 relative" data-target="notifications">
+                <i class="fa-regular fa-bell text-2xl"></i><span class="hidden">Notifications</span>
+                <div id="nav-notif-badge" class="nav-badge hidden">0</div>
+            </button>
+            <button onclick="app.viewUserProfile('me')" class="nav-item text-gray-400 hover:text-gray-900" data-target="profile">
+                <i class="fa-solid fa-user text-2xl"></i><span class="hidden">Profile</span>
+            </button>
+
+            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-400 hover:text-gray-900 hidden" data-target="dev">
+                <i class="fa-solid fa-code text-2xl"></i><span class="hidden">Broadcast</span>
+            </button>
+
+            <button onclick="app.openPostModal()" class="fab"><i class="fa-solid fa-plus text-2xl"></i></button>
+        </nav>
+
+        <header class="absolute top-0 left-0 w-full h-[60px] glass-header z-50 flex items-center justify-between px-5 md:hidden">
+            <div class="text-xl font-black tracking-tighter text-gray-900 flex items-center gap-1 cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-2xl leading-none">.</span></div>
+            <div id="header-status" class="opacity-0 transition-opacity duration-500 flex items-center space-x-1.5 bg-yellow-50 border border-yellow-100 px-2.5 py-1 rounded-full">
+                <i class="fa-solid fa-crown text-yellow-600 text-[10px]"></i><span class="text-[10px] font-bold text-yellow-700 uppercase tracking-wider">Admin</span>
+            </div>
+        </header>
+
+        <div class="flex-1 relative h-full w-full overflow-hidden md:overflow-visible">
+            <div id="feed-view" class="page active"><div id="feed-list" class="pb-24 pt-2 min-h-full"></div></div>
+            
+            <div id="search-view" class="page">
+                <div class="p-5">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Search</h2>
+                    
+                    <div class="flex items-center bg-gray-100 rounded-full px-4 py-3 mb-6 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                        <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 placeholder-gray-400" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
+                    </div>
+
+                    <div id="admin-controls-banner" class="bg-red-50 p-4 rounded-2xl mb-6 text-sm text-red-800 border border-red-100 flex gap-3 hidden">
+                        <div class="bg-white p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
+                        <div class="flex-1"><p class="font-semibold text-gray-900">Admin Mode</p><p class="text-xs mt-0.5">You can permanently delete accounts and manage verifications.</p></div>
+                    </div>
+                    
+                    <div id="user-list" class="space-y-3 text-center text-gray-400 mt-2"></div>
+                </div>
+            </div>
+
+            <div id="notifications-view" class="page">
+                <div class="p-5">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Notifications</h2>
+                    <div id="notification-list" class="space-y-0 pb-24"></div>
+                </div>
+            </div>
+
+            <div id="profile-view" class="page"></div>
+        </div>
+
+        <div id="lightbox" class="lightbox" onclick="app.closeLightbox()"><button class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl z-50"><i class="fa-solid fa-xmark"></i></button><img id="lightbox-img" src="" onclick="event.stopPropagation()"></div>
+
+        <div id="post-modal" class="modal-backdrop">
+            <div class="modal-sheet h-[70%] md:h-auto">
+                <div class="p-4 flex justify-between items-center border-b border-gray-50">
+                    <button onclick="app.closeModal('post-modal')" class="text-gray-500 font-medium text-sm hover:bg-gray-100 px-3 py-1 rounded-full transition-colors">Cancel</button>
+                    <button onclick="app.submitPost()" class="bg-blue-500 text-white px-5 py-1.5 rounded-full font-bold text-sm shadow-lg shadow-blue-200 transition-transform active:scale-95">Post</button>
+                </div>
+                <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
+                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 object-cover border border-gray-100 flex-shrink-0">
+                    <div class="w-full">
+                        <textarea id="post-content" class="w-full h-32 outline-none resize-none text-lg placeholder-gray-300 leading-relaxed" placeholder="What's happening?"></textarea>
+                        <div id="post-img-preview-container" class="hidden relative mt-2 mb-4">
+                            <img id="post-img-preview" src="" class="w-full h-auto max-h-64 object-contain bg-gray-50 rounded-xl border border-gray-100">
+                            <button onclick="app.removePostImage()" class="absolute top-2 right-2 bg-black/50 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-black/70"><i class="fa-solid fa-xmark text-xs"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-gray-50 flex items-center gap-4">
+                    <label class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"><i class="fa-regular fa-image text-xl"></i><input type="file" id="post-file-input" accept="image/*" class="hidden" onchange="app.handlePostImageSelect(this)"></label>
+                    <button class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dev-modal" class="modal-backdrop">
+            <div class="modal-sheet h-auto md:w-[500px]">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100">
+                    <div class="flex items-center gap-2 text-gray-900">
+                        <i class="fa-solid fa-code text-xl"></i>
+                        <h3 class="text-xl font-bold">Developer Broadcast</h3>
+                    </div>
+                    <button onclick="app.closeModal('dev-modal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-100 text-sm text-yellow-800 mb-2">
+                        <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                        This will send a notification to <b>ALL</b> users from the "Circle Team".
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Update Message</label>
+                        <textarea id="dev-message" class="w-full h-32 bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none text-gray-800 resize-none focus:border-blue-500 transition-colors" placeholder="What's new in Circle?"></textarea>
+                    </div>
+                    <button onclick="app.sendDevBroadcast()" class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-black transition-transform active:scale-95">Send Broadcast</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="comment-modal" class="modal-backdrop">
+            <div class="modal-sheet h-[80%] md:h-[600px]">
+                <div class="p-4 flex justify-between items-center border-b border-gray-100 bg-white rounded-t-3xl z-10">
+                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900">Replies</h3><span id="comment-count-badge" class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span></div>
+                    <button onclick="app.closeModal('comment-modal')" class="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-full text-gray-400 hover:bg-gray-200 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-5 pb-24"></div>
+                <div class="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-3 pb-6 flex items-center gap-3 shadow-[0_-5px_20px_rgba(0,0,0,0.02)] rounded-b-3xl">
+                    <img id="comment-input-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-100">
+                    <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-100 transition-all"><input id="comment-input" type="text" placeholder="Add a reply..." class="bg-transparent w-full outline-none text-sm text-gray-800 placeholder-gray-400"></div>
+                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-profile-modal" class="modal-backdrop">
+            <div class="modal-sheet h-auto md:w-[500px]">
+                <div class="p-5 flex justify-between items-center"><h3 class="text-xl font-bold text-gray-900">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+                <div class="px-6 pb-8 space-y-6">
+                    <div class="flex flex-col items-center"><div class="relative group cursor-pointer"><img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-50 shadow-sm"><label for="file-upload" class="absolute bottom-0 right-0 bg-gray-900 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"><i class="fa-solid fa-camera text-xs"></i></label><input id="file-upload" type="file" accept="image/*" class="hidden" onchange="app.handleImageUpload(this, 'avatar')"></div></div>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-semibold text-gray-900"></div>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none text-gray-700"></div>
+                    </div>
+                    <button onclick="app.saveProfile()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold text-lg shadow-xl active:scale-95 transition-transform">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-md text-gray-900 px-5 py-3 rounded-full shadow-xl border border-gray-100 opacity-0 transition-all pointer-events-none z-[70] flex items-center gap-3 scale-90"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> <span id="toast-msg" class="font-semibold text-sm">Success</span></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, ref, push, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDlMtP6v18T_jmozu6C90CHInM2j8yx5Pk",
+            authDomain: "circle-app-social.firebaseapp.com",
+            projectId: "circle-app-social",
+            storageBucket: "circle-app-social.firebasestorage.app",
+            messagingSenderId: "653149737142",
+            appId: "1:653149737142:web:530361221abda848e9d617",
+            measurementId: "G-93X1SZDJFB"
+        };
+
+        const fbApp = initializeApp(firebaseConfig);
+        const db = getDatabase(fbApp);
+
+        class CircleApp {
+            constructor() {
+                this.currentUser = null;
+                this.users = JSON.parse(localStorage.getItem('circle_users')) || [];
+                this.posts = []; 
+                this.activePostId = null;
+                this.isLoginMode = true;
+                this.activeProfileUid = null; 
+                
+                this.initDefaultUsers();
+
+                document.getElementById('login-password').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleAuth();
+                });
+
+                this.listenToFirebase();
+            }
+
+            initDefaultUsers() {
+                const teamIndex = this.users.findIndex(u => u.uid === 'circle_team');
+                const teamData = {
+                    uid: 'circle_team', name: 'Circle Team', handle: '@circle_team',
+                    avatar: `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' style='background-color: %23ffffff;'%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='24' fill='%23111827'%3ECircle%3Ctspan fill='%233b82f6'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E`,
+                    banner: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b',
+                    bio: 'Official updates from the Circle Developers.',
+                    isAdmin: false, isVerified: true, badgeType: 'gold',
+                    followers: 0, following: [], notifications: []
+                };
+                if (teamIndex !== -1) this.users[teamIndex] = { ...this.users[teamIndex], ...teamData };
+                else this.users.push(teamData);
+
+                const adminIndex = this.users.findIndex(u => u.uid === 'admin_saad');
+                const adminData = {
+                    uid: 'admin_saad', name: 'Saad Shaikh', handle: '@saad',
+                    avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=Doraemon&backgroundColor=1da1f2',
+                    banner: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80',
+                    bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple',
+                    followers: 1200, following: [], notifications: []
+                };
+                if (adminIndex !== -1) this.users[adminIndex] = { ...this.users[adminIndex], ...adminData };
+                else this.users.push(adminData);
+                
+                localStorage.setItem('circle_users', JSON.stringify(this.users));
+            }
+
+            listenToFirebase() {
+                const postsRef = ref(db, 'posts');
+                onValue(postsRef, (snapshot) => {
+                    const data = snapshot.val();
+                    let newPosts = [];
+                    if (data) {
+                        newPosts = Object.keys(data).map(key => ({ ...data[key], dbKey: key })).sort((a, b) => b.id - a.id);
+                    }
+                    
+                    const isStructuralChange = this.posts.length !== newPosts.length || this.posts.some((p, i) => p.dbKey !== newPosts[i].dbKey);
+                    this.posts = newPosts;
+
+                    if (this.currentUser) {
+                        if (isStructuralChange) {
+                            this.renderFeed();
+                            
+                            if (document.getElementById('profile-view').classList.contains('active') && this.activeProfileUid) {
+                                const profileView = document.getElementById('profile-view');
+                                const scrollPos = profileView.scrollTop;
+                                this.renderProfile(this.activeProfileUid);
+                                profileView.scrollTop = scrollPos;
+                            }
+                        } else {
+                            this.posts.forEach(p => this.updatePostUI(p));
+                        }
+                    }
+                });
+
+                const usersRef = ref(db, 'users');
+                onValue(usersRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const internetUsers = Object.values(data);
+                        const defaultUsers = this.users.filter(u => u && (u.uid === 'circle_team' || u.uid === 'admin_saad'));
+                        this.users = [...defaultUsers, ...internetUsers];
+                        
+                        if (this.currentUser) {
+                            const freshUserData = this.users.find(u => u.uid === this.currentUser.uid);
+                            if (freshUserData) this.currentUser = freshUserData;
+                            
+                            if (document.getElementById('profile-view').classList.contains('active') && this.activeProfileUid) {
+                                const profileView = document.getElementById('profile-view');
+                                const scrollPos = profileView.scrollTop;
+                                this.renderProfile(this.activeProfileUid);
+                                profileView.scrollTop = scrollPos;
+                            }
+                            
+                            if (document.getElementById('search-view').classList.contains('active')) {
+                                const searchView = document.getElementById('search-view');
+                                const scrollPos = searchView.scrollTop;
+                                this.renderUserList();
+                                searchView.scrollTop = scrollPos;
+                            }
+                            
+                            this.renderNotifications();
+                        }
+                    }
+                });
+            }
+
+            toggleAuthMode() {
+                this.isLoginMode = !this.isLoginMode;
+                document.getElementById('auth-title').innerText = this.isLoginMode ? 'Welcome Back' : 'Create Account';
+                document.getElementById('auth-subtitle').innerText = this.isLoginMode ? 'Enter your credentials to access Circle.' : 'Join the circle today.';
+                document.getElementById('auth-btn').innerText = this.isLoginMode ? 'Sign In' : 'Sign Up';
+                document.getElementById('auth-toggle-text').innerHTML = this.isLoginMode ? "Don't have an account? <b>Sign Up</b>" : "Already have an account? <b>Sign In</b>";
+                document.getElementById('login-error').innerText = "";
+            }
+
+            handleAuth() {
+                const nameInput = document.getElementById('login-username');
+                const passInput = document.getElementById('login-password');
+                const errorMsg = document.getElementById('login-error');
+                const nameVal = nameInput.value.trim();
+                const passVal = passInput.value.trim();
+
+                nameInput.classList.remove('input-error'); passInput.classList.remove('input-error'); errorMsg.innerText = "";
+
+                if (!nameVal) { nameInput.classList.add('input-error'); return; }
+                if (!passVal) { passInput.classList.add('input-error'); return; }
+
+                if (this.isLoginMode) {
+                    if (nameVal === "Saad Shaikh" && passVal === "@1234") {
+                        let adminUser = this.users.find(u => u.uid === 'admin_saad');
+                        this.loginUser(adminUser);
+                    } else {
+                        const foundUser = this.users.find(u => u.username === nameVal && u.password === passVal);
+                        if (foundUser) this.loginUser(foundUser);
+                        else {
+                            nameInput.classList.add('input-error'); passInput.classList.add('input-error');
+                            errorMsg.innerText = "Invalid username or password"; this.showToast("Authentication failed");
+                        }
+                    }
+                } else {
+                    if (nameVal === "Saad Shaikh" || this.users.find(u => u.username === nameVal)) { errorMsg.innerText = "Username not available"; return; }
+                    
+                    const newUser = {
+                        uid: 'user_' + Date.now(), username: nameVal, password: passVal,
+                        name: nameVal, handle: '@' + nameVal.toLowerCase().replace(/\s/g, '_'),
+                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${nameVal}`,
+                        banner: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
+                        bio: 'New to Circle!', isAdmin: false, isVerified: false, badgeType: null, followers: 0, following: [], notifications: []
+                    };
+                    
+                    const userRef = ref(db, 'users/' + newUser.uid);
+                    set(userRef, newUser).then(() => {
+                        this.loginUser(newUser); 
+                        this.showToast("Account created on Firebase!");
+                    }).catch((err) => {
+                        console.error(err);
+                        this.showToast("Error creating account");
+                    });
+                }
+            }
+
+            loginUser(user) {
+                this.currentUser = user;
+                if(!this.currentUser.notifications) this.currentUser.notifications = [];
+                this.initApp();
+            }
+
+            initApp() {
+                const loginScreen = document.getElementById('login-screen');
+                const appRoot = document.getElementById('app-root');
+                loginScreen.classList.add('hidden');
+                setTimeout(() => { loginScreen.style.display = 'none'; appRoot.classList.add('visible'); }, 500);
+
+                const devBtn = document.getElementById('dev-btn');
+                if (this.currentUser.isAdmin) {
+                    document.getElementById('header-status').classList.remove('opacity-0');
+                    if(devBtn) devBtn.classList.remove('hidden');
+                } else {
+                    document.getElementById('header-status').style.display = 'none';
+                    if(devBtn) devBtn.classList.add('hidden');
+                }
+
+                this.renderFeed();
+                this.renderUserList();
+                this.renderNotifications();
+            }
+
+            handleLogout() {
+                const appRoot = document.getElementById('app-root');
+                const loginScreen = document.getElementById('login-screen');
+                appRoot.classList.remove('visible');
+                setTimeout(() => {
+                    this.currentUser = null;
+                    document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
+                    document.getElementById('login-error').innerText = '';
+                    this.isLoginMode = true; this.toggleAuthMode();
+                    loginScreen.style.display = 'flex'; void loginScreen.offsetWidth; loginScreen.classList.remove('hidden');
+                }, 500);
+            }
+
+            openPostModal() { document.getElementById('modal-avatar').src = this.currentUser.avatar; document.getElementById('post-modal').classList.add('open'); }
+            removePostImage() { this.tempPostImage = null; document.getElementById('post-file-input').value = ""; document.getElementById('post-img-preview-container').classList.add('hidden'); }
+            
+            handlePostImageSelect(input) { 
+                if (input.files[0]) { 
+                    const r = new FileReader(); 
+                    r.onload = e => { 
+                        this.tempPostImage = e.target.result; 
+                        document.getElementById('post-img-preview').src = e.target.result; 
+                        document.getElementById('post-img-preview-container').classList.remove('hidden'); 
+                    }; 
+                    r.readAsDataURL(input.files[0]); 
+                } 
+            }
+
+            submitPost() {
+                const t = document.getElementById('post-content').value.trim();
+                if (!t && !this.tempPostImage) { this.showToast("Post empty"); return; }
+                
+                const newPost = {
+                    id: Date.now(),
+                    uid: this.currentUser.uid,
+                    text: t,
+                    image: this.tempPostImage || null,
+                    likes: 0,
+                    likedBy: {},
+                    comments: [],
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                push(ref(db, 'posts'), newPost).then(() => {
+                    this.showToast('Posted Online!');
+                    document.getElementById('post-content').value = '';
+                    this.removePostImage();
+                    this.closeModal('post-modal');
+                }).catch((err) => {
+                    console.error(err);
+                    this.showToast('Error posting');
+                });
+            }
+
+            updatePostUI(post) {
+                const postEls = document.querySelectorAll(`[data-post-id="${post.dbKey}"]`);
+                if (postEls.length === 0) return;
+
+                const formattedLikes = this.formatCount(post.likes);
+                const formattedComments = this.formatCount(post.comments ? post.comments.length : 0);
+                const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
+                
+                const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
+
+                postEls.forEach(el => {
+                    const likeBtn = el.querySelector('.like-btn');
+                    if (likeBtn) {
+                        likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
+                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
+                    }
+                    const commentCount = el.querySelector('.comment-count');
+                    if (commentCount) commentCount.innerText = formattedComments;
+                });
+            }
+
+            toggleLike(dbKey) {
+                if (!this.currentUser) return;
+                const post = this.posts.find(p => p.dbKey === dbKey);
+                if (!post) return;
+
+                let likedBy = post.likedBy || {};
+                let likesCount = post.likes || 0;
+
+                if (likedBy[this.currentUser.uid]) {
+                    delete likedBy[this.currentUser.uid]; 
+                    likesCount = Math.max(0, likesCount - 1);
+                } else {
+                    likedBy[this.currentUser.uid] = true; 
+                    likesCount++;
+                    
+                    if (post.uid !== this.currentUser.uid) {
+                        this.pushNotification(post.uid, 'like', this.currentUser, 'liked your post.');
+                    }
+                }
+
+                update(ref(db, 'posts/' + dbKey), {
+                    likes: likesCount,
+                    likedBy: likedBy
+                });
+            }
+
+            openDevModal() { document.getElementById('dev-modal').classList.add('open'); }
+            sendDevBroadcast() {
+                const msg = document.getElementById('dev-message').value.trim();
+                if (!msg) return;
+                
+                push(ref(db, 'posts'), {
+                    id: Date.now(), uid: 'circle_team', text: "📢 BROADCAST: " + msg,
+                    image: null, likes: 0, likedBy: {}, comments: [], time: 'Just now'
+                });
+                
+                this.showToast('Broadcast Sent!');
+                this.closeModal('dev-modal');
+                document.getElementById('dev-message').value = '';
+            }
+
+            getUser(uid) {
+                if (uid === this.currentUser?.uid) return this.currentUser;
+                return this.users.find(u => u.uid === uid) || { name: 'Unknown', avatar: '', handle: '@unknown' };
+            }
+
+            getBadgeMarkup(user) {
+                if (user.uid === 'admin_saad' || user.isAdmin) return `<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
+                if (user.badgeType === 'gold') return `<span class="badge-container gold" title="Premium"><i class="fa-solid fa-certificate gold-seal-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
+                if (user.badgeType === 'blue' || user.isVerified) return `<i class="fa-solid fa-circle-check text-blue-500 ml-1.5 text-[14px]" title="Verified"></i>`;
+                return '';
+            }
+
+            formatCount(num) {
+                if (num === undefined || num === null) return '0';
+                if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+                if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+                return num.toString();
+            }
+
+            pushNotification(targetUid, type, actor, text) {
+                if (targetUid === actor.uid) return; 
+
+                const targetUser = this.users.find(u => u.uid === targetUid);
+                if (targetUser) {
+                    let notifs = targetUser.notifications || [];
+                    notifs.unshift({
+                        id: Date.now(), type, actorId: actor.uid, text, 
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 
+                        isRead: false
+                    });
+                    
+                    update(ref(db, 'users/' + targetUid), { notifications: notifs });
+                }
+            }
+
+            markNotificationsAsRead() {
+                if (!this.currentUser || !this.currentUser.notifications) return;
+                
+                let updated = false;
+                const markedNotifs = this.currentUser.notifications.map(n => {
+                    if (!n.isRead) {
+                        updated = true;
+                        return { ...n, isRead: true };
+                    }
+                    return n;
+                });
+                
+                if (updated) {
+                    update(ref(db, 'users/' + this.currentUser.uid), { notifications: markedNotifs });
+                    document.getElementById('nav-notif-badge').classList.add('hidden');
+                }
+            }
+
+            renderNotifications() {
+                const list = document.getElementById('notification-list');
+                const badge = document.getElementById('nav-notif-badge');
+                list.innerHTML = '';
+                const notifs = this.currentUser.notifications || [];
+                const unreadCount = notifs.filter(n => !n.isRead).length;
+                
+                if (unreadCount > 0) { 
+                    badge.innerText = unreadCount; 
+                    badge.classList.remove('hidden'); 
+                } else { 
+                    badge.classList.add('hidden'); 
+                }
+                
+                if (notifs.length === 0) { 
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400"><i class="fa-regular fa-bell text-4xl mb-3"></i><p>No notifications yet</p></div>`; 
+                    return; 
+                }
+                
+                notifs.forEach(n => {
+                    const actor = this.getUser(n.actorId);
+                    let icon = '', bgClass = n.isRead ? 'bg-white' : 'bg-blue-50';
+                    if (n.type === 'follow') icon = '<i class="fa-solid fa-user text-blue-500"></i>';
+                    else if (n.type === 'like') icon = '<i class="fa-solid fa-heart text-red-500"></i>';
+                    else if (n.type === 'reply') icon = '<i class="fa-solid fa-comment text-green-500"></i>';
+                    else if (n.type === 'dev') icon = '<i class="fa-solid fa-bullhorn text-yellow-600"></i>';
+                    list.innerHTML += `<div class="p-4 border-b border-gray-100 flex gap-4 items-start ${bgClass}"><div class="mt-1 text-xl w-8 text-center">${icon}</div><div class="flex-1"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2"><span class="text-xs text-gray-400">${n.timestamp}</span></div><p class="text-sm text-gray-900"><span class="font-bold">${actor.name}</span> ${n.text}</p></div></div>`;
+                });
+            }
+
+            toggleFollow(targetUid) {
+                let targetUser = this.users.find(u => u.uid === targetUid);
+                if (!targetUser) return;
+                
+                let currentFollowing = this.currentUser.following || [];
+                let targetFollowers = targetUser.followers || 0;
+                const isFollowing = currentFollowing.includes(targetUid);
+
+                if (isFollowing) {
+                    currentFollowing = currentFollowing.filter(id => id !== targetUid);
+                    targetFollowers = Math.max(0, targetFollowers - 1);
+                } else {
+                    currentFollowing.push(targetUid);
+                    targetFollowers++;
+                }
+
+                update(ref(db, 'users/' + this.currentUser.uid), { following: currentFollowing });
+                update(ref(db, 'users/' + targetUid), { followers: targetFollowers });
+
+                if (!isFollowing) {
+                    this.pushNotification(targetUid, 'follow', this.currentUser, 'started following you.');
+                }
+            }
+
+            createPostCardHTML(post, user, index) {
+                const badge = this.getBadgeMarkup(user);
+                const postImageHtml = post.image ? `<div class="mt-3 rounded-2xl border border-gray-100 bg-gray-50 shadow-sm cursor-pointer overflow-hidden flex justify-center" onclick="app.openLightbox('${post.image}')"><img src="${post.image}" class="w-full h-auto max-h-[500px] object-contain transition-transform duration-500"></div>` : '';
+                const formattedLikes = this.formatCount(post.likes);
+                const formattedComments = this.formatCount(post.comments ? post.comments.length : 0);
+                
+                const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
+                const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
+
+                return `<div class="p-4 border-b border-gray-50 bg-white animate-entry" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s"><div class="flex items-start gap-3"><div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer"><img src="${user.avatar}" class="w-10 h-10 rounded-full object-cover border border-gray-100 flex-shrink-0"></div><div class="flex-1 min-w-0"><div class="flex items-baseline justify-between"><div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center truncate cursor-pointer group"><span class="font-bold text-gray-900 text-[15px] truncate group-hover:underline">${user.name}</span>${badge}<span class="text-gray-400 text-xs ml-2 font-medium">${post.time}</span></div><button class="text-gray-300"><i class="fa-solid fa-ellipsis"></i></button></div><p class="text-gray-800 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${post.text}</p>${postImageHtml}<div class="mt-3 flex items-center gap-6"><button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors"><div class="p-1.5 -ml-2 rounded-full"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span></button><button class="flex items-center gap-1.5 group text-gray-400 hover:text-blue-500 transition-colors"><div class="p-1.5 -ml-2 rounded-full"><i class="fa-regular fa-comment text-lg"></i></div><span class="text-xs font-bold comment-count">${formattedComments}</span></button></div></div></div></div>`;
+            }
+
+            renderFeed() {
+                const list = document.getElementById('feed-list'); list.innerHTML = '';
+                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-300"><i class="fa-regular fa-pen-to-square text-5xl mb-4"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
+                this.posts.forEach((post, index) => list.innerHTML += this.createPostCardHTML(post, this.getUser(post.uid), index));
+            }
+
+            openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); }
+            closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+            closeModal(id) { document.getElementById(id).classList.remove('open'); }
+            
+            router(view) {
+                document.querySelectorAll('.nav-item').forEach(n => {
+                    const active = n.dataset.target === view;
+                    if(view === 'profile' && n.dataset.target === 'profile') n.classList.add('text-blue-500');
+                    else n.classList.toggle('text-blue-500', active);
+                    n.classList.toggle('text-gray-300', !active && n.dataset.target !== 'profile');
+                });
+                document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+                document.getElementById(view + '-view').classList.add('active');
+                
+                if (view === 'notifications') {
+                    this.renderNotifications();
+                    this.markNotificationsAsRead();
+                }
+            }
+
+            showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.style.opacity = '1'; t.style.transform = 'translate(-50%, 0) scale(1)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, -10px) scale(0.9)'; }, 2500); }
+            
+            // UPDATED: Now supports uploading the banner properly as well
+            handleImageUpload(input, type = 'avatar') { 
+                if (input.files[0]) { 
+                    const r = new FileReader(); 
+                    r.onload = e => { 
+                        if (type === 'avatar') {
+                            this.tempAvatar = e.target.result; 
+                            document.getElementById('edit-avatar-preview').src = e.target.result; 
+                        } else if (type === 'banner') {
+                            // Update banner immediately directly to Firebase to bypass cropping modal
+                            this.currentUser.banner = e.target.result;
+                            update(ref(db, 'users/' + this.currentUser.uid), { banner: this.currentUser.banner });
+                            this.renderProfile('me');
+                            this.showToast('Banner updated!');
+                        }
+                    }; 
+                    r.readAsDataURL(input.files[0]); 
+                } 
+            }
+
+            openEditProfile() { document.getElementById('edit-name').value = this.currentUser.name; document.getElementById('edit-bio').value = this.currentUser.bio; document.getElementById('edit-avatar-preview').src = this.currentUser.avatar; document.getElementById('edit-profile-modal').classList.add('open'); }
+            
+            saveProfile() { 
+                this.currentUser.name = document.getElementById('edit-name').value; 
+                this.currentUser.bio = document.getElementById('edit-bio').value; 
+                if (this.tempAvatar) { 
+                    this.currentUser.avatar = this.tempAvatar; 
+                    this.tempAvatar = null; 
+                } 
+
+                const userRef = ref(db, 'users/' + this.currentUser.uid);
+                update(userRef, {
+                    name: this.currentUser.name,
+                    bio: this.currentUser.bio,
+                    avatar: this.currentUser.avatar
+                }).then(() => {
+                    this.renderProfile('me'); 
+                    this.closeModal('edit-profile-modal'); 
+                    this.showToast('Profile synced to internet!'); 
+                }).catch((error) => {
+                    console.error("Error updating profile:", error);
+                    this.showToast('Error syncing profile');
+                });
+            }
+            
+            // --- NEW: SAFE LIVE SEARCH FUNCTIONALITY ---
+            handleSearch() {
+                this.renderUserList();
+            }
+
+            renderUserList() {
+                const list = document.getElementById('user-list'); 
+                list.innerHTML = '';
+                
+                const searchTerm = (document.getElementById('search-input')?.value || '').toLowerCase();
+                
+                // Exclude system accounts and ensure the user object actually has a UID
+                let displayUsers = this.users.filter(u => u && u.uid && u.uid !== this.currentUser.uid && u.uid !== 'circle_team');
+                
+                // Filter logic with safe fallbacks so undefined names don't crash the script
+                if (searchTerm) {
+                    displayUsers = displayUsers.filter(u => {
+                        const name = (u.name || '').toLowerCase();
+                        const handle = (u.handle || '').toLowerCase();
+                        return name.includes(searchTerm) || handle.includes(searchTerm);
+                    });
+                }
+
+                // Admin UI Toggles
+                const adminBanner = document.getElementById('admin-controls-banner');
+                if (adminBanner) {
+                    if (this.currentUser.isAdmin) adminBanner.classList.remove('hidden');
+                    else adminBanner.classList.add('hidden');
+                }
+
+                if (displayUsers.length === 0) { 
+                    list.innerHTML = `<p class="text-gray-400 text-sm mt-8">No users found.</p>`; 
+                    return; 
+                }
+                
+                displayUsers.forEach(u => {
+                    const badge = this.getBadgeMarkup(u);
+                    
+                    // Fallbacks for corrupted testing data
+                    const safeName = u.name || 'Ghost Account';
+                    const safeHandle = u.handle || '@unknown';
+                    const safeAvatar = u.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback';
+                    const safeUid = u.uid || 'undefined';
+                    
+                    let actionsHTML = '';
+                    if (this.currentUser.isAdmin) {
+                        const btnText = (u.badgeType === 'gold') ? 'Unverify' : (u.badgeType === 'blue' || u.isVerified) ? 'Promote' : 'Verify';
+                        const btnClass = (u.badgeType === 'gold') ? 'bg-gray-100 text-gray-500' : (u.badgeType === 'blue' || u.isVerified) ? 'bg-yellow-500 text-white' : 'bg-blue-500 text-white';
+                        
+                        actionsHTML = `
+                            <div class="flex gap-2">
+                                <button onclick="app.toggleVerify('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 ${btnClass}">${btnText}</button>
+                                <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                    }
+
+                    list.innerHTML += `<div class="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-gray-50 shadow-sm"><div class="flex items-center gap-3" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer"><div><div class="font-bold text-sm text-gray-900 flex items-center cursor-pointer hover:underline">${safeName} ${badge}</div><div class="text-xs text-gray-400 font-medium">${safeHandle}</div></div></div>${actionsHTML}</div>`;
+                });
+            }
+
+            // --- UPGRADED: FIREBASE USER DELETION + LOCAL CLEANUP ---
+            deleteUser(uid) {
+                if(uid === 'admin_saad' || uid === 'circle_team') {
+                    this.showToast('Cannot delete system accounts');
+                    return;
+                }
+
+                if(confirm('Are you sure you want to permanently delete this user?')) {
+                    // Check if it's a corrupted local-only account without a valid UID
+                    if (!uid || uid === 'undefined') {
+                        this.users = this.users.filter(u => u.uid && u.uid !== 'undefined');
+                        localStorage.setItem('circle_users', JSON.stringify(this.users));
+                        this.renderUserList();
+                        this.showToast('Corrupted user removed');
+                        return;
+                    }
+
+                    // Remove fully from Firebase internet database
+                    remove(ref(db, 'users/' + uid)).then(() => {
+                        this.showToast('User deleted permanently');
+                        
+                        // Delete fallback just in case it is stuck in LocalStorage
+                        this.users = this.users.filter(u => u.uid !== uid);
+                        localStorage.setItem('circle_users', JSON.stringify(this.users));
+                        this.renderUserList();
+                    }).catch(err => {
+                        console.error("Delete Error", err);
+                        // If it fails on Firebase, still scrub it locally for the admin
+                        this.showToast("User cleaned up locally");
+                        this.users = this.users.filter(u => u.uid !== uid);
+                        localStorage.setItem('circle_users', JSON.stringify(this.users));
+                        this.renderUserList();
+                    });
+                }
+            }
+
+            toggleVerify(uid) {
+                const user = this.users.find(u => u.uid === uid);
+                if (user) {
+                    let newBadge = user.badgeType;
+                    let newVerified = user.isVerified;
+                    
+                    if (user.badgeType === 'gold') { newBadge = null; newVerified = false; }
+                    else if (user.badgeType === 'blue' || user.isVerified) { newBadge = 'gold'; newVerified = true; }
+                    else { newBadge = 'blue'; newVerified = true; }
+                    
+                    update(ref(db, 'users/' + uid), {
+                        badgeType: newBadge,
+                        isVerified: newVerified
+                    }).then(() => {
+                        this.showToast('Verification updated!');
+                        if (newVerified) {
+                            const badgeName = newBadge === 'gold' ? 'Premium Gold' : 'Verified Blue';
+                            this.pushNotification(uid, 'dev', this.currentUser, `granted you a ${badgeName} badge!`);
+                        }
+                    });
+                }
+            }
+
+            viewUserProfile(uid) { 
+                this.activeProfileUid = (uid === 'me' || uid === this.currentUser?.uid) ? this.currentUser.uid : uid;
+                this.router('profile'); 
+                this.renderProfile(this.activeProfileUid); 
+            }
+            
+            // FULLY RE-WRITTEN MOBILE PROFILE: Includes safe text fallbacks to prevent Android crashes
+            renderProfile(uid) {
+                const targetUid = (uid === 'me' || uid === this.currentUser?.uid) ? this.currentUser.uid : uid;
+                const isMe = targetUid === this.currentUser?.uid;
+                const u = this.getUser(targetUid);
+                const badge = this.getBadgeMarkup(u);
+                const container = document.getElementById('profile-view');
+                const userPosts = this.posts.filter(p => p.uid === targetUid);
+                
+                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400"><i class="fa-regular fa-file-lines text-3xl mb-2"></i><p>No posts yet</p></div>`;
+                userPosts.forEach((post, idx) => postsHTML += this.createPostCardHTML(post, u, idx));
+                
+                const followerCount = this.formatCount((u.followers !== undefined) ? u.followers : 0);
+                const followingCount = this.formatCount(isMe ? this.currentUser.following.length : 0);
+                const postCount = this.formatCount(userPosts.length);
+                
+                let actionButton = isMe ? `<button onclick="app.openEditProfile()" class="mb-12 px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white shadow-sm active:bg-gray-50 transition-all">Edit Profile</button>` : `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="mb-12 px-6 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition-all ${this.currentUser.following.includes(targetUid) ? 'bg-white border border-gray-300 text-gray-900' : 'bg-gray-900 text-white border border-gray-900'}">${this.currentUser.following.includes(targetUid) ? 'Following' : 'Follow'}</button>`;
+                let logoutBtn = isMe ? `<button onclick="app.handleLogout()" class="absolute top-4 right-4 z-30 bg-black/30 hover:bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all" title="Log Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button>` : '';
+                
+                // Fallbacks added directly into string (e.g. u.banner || default) to prevent mobile engine exceptions
+                container.innerHTML = `
+                    <div class="relative pb-0">
+                        ${logoutBtn}
+                        <div class="h-36 bg-gray-200 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
+                            <img src="${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/10"></div>
+                            ${isMe ? `<label for="banner-upload" class="absolute top-4 right-16 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full cursor-pointer backdrop-blur-md transition-colors z-20" onclick="event.stopPropagation()"><i class="fa-solid fa-camera text-sm"></i><input id="banner-upload" type="file" accept="image/*" class="hidden" onchange="app.handleImageUpload(this, 'banner')"></label>` : ''}
+                        </div>
+                        <div class="px-5 bg-white relative z-10">
+                            <div class="relative -top-12 flex justify-between items-end mb-[-40px]">
+                                <div class="relative">
+                                    <img src="${u.avatar || ''}" class="w-24 h-24 rounded-full border-[4px] border-white bg-white object-cover shadow-lg cursor-pointer" onclick="app.openLightbox('${u.avatar || ''}')">
+                                    ${isMe ? `<button onclick="app.openEditProfile()" class="absolute bottom-0 right-0 w-8 h-8 bg-gray-900 text-white rounded-full border-2 border-white flex items-center justify-center shadow-md active:scale-90 transition-transform"><i class="fa-solid fa-pen text-[10px]"></i></button>` : ''}
+                                </div>
+                                ${actionButton}
+                            </div>
+                            <div class="mt-14">
+                                <h1 class="text-2xl font-black text-gray-900 flex items-center tracking-tight">${u.name || 'User'} ${badge}</h1>
+                                <p class="text-gray-400 text-sm font-medium">${u.handle || ''}</p>
+                                <p class="mt-3 text-gray-800 leading-relaxed font-normal text-[15px]">${u.bio || ''}</p>
+                            </div>
+                            <div class="flex gap-6 mt-5 py-4 border-b border-gray-50">
+                                <div><span class="font-bold text-gray-900">${postCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Posts</span></div>
+                                <div><span id="profile-follower-count" class="font-bold text-gray-900">${followerCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Followers</span></div>
+                                <div><span class="font-bold text-gray-900">${followingCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Following</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white min-h-[300px]">${postsHTML}</div>
+                `;
+            }
+        }
+
+        const app = new CircleApp();
+        window.app = app;
+    </script>
+</body>
+</html>
