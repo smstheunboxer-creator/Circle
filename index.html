@@ -6,7 +6,6 @@
     <title>Circle - Social</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -145,6 +144,8 @@
         .heart-pop { animation: heartBurst 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-entry { animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+        @keyframes fillBar { from { width: 0%; } }
+        .poll-bar-fill { animation: fillBar 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
         .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: var(--header-height); padding-bottom: 70px; overflow-y: auto; scrollbar-width: none; background-color: #fff; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 10; }
         .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
@@ -170,20 +171,12 @@
         .lightbox.open img { transform: scale(1); }
 
         /* --- Premium Badges --- */
-        .badge-container {
-            display: inline-flex; align-items: center; justify-content: center; position: relative; width: 22px; height: 22px; margin-left: 6px; vertical-align: middle;
-        }
-        /* Admin: Purple */
+        .badge-container { display: inline-flex; align-items: center; justify-content: center; position: relative; width: 22px; height: 22px; margin-left: 6px; vertical-align: middle; }
         .purple-badge-bg { font-size: 22px; background: radial-gradient(circle at 30% 30%, #e879f9, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 3px rgba(124, 58, 237, 0.4)); }
-        /* Promoted: Gold */
         .gold-seal-bg { font-size: 22px; background: radial-gradient(circle at 30% 30%, #fde68a, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 3px rgba(217, 119, 6, 0.4)); }
-        
         .badge-check { position: absolute; color: #fff; font-size: 10px; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
-        
-        /* Sparkles matching the theme */
         .badge-container.purple::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #e879f9; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(232, 121, 249, 0.8); }
         .badge-container.gold::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #fde68a; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(253, 230, 138, 0.8); }
-        
         @keyframes sparkle { 0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(1) rotate(20deg); opacity: 1; } }
 
         /* --- Notification Badge --- */
@@ -194,9 +187,7 @@
             padding: 2px 5px; border-radius: 10px;
             border: 2px solid white;
         }
-        @media (min-width: 768px) {
-            .nav-badge { top: 10px; right: auto; left: 30px; }
-        }
+        @media (min-width: 768px) { .nav-badge { top: 10px; right: auto; left: 30px; } }
     </style>
 </head>
 <body>
@@ -252,7 +243,7 @@
         </header>
 
         <div class="flex-1 relative h-full w-full overflow-hidden md:overflow-visible">
-            <div id="feed-view" class="page active"><div id="feed-list" class="pb-24 pt-2 min-h-full"></div></div>
+            <div id="feed-view" class="page active"><div id="feed-list" class="pb-24 pt-2 min-h-full relative"></div></div>
             
             <div id="search-view" class="page">
                 <div class="p-5">
@@ -284,24 +275,57 @@
 
         <div id="lightbox" class="lightbox" onclick="app.closeLightbox()"><button class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl z-50"><i class="fa-solid fa-xmark"></i></button><img id="lightbox-img" src="" onclick="event.stopPropagation()"></div>
 
+        <!-- EDIT POST MODAL -->
+        <div id="edit-post-modal" class="modal-backdrop">
+            <div class="modal-sheet h-auto md:w-[500px]">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100">
+                    <div class="flex items-center gap-2 text-gray-900">
+                        <i class="fa-solid fa-pen text-lg"></i>
+                        <h3 class="text-xl font-bold">Edit Post</h3>
+                    </div>
+                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <textarea id="edit-post-content" class="w-full h-32 bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none text-gray-800 resize-none focus:border-blue-500 transition-colors" placeholder="Update your post..."></textarea>
+                    <button onclick="app.saveEditedPost()" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-600 transition-transform active:scale-95">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST MODAL WITH POLL FEATURE -->
         <div id="post-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[70%] md:h-auto">
-                <div class="p-4 flex justify-between items-center border-b border-gray-50">
+            <div class="modal-sheet h-[80%] md:h-auto max-h-[90%] flex flex-col">
+                <div class="p-4 flex justify-between items-center border-b border-gray-50 flex-shrink-0">
                     <button onclick="app.closeModal('post-modal')" class="text-gray-500 font-medium text-sm hover:bg-gray-100 px-3 py-1 rounded-full transition-colors">Cancel</button>
                     <button onclick="app.submitPost()" class="bg-blue-500 text-white px-5 py-1.5 rounded-full font-bold text-sm shadow-lg shadow-blue-200 transition-transform active:scale-95">Post</button>
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
                     <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 object-cover border border-gray-100 flex-shrink-0">
                     <div class="w-full">
-                        <textarea id="post-content" class="w-full h-32 outline-none resize-none text-lg placeholder-gray-300 leading-relaxed" placeholder="What's happening?"></textarea>
+                        <textarea id="post-content" class="w-full h-24 outline-none resize-none text-lg placeholder-gray-300 leading-relaxed" placeholder="What's happening?"></textarea>
+                        
+                        <!-- Image Preview -->
                         <div id="post-img-preview-container" class="hidden relative mt-2 mb-4">
                             <img id="post-img-preview" src="" class="w-full h-auto max-h-64 object-contain bg-gray-50 rounded-xl border border-gray-100">
                             <button onclick="app.removePostImage()" class="absolute top-2 right-2 bg-black/50 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-black/70"><i class="fa-solid fa-xmark text-xs"></i></button>
                         </div>
+
+                        <!-- Poll Creation Container -->
+                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-bold text-blue-500 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
+                                <button onclick="app.removePoll()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <input type="text" id="poll-opt-1" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all" placeholder="Choice 1">
+                            <input type="text" id="poll-opt-2" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all" placeholder="Choice 2">
+                            <input type="text" id="poll-opt-3" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all hidden" placeholder="Choice 3 (optional)">
+                            <button id="add-poll-opt-btn" onclick="app.addPollOption()" class="text-blue-500 text-xs font-bold mt-2 hover:underline">+ Add Choice</button>
+                        </div>
                     </div>
                 </div>
-                <div class="p-4 border-t border-gray-50 flex items-center gap-4">
-                    <label class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"><i class="fa-regular fa-image text-xl"></i><input type="file" id="post-file-input" accept="image/*" class="hidden" onchange="app.handlePostImageSelect(this)"></label>
+                <div class="p-4 border-t border-gray-50 flex items-center gap-4 flex-shrink-0 bg-white rounded-b-24">
+                    <label class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors" title="Add Image"><i class="fa-regular fa-image text-xl"></i><input type="file" id="post-file-input" accept="image/*" class="hidden" onchange="app.handlePostImageSelect(this)"></label>
+                    <button onclick="app.togglePoll()" class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
                     <button class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
                 </div>
             </div>
@@ -330,16 +354,19 @@
             </div>
         </div>
 
+        <!-- COMMENT / REPLIES MODAL -->
         <div id="comment-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-[600px]">
-                <div class="p-4 flex justify-between items-center border-b border-gray-100 bg-white rounded-t-3xl z-10">
+                <div class="p-4 flex justify-between items-center border-b border-gray-100 bg-white rounded-t-3xl z-10 flex-shrink-0">
                     <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900">Replies</h3><span id="comment-count-badge" class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span></div>
                     <button onclick="app.closeModal('comment-modal')" class="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-full text-gray-400 hover:bg-gray-200 transition-colors"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-5 pb-24"></div>
                 <div class="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-3 pb-6 flex items-center gap-3 shadow-[0_-5px_20px_rgba(0,0,0,0.02)] rounded-b-3xl">
                     <img id="comment-input-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-100">
-                    <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-100 transition-all"><input id="comment-input" type="text" placeholder="Add a reply..." class="bg-transparent w-full outline-none text-sm text-gray-800 placeholder-gray-400"></div>
+                    <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                        <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-800 placeholder-gray-400" onkeypress="if(event.key === 'Enter') app.submitComment()">
+                    </div>
                     <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                 </div>
             </div>
@@ -356,6 +383,18 @@
                     </div>
                     <button onclick="app.saveProfile()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold text-lg shadow-xl active:scale-95 transition-transform">Save Changes</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- BAN MODAL -->
+        <div id="ban-modal" class="modal-backdrop z-[9999]">
+            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center bg-white rounded-t-3xl md:rounded-3xl">
+                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 mb-6">
+                    <i class="fa-solid fa-user-slash text-4xl text-red-500"></i>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900 mb-2">Account Banned</h3>
+                <p class="text-gray-500 text-[15px] mb-8 leading-relaxed">Your account has been permanently removed by an administrator. You can no longer access this platform.</p>
+                <button onclick="app.closeBanModal()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-200 transition-all active:scale-95 text-lg">Acknowledge & Leave</button>
             </div>
         </div>
 
@@ -387,11 +426,19 @@
                 this.activePostId = null;
                 this.isLoginMode = true;
                 this.activeProfileUid = null; 
+                this.editingPostId = null; // Track post being edited
                 
                 this.initDefaultUsers();
 
                 document.getElementById('login-password').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.handleAuth();
+                });
+
+                // Global click listener to close post options dropdowns
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.post-options-container')) {
+                        document.querySelectorAll('[id^="options-"]').forEach(el => el.classList.add('hidden'));
+                    }
                 });
 
                 this.listenToFirebase();
@@ -447,7 +494,13 @@
                                 profileView.scrollTop = scrollPos;
                             }
                         } else {
+                            // Update counts & interactions WITHOUT re-rendering full feed
                             this.posts.forEach(p => this.updatePostUI(p));
+                        }
+
+                        // Live update comments if modal is open
+                        if (document.getElementById('comment-modal').classList.contains('open') && this.activePostId) {
+                            this.renderComments();
                         }
                     }
                 });
@@ -462,7 +515,14 @@
                         
                         if (this.currentUser) {
                             const freshUserData = this.users.find(u => u.uid === this.currentUser.uid);
-                            if (freshUserData) this.currentUser = freshUserData;
+                            
+                            // Check if current user was deleted (banned) by an admin
+                            if (!freshUserData && this.currentUser.uid !== 'circle_team' && this.currentUser.uid !== 'admin_saad') {
+                                this.handleBan();
+                                return;
+                            } else if (freshUserData) {
+                                this.currentUser = freshUserData;
+                            }
                             
                             if (document.getElementById('profile-view').classList.contains('active') && this.activeProfileUid) {
                                 const profileView = document.getElementById('profile-view');
@@ -578,6 +638,122 @@
                 }, 500);
             }
 
+            // --- BAN LOGIC ---
+            handleBan() {
+                document.getElementById('ban-modal').classList.add('open');
+            }
+
+            closeBanModal() {
+                document.getElementById('ban-modal').classList.remove('open');
+                this.handleLogout();
+            }
+
+            // --- CLICKABLE LINKS PARSER ---
+            linkify(text) {
+                if (!text) return '';
+                // First escape HTML tags to prevent XSS
+                let escapedText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                // Regex to find URLs
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                return escapedText.replace(urlRegex, function(url) {
+                    return `<a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-blue-500 hover:underline break-all font-medium">${url}</a>`;
+                });
+            }
+
+            // --- POLL LOGIC ---
+            togglePoll() {
+                const container = document.getElementById('poll-container');
+                container.classList.toggle('hidden');
+                if (!container.classList.contains('hidden')) {
+                    document.getElementById('poll-opt-1').focus();
+                }
+            }
+
+            removePoll() {
+                document.getElementById('poll-container').classList.add('hidden');
+                document.getElementById('poll-opt-1').value = '';
+                document.getElementById('poll-opt-2').value = '';
+                document.getElementById('poll-opt-3').value = '';
+                document.getElementById('poll-opt-3').classList.add('hidden');
+                document.getElementById('add-poll-opt-btn').classList.remove('hidden');
+            }
+
+            addPollOption() {
+                document.getElementById('poll-opt-3').classList.remove('hidden');
+                document.getElementById('add-poll-opt-btn').classList.add('hidden');
+                document.getElementById('poll-opt-3').focus();
+            }
+
+            votePoll(dbKey, optionIdx) {
+                if (!this.currentUser) return;
+                const voteRef = ref(db, `posts/${dbKey}/poll/votes/${this.currentUser.uid}`);
+                set(voteRef, optionIdx).then(() => {
+                    this.showToast("Vote recorded!");
+                }).catch(err => {
+                    console.error("Voting error", err);
+                    this.showToast("Error voting");
+                });
+            }
+
+            // --- EDIT & DELETE LOGIC ---
+            togglePostOptions(dbKey) {
+                // Close other open options first
+                document.querySelectorAll('[id^="options-"]').forEach(el => {
+                    if (el.id !== `options-${dbKey}`) el.classList.add('hidden');
+                });
+                const optionsMenu = document.getElementById(`options-${dbKey}`);
+                if (optionsMenu) {
+                    optionsMenu.classList.toggle('hidden');
+                }
+            }
+
+            openEditPostModal(dbKey) {
+                this.togglePostOptions(dbKey); // Close dropdown
+                const post = this.posts.find(p => p.dbKey === dbKey);
+                if (!post) return;
+                this.editingPostId = dbKey;
+                document.getElementById('edit-post-content').value = post.text;
+                document.getElementById('edit-post-modal').classList.add('open');
+            }
+
+            saveEditedPost() {
+                const newText = document.getElementById('edit-post-content').value.trim();
+                if (!newText || !this.editingPostId) {
+                    this.showToast('Post cannot be empty');
+                    return;
+                }
+                
+                update(ref(db, 'posts/' + this.editingPostId), {
+                    text: newText,
+                    isEdited: true
+                }).then(() => {
+                    this.showToast('Post updated!');
+                    this.closeModal('edit-post-modal');
+                    this.editingPostId = null;
+                }).catch(err => {
+                    console.error(err);
+                    this.showToast('Failed to update post');
+                });
+            }
+
+            deletePost(dbKey) {
+                this.togglePostOptions(dbKey); // Close dropdown
+                if(confirm('Are you sure you want to delete this post permanently?')) {
+                    remove(ref(db, 'posts/' + dbKey)).then(() => {
+                        this.showToast('Post deleted');
+                    }).catch(err => {
+                        console.error(err);
+                        this.showToast('Failed to delete post');
+                    });
+                }
+            }
+
+            reportPost(dbKey) {
+                this.togglePostOptions(dbKey);
+                this.showToast('Post reported to administrators');
+            }
+
+
             openPostModal() { document.getElementById('modal-avatar').src = this.currentUser.avatar; document.getElementById('post-modal').classList.add('open'); }
             removePostImage() { this.tempPostImage = null; document.getElementById('post-file-input').value = ""; document.getElementById('post-img-preview-container').classList.add('hidden'); }
             
@@ -595,23 +771,46 @@
 
             submitPost() {
                 const t = document.getElementById('post-content').value.trim();
-                if (!t && !this.tempPostImage) { this.showToast("Post empty"); return; }
+                let pollData = null;
+
+                // Check if poll is active and valid
+                if (!document.getElementById('poll-container').classList.contains('hidden')) {
+                    const o1 = document.getElementById('poll-opt-1').value.trim();
+                    const o2 = document.getElementById('poll-opt-2').value.trim();
+                    const o3 = document.getElementById('poll-opt-3').value.trim();
+                    let opts = [];
+                    if (o1) opts.push(o1);
+                    if (o2) opts.push(o2);
+                    if (o3) opts.push(o3);
+
+                    if (opts.length >= 2) {
+                        pollData = { options: opts, votes: {} };
+                    } else {
+                        this.showToast("A poll needs at least 2 choices");
+                        return;
+                    }
+                }
+
+                if (!t && !this.tempPostImage && !pollData) { this.showToast("Post is empty"); return; }
                 
                 const newPost = {
                     id: Date.now(),
                     uid: this.currentUser.uid,
                     text: t,
                     image: this.tempPostImage || null,
+                    poll: pollData,
                     likes: 0,
                     likedBy: {},
-                    comments: [],
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    comments: {}, // Stored as object in RTDB
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    isEdited: false
                 };
 
                 push(ref(db, 'posts'), newPost).then(() => {
                     this.showToast('Posted Online!');
                     document.getElementById('post-content').value = '';
                     this.removePostImage();
+                    this.removePoll();
                     this.closeModal('post-modal');
                 }).catch((err) => {
                     console.error(err);
@@ -619,25 +818,158 @@
                 });
             }
 
+            // --- REPLIES / COMMENTS LOGIC ---
+            openCommentModal(dbKey) {
+                this.activePostId = dbKey;
+                document.getElementById('comment-input-avatar').src = this.currentUser.avatar;
+                document.getElementById('comment-modal').classList.add('open');
+                this.renderComments();
+                
+                // Slight delay to focus input smoothly for mobile
+                setTimeout(() => document.getElementById('comment-input').focus(), 300);
+            }
+
+            renderComments() {
+                const post = this.posts.find(p => p.dbKey === this.activePostId);
+                if (!post) return;
+
+                const list = document.getElementById('comments-list');
+                list.innerHTML = '';
+
+                // Firebase stores empty arrays as undefined or converts associative arrays to objects
+                const commentsObj = post.comments || {}; 
+                const commentsArray = Object.keys(commentsObj).map(key => commentsObj[key]);
+
+                document.getElementById('comment-count-badge').innerText = commentsArray.length;
+
+                if (commentsArray.length === 0) {
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-300"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
+                    return;
+                }
+
+                commentsArray.forEach(c => {
+                    const u = this.getUser(c.uid);
+                    list.innerHTML += `
+                    <div class="flex gap-3 animate-entry">
+                        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-100 flex-shrink-0" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
+                        <div class="flex-1">
+                            <div class="bg-gray-50 p-3.5 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-bold text-sm text-gray-900 cursor-pointer hover:underline" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">${u.name} ${this.getBadgeMarkup(u)}</span>
+                                </div>
+                                <p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">${this.linkify(c.text)}</p>
+                            </div>
+                            <span class="text-[11px] text-gray-400 font-medium ml-2 mt-1 block">${c.time}</span>
+                        </div>
+                    </div>`;
+                });
+                
+                // Scroll to bottom
+                list.scrollTop = list.scrollHeight;
+            }
+
+            submitComment() {
+                const input = document.getElementById('comment-input');
+                const text = input.value.trim();
+                if (!text || !this.activePostId) return;
+
+                const newComment = {
+                    id: Date.now(),
+                    uid: this.currentUser.uid,
+                    text: text,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                const postRef = ref(db, `posts/${this.activePostId}/comments`);
+                push(postRef, newComment).then(() => {
+                    input.value = '';
+                    this.showToast("Reply posted!");
+                    
+                    const post = this.posts.find(p => p.dbKey === this.activePostId);
+                    if(post && post.uid !== this.currentUser.uid) {
+                        this.pushNotification(post.uid, 'reply', this.currentUser, 'replied to your post.');
+                    }
+                }).catch(err => {
+                    console.error("Error replying", err);
+                    this.showToast("Failed to reply");
+                });
+            }
+
+            generatePollHTML(post) {
+                if (!post.poll || !post.poll.options) return '';
+                
+                let pollHTML = `<div class="mt-4 space-y-2">`;
+                const votesMap = post.poll.votes || {};
+                const totalVotes = Object.keys(votesMap).length;
+                const userVoteIdx = votesMap[this.currentUser?.uid];
+                const hasVoted = userVoteIdx !== undefined;
+
+                post.poll.options.forEach((opt, idx) => {
+                    let count = 0;
+                    for (let v in votesMap) { if (votesMap[v] === idx) count++; }
+                    let percent = totalVotes === 0 ? 0 : Math.round((count / totalVotes) * 100);
+
+                    if (hasVoted) {
+                        const isSelected = userVoteIdx === idx;
+                        const barClass = isSelected ? 'bg-blue-100' : 'bg-gray-100';
+                        const textClass = isSelected ? 'text-blue-700 font-bold' : 'text-gray-700 font-medium';
+                        pollHTML += `
+                        <div class="relative w-full h-10 rounded-xl overflow-hidden bg-gray-50 border ${isSelected ? 'border-blue-300 shadow-sm' : 'border-gray-200'} flex items-center px-4">
+                            <div class="absolute left-0 top-0 h-full ${barClass} poll-bar-fill" style="width: ${percent}%;"></div>
+                            <div class="relative z-10 flex justify-between w-full text-sm ${textClass}">
+                                <span>${opt} ${isSelected ? '<i class="fa-solid fa-circle-check ml-1 text-blue-500"></i>' : ''}</span>
+                                <span>${percent}%</span>
+                            </div>
+                        </div>`;
+                    } else {
+                        pollHTML += `
+                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200 text-blue-600 font-bold text-sm hover:bg-blue-50 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm">
+                            ${opt}
+                        </button>`;
+                    }
+                });
+                pollHTML += `<div class="text-[11px] text-gray-400 mt-2 font-medium uppercase tracking-wider">${totalVotes} votes</div></div>`;
+                return pollHTML;
+            }
+
             updatePostUI(post) {
                 const postEls = document.querySelectorAll(`[data-post-id="${post.dbKey}"]`);
                 if (postEls.length === 0) return;
 
                 const formattedLikes = this.formatCount(post.likes);
-                const formattedComments = this.formatCount(post.comments ? post.comments.length : 0);
+                const commentsObj = post.comments || {};
+                const formattedComments = this.formatCount(Object.keys(commentsObj).length);
                 const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
                 
                 const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
                 const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
 
                 postEls.forEach(el => {
+                    // Update main text and apply edited badge safely
+                    const textContentEl = el.querySelector('.post-text-content');
+                    if (textContentEl) textContentEl.innerHTML = this.linkify(post.text);
+
+                    const timeContentEl = el.querySelector('.post-time-content');
+                    if (timeContentEl && post.isEdited && !timeContentEl.innerHTML.includes('(edited)')) {
+                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 font-medium ml-1.5 italic opacity-80">(edited)</span>`;
+                    }
+
+                    // Update like counter
                     const likeBtn = el.querySelector('.like-btn');
                     if (likeBtn) {
                         likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
-                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
+                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50' : 'bg-gray-50'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
                     }
+
+                    // Update comment counter
                     const commentCount = el.querySelector('.comment-count');
                     if (commentCount) commentCount.innerText = formattedComments;
+
+                    // Update poll UI specifically if it exists
+                    const pollContainer = el.querySelector('.poll-container');
+                    if (pollContainer && post.poll) {
+                        pollContainer.innerHTML = this.generatePollHTML(post);
+                    }
                 });
             }
 
@@ -674,7 +1006,8 @@
                 
                 push(ref(db, 'posts'), {
                     id: Date.now(), uid: 'circle_team', text: "📢 BROADCAST: " + msg,
-                    image: null, likes: 0, likedBy: {}, comments: [], time: 'Just now'
+                    image: null, likes: 0, likedBy: {}, comments: {}, time: 'Just now',
+                    isEdited: false
                 });
                 
                 this.showToast('Broadcast Sent!');
@@ -761,7 +1094,7 @@
                     else if (n.type === 'like') icon = '<i class="fa-solid fa-heart text-red-500"></i>';
                     else if (n.type === 'reply') icon = '<i class="fa-solid fa-comment text-green-500"></i>';
                     else if (n.type === 'dev') icon = '<i class="fa-solid fa-bullhorn text-yellow-600"></i>';
-                    list.innerHTML += `<div class="p-4 border-b border-gray-100 flex gap-4 items-start ${bgClass}"><div class="mt-1 text-xl w-8 text-center">${icon}</div><div class="flex-1"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2"><span class="text-xs text-gray-400">${n.timestamp}</span></div><p class="text-sm text-gray-900"><span class="font-bold">${actor.name}</span> ${n.text}</p></div></div>`;
+                    list.innerHTML += `<div class="p-4 border-b border-gray-100 flex gap-4 items-start ${bgClass}"><div class="mt-1 text-xl w-8 text-center">${icon}</div><div class="flex-1"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-400">${n.timestamp}</span></div><p class="text-sm text-gray-900"><span class="font-bold cursor-pointer hover:underline" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
                 });
             }
 
@@ -791,15 +1124,73 @@
 
             createPostCardHTML(post, user, index) {
                 const badge = this.getBadgeMarkup(user);
-                const postImageHtml = post.image ? `<div class="mt-3 rounded-2xl border border-gray-100 bg-gray-50 shadow-sm cursor-pointer overflow-hidden flex justify-center" onclick="app.openLightbox('${post.image}')"><img src="${post.image}" class="w-full h-auto max-h-[500px] object-contain transition-transform duration-500"></div>` : '';
+                const postImageHtml = post.image ? `<div class="mt-3 rounded-2xl border border-gray-100 bg-gray-50 shadow-sm cursor-pointer overflow-hidden flex justify-center" onclick="app.openLightbox('${post.image}')"><img src="${post.image}" class="w-full h-auto max-h-[500px] object-contain transition-transform duration-500 hover:scale-[1.02]"></div>` : '';
+                
+                // RENDER POLL UI (Wrapped in specific container for targeted updates)
+                let pollHTML = '';
+                if (post.poll && post.poll.options) {
+                    pollHTML = `<div class="poll-container w-full">${this.generatePollHTML(post)}</div>`;
+                }
+
                 const formattedLikes = this.formatCount(post.likes);
-                const formattedComments = this.formatCount(post.comments ? post.comments.length : 0);
+                const commentsObj = post.comments || {};
+                const formattedComments = this.formatCount(Object.keys(commentsObj).length);
                 
                 const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
                 const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
                 const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
 
-                return `<div class="p-4 border-b border-gray-50 bg-white animate-entry" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s"><div class="flex items-start gap-3"><div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer"><img src="${user.avatar}" class="w-10 h-10 rounded-full object-cover border border-gray-100 flex-shrink-0"></div><div class="flex-1 min-w-0"><div class="flex items-baseline justify-between"><div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center truncate cursor-pointer group"><span class="font-bold text-gray-900 text-[15px] truncate group-hover:underline">${user.name}</span>${badge}<span class="text-gray-400 text-xs ml-2 font-medium">${post.time}</span></div><button class="text-gray-300"><i class="fa-solid fa-ellipsis"></i></button></div><p class="text-gray-800 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${post.text}</p>${postImageHtml}<div class="mt-3 flex items-center gap-6"><button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors"><div class="p-1.5 -ml-2 rounded-full"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span></button><button class="flex items-center gap-1.5 group text-gray-400 hover:text-blue-500 transition-colors"><div class="p-1.5 -ml-2 rounded-full"><i class="fa-regular fa-comment text-lg"></i></div><span class="text-xs font-bold comment-count">${formattedComments}</span></button></div></div></div></div>`;
+                // Use linkify engine on post text
+                const formattedText = this.linkify(post.text);
+                const editedBadgeMarkup = post.isEdited ? `<span class="text-[10px] text-gray-400 font-medium ml-1.5 italic opacity-80">(edited)</span>` : '';
+
+                // Handle Post Options UI (Edit/Delete vs Report)
+                const isOwnPostOrAdmin = post.uid === this.currentUser?.uid || this.currentUser?.isAdmin;
+                const optionsMenuHTML = `
+                    <div class="post-options-container relative">
+                        <button onclick="app.togglePostOptions('${post.dbKey}')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"><i class="fa-solid fa-ellipsis"></i></button>
+                        <div id="options-${post.dbKey}" class="hidden absolute right-0 top-8 mt-1 w-36 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 z-50 overflow-hidden transform origin-top-right transition-all">
+                            ${isOwnPostOrAdmin ? `
+                                <button onclick="app.openEditPostModal('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center"><i class="fa-solid fa-pen mr-2 text-gray-400 w-4"></i> Edit</button>
+                                <button onclick="app.deletePost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-red-600 hover:bg-red-50 flex items-center"><i class="fa-solid fa-trash mr-2 text-red-400 w-4"></i> Delete</button>
+                            ` : `
+                                <button onclick="app.reportPost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center"><i class="fa-solid fa-flag mr-2 text-gray-400 w-4"></i> Report</button>
+                            `}
+                        </div>
+                    </div>
+                `;
+
+                return `
+                <div class="p-4 border-b border-gray-50 bg-white animate-entry hover:bg-gray-50/50 transition-colors" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s">
+                    <div class="flex items-start gap-3">
+                        <div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer">
+                            <img src="${user.avatar}" class="w-10 h-10 rounded-full object-cover border border-gray-100 flex-shrink-0 hover:opacity-80 transition-opacity">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between">
+                                <div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center flex-wrap truncate cursor-pointer group mt-0.5">
+                                    <span class="font-bold text-gray-900 text-[15px] group-hover:underline mr-1">${user.name}</span>
+                                    ${badge}
+                                    <span class="post-time-content text-gray-400 text-xs ml-2 font-medium flex items-center">${post.time} ${editedBadgeMarkup}</span>
+                                </div>
+                                ${optionsMenuHTML}
+                            </div>
+                            <p class="post-text-content text-gray-800 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${formattedText}</p>
+                            ${pollHTML}
+                            ${postImageHtml}
+                            <div class="mt-3 flex items-center gap-6">
+                                <button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors">
+                                    <div class="p-1.5 -ml-2 rounded-full group-hover:bg-red-50 transition-colors"><i class="${heartIconClass} text-lg"></i></div>
+                                    <span class="text-xs font-bold like-count">${formattedLikes}</span>
+                                </button>
+                                <button onclick="app.openCommentModal('${post.dbKey}')" class="flex items-center gap-1.5 group text-gray-500 hover:text-blue-500 transition-colors">
+                                    <div class="p-1.5 -ml-2 rounded-full group-hover:bg-blue-50 transition-colors"><i class="fa-regular fa-comment text-lg"></i></div>
+                                    <span class="text-xs font-bold comment-count">${formattedComments}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             }
 
             renderFeed() {
@@ -830,7 +1221,6 @@
 
             showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.style.opacity = '1'; t.style.transform = 'translate(-50%, 0) scale(1)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, -10px) scale(0.9)'; }, 2500); }
             
-            // UPDATED: Now supports uploading the banner properly as well
             handleImageUpload(input, type = 'avatar') { 
                 if (input.files[0]) { 
                     const r = new FileReader(); 
@@ -839,7 +1229,6 @@
                             this.tempAvatar = e.target.result; 
                             document.getElementById('edit-avatar-preview').src = e.target.result; 
                         } else if (type === 'banner') {
-                            // Update banner immediately directly to Firebase to bypass cropping modal
                             this.currentUser.banner = e.target.result;
                             update(ref(db, 'users/' + this.currentUser.uid), { banner: this.currentUser.banner });
                             this.renderProfile('me');
@@ -875,21 +1264,14 @@
                 });
             }
             
-            // --- NEW: SAFE LIVE SEARCH FUNCTIONALITY ---
-            handleSearch() {
-                this.renderUserList();
-            }
+            handleSearch() { this.renderUserList(); }
 
             renderUserList() {
                 const list = document.getElementById('user-list'); 
                 list.innerHTML = '';
-                
                 const searchTerm = (document.getElementById('search-input')?.value || '').toLowerCase();
-                
-                // Exclude system accounts and ensure the user object actually has a UID
                 let displayUsers = this.users.filter(u => u && u.uid && u.uid !== this.currentUser.uid && u.uid !== 'circle_team');
                 
-                // Filter logic with safe fallbacks so undefined names don't crash the script
                 if (searchTerm) {
                     displayUsers = displayUsers.filter(u => {
                         const name = (u.name || '').toLowerCase();
@@ -898,7 +1280,6 @@
                     });
                 }
 
-                // Admin UI Toggles
                 const adminBanner = document.getElementById('admin-controls-banner');
                 if (adminBanner) {
                     if (this.currentUser.isAdmin) adminBanner.classList.remove('hidden');
@@ -912,8 +1293,6 @@
                 
                 displayUsers.forEach(u => {
                     const badge = this.getBadgeMarkup(u);
-                    
-                    // Fallbacks for corrupted testing data
                     const safeName = u.name || 'Ghost Account';
                     const safeHandle = u.handle || '@unknown';
                     const safeAvatar = u.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback';
@@ -923,28 +1302,20 @@
                     if (this.currentUser.isAdmin) {
                         const btnText = (u.badgeType === 'gold') ? 'Unverify' : (u.badgeType === 'blue' || u.isVerified) ? 'Promote' : 'Verify';
                         const btnClass = (u.badgeType === 'gold') ? 'bg-gray-100 text-gray-500' : (u.badgeType === 'blue' || u.isVerified) ? 'bg-yellow-500 text-white' : 'bg-blue-500 text-white';
-                        
-                        actionsHTML = `
-                            <div class="flex gap-2">
-                                <button onclick="app.toggleVerify('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 ${btnClass}">${btnText}</button>
-                                <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        `;
+                        actionsHTML = `<div class="flex gap-2"><button onclick="app.toggleVerify('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 ${btnClass}">${btnText}</button><button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-trash"></i></button></div>`;
                     }
 
                     list.innerHTML += `<div class="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-gray-50 shadow-sm"><div class="flex items-center gap-3" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer"><div><div class="font-bold text-sm text-gray-900 flex items-center cursor-pointer hover:underline">${safeName} ${badge}</div><div class="text-xs text-gray-400 font-medium">${safeHandle}</div></div></div>${actionsHTML}</div>`;
                 });
             }
 
-            // --- UPGRADED: FIREBASE USER DELETION + LOCAL CLEANUP ---
             deleteUser(uid) {
                 if(uid === 'admin_saad' || uid === 'circle_team') {
                     this.showToast('Cannot delete system accounts');
                     return;
                 }
 
-                if(confirm('Are you sure you want to permanently delete this user?')) {
-                    // Check if it's a corrupted local-only account without a valid UID
+                if(confirm('Are you sure you want to permanently delete this user and ALL their data?')) {
                     if (!uid || uid === 'undefined') {
                         this.users = this.users.filter(u => u.uid && u.uid !== 'undefined');
                         localStorage.setItem('circle_users', JSON.stringify(this.users));
@@ -953,17 +1324,49 @@
                         return;
                     }
 
-                    // Remove fully from Firebase internet database
                     remove(ref(db, 'users/' + uid)).then(() => {
+                        // Cascading Delete: Scrub all their posts, likes, votes, and comments
+                        this.posts.forEach(post => {
+                            if (post.uid === uid) {
+                                // Delete posts created by user
+                                remove(ref(db, 'posts/' + post.dbKey));
+                            } else {
+                                // Clean up their interactions on other posts
+                                let updates = {};
+                                let needsUpdate = false;
+
+                                if (post.likedBy && post.likedBy[uid]) {
+                                    updates['likedBy/' + uid] = null;
+                                    updates['likes'] = Math.max(0, (post.likes || 1) - 1);
+                                    needsUpdate = true;
+                                }
+
+                                if (post.poll && post.poll.votes && post.poll.votes[uid] !== undefined) {
+                                    updates['poll/votes/' + uid] = null;
+                                    needsUpdate = true;
+                                }
+
+                                if (post.comments) {
+                                    Object.keys(post.comments).forEach(cKey => {
+                                        if (post.comments[cKey].uid === uid) {
+                                            updates['comments/' + cKey] = null;
+                                            needsUpdate = true;
+                                        }
+                                    });
+                                }
+
+                                if (needsUpdate) {
+                                    update(ref(db, 'posts/' + post.dbKey), updates);
+                                }
+                            }
+                        });
+
                         this.showToast('User deleted permanently');
-                        
-                        // Delete fallback just in case it is stuck in LocalStorage
                         this.users = this.users.filter(u => u.uid !== uid);
                         localStorage.setItem('circle_users', JSON.stringify(this.users));
                         this.renderUserList();
                     }).catch(err => {
                         console.error("Delete Error", err);
-                        // If it fails on Firebase, still scrub it locally for the admin
                         this.showToast("User cleaned up locally");
                         this.users = this.users.filter(u => u.uid !== uid);
                         localStorage.setItem('circle_users', JSON.stringify(this.users));
@@ -1001,7 +1404,6 @@
                 this.renderProfile(this.activeProfileUid); 
             }
             
-            // FULLY RE-WRITTEN MOBILE PROFILE: Includes safe text fallbacks to prevent Android crashes
             renderProfile(uid) {
                 const targetUid = (uid === 'me' || uid === this.currentUser?.uid) ? this.currentUser.uid : uid;
                 const isMe = targetUid === this.currentUser?.uid;
@@ -1020,7 +1422,8 @@
                 let actionButton = isMe ? `<button onclick="app.openEditProfile()" class="mb-12 px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white shadow-sm active:bg-gray-50 transition-all">Edit Profile</button>` : `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="mb-12 px-6 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition-all ${this.currentUser.following.includes(targetUid) ? 'bg-white border border-gray-300 text-gray-900' : 'bg-gray-900 text-white border border-gray-900'}">${this.currentUser.following.includes(targetUid) ? 'Following' : 'Follow'}</button>`;
                 let logoutBtn = isMe ? `<button onclick="app.handleLogout()" class="absolute top-4 right-4 z-30 bg-black/30 hover:bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all" title="Log Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button>` : '';
                 
-                // Fallbacks added directly into string (e.g. u.banner || default) to prevent mobile engine exceptions
+                const safeBio = this.linkify(u.bio || '');
+
                 container.innerHTML = `
                     <div class="relative pb-0">
                         ${logoutBtn}
@@ -1040,7 +1443,7 @@
                             <div class="mt-14">
                                 <h1 class="text-2xl font-black text-gray-900 flex items-center tracking-tight">${u.name || 'User'} ${badge}</h1>
                                 <p class="text-gray-400 text-sm font-medium">${u.handle || ''}</p>
-                                <p class="mt-3 text-gray-800 leading-relaxed font-normal text-[15px]">${u.bio || ''}</p>
+                                <p class="mt-3 text-gray-800 leading-relaxed font-normal text-[15px]">${safeBio}</p>
                             </div>
                             <div class="flex gap-6 mt-5 py-4 border-b border-gray-50">
                                 <div><span class="font-bold text-gray-900">${postCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Posts</span></div>
