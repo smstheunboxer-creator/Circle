@@ -6,6 +6,23 @@
     <title>Circle - Social</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Dark Mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#000000',
+                        darker: '#121212',
+                        darkest: '#0a0a0a',
+                        darkborder: '#1f1f1f'
+                    }
+                }
+            }
+        }
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -41,6 +58,11 @@
             overflow: hidden;
             margin: 0;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.4s ease;
+        }
+
+        html.dark body {
+            background-color: #000000;
         }
 
         /* --- Professional Login Screen --- */
@@ -85,9 +107,9 @@
 
         /* --- App Container --- */
         #app-root {
-            width: 100%; max-width: 100vw; height: 100dvh; background-color: #ffffff;
+            width: 100%; max-width: 100vw; height: 100dvh; 
             position: relative; display: flex; flex-direction: column; overflow: hidden;
-            opacity: 0; transition: opacity 0.8s ease; transform: scale(0.98); transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
+            opacity: 0; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; transform: scale(0.98);
         }
         #app-root.visible { opacity: 1; transform: scale(1); }
 
@@ -103,30 +125,48 @@
 
         /* Admin Special Glow Animation */
         @keyframes adminGlow {
-            0% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); }
-            50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.6), inset 0 0 10px rgba(124, 58, 237, 0.2); }
-            100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); }
+            0% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.6), inset 0 0 10px rgba(124, 58, 237, 0.2); border-color: rgba(124, 58, 237, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.4); }
         }
         .admin-glow-row {
             animation: adminGlow 2.5s infinite ease-in-out;
             background: linear-gradient(145deg, #ffffff, #f9f5ff);
-            border-color: rgba(124, 58, 237, 0.4) !important;
+        }
+        html.dark .admin-glow-row {
+            background: linear-gradient(145deg, #0a0a0a, #160a2c);
         }
 
-        .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: var(--header-height); padding-bottom: 90px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; background-color: #fff; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 10; }
-        .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
-        @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 600px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; border-right: 1px solid #f3f4f6; border-left: 1px solid #f3f4f6; display: none; opacity: 1; transform: none; } .page.active { display: block; } header { display: none !important; } }
+        /* Broadcast Notification Special Glow */
+        @keyframes devNotifGlow {
+            0% { box-shadow: inset 4px 0 0 0 var(--gold), inset 0 0 0 rgba(245, 158, 11, 0); }
+            50% { box-shadow: inset 4px 0 0 0 var(--gold), inset 0 0 15px rgba(245, 158, 11, 0.15); }
+            100% { box-shadow: inset 4px 0 0 0 var(--gold), inset 0 0 0 rgba(245, 158, 11, 0); }
+        }
+        .dev-notif-row {
+            animation: devNotifGlow 2.5s infinite;
+            background: linear-gradient(90deg, rgba(245,158,11,0.05) 0%, transparent 100%);
+        }
+        html.dark .dev-notif-row {
+            background: linear-gradient(90deg, rgba(245,158,11,0.1) 0%, transparent 100%);
+        }
 
-        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; background: white; border-top: 1px solid #f3f4f6; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; }
-        @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; border-right: 1px solid #f3f4f6; padding: 40px 20px; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item:hover { background-color: #f3f4f6; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
+        .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: var(--header-height); padding-bottom: 90px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; z-index: 10; }
+        .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
+        @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 600px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; display: none; opacity: 1; transform: none; } .page.active { display: block; } header { display: none !important; } }
+
+        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; transition: background-color 0.4s ease, border-color 0.4s ease; }
+        @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; padding: 40px 20px; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
 
         .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
         .modal-backdrop.open { opacity: 1; pointer-events: auto; }
-        .modal-sheet { background: white; width: 100%; max-height: 90svh; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
+        .modal-sheet { width: 100%; max-height: 90svh; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.4s ease; }
         .modal-backdrop.open .modal-sheet { transform: translateY(0); }
         @media (min-width: 768px) { .modal-backdrop { align-items: center; } .modal-sheet { width: 600px; max-height: 80vh; border-radius: 24px; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; } .modal-backdrop.open .modal-sheet { transform: scale(1); opacity: 1; } }
 
-        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.03); transition: background-color 0.4s ease, border-color 0.4s ease; }
+        html.dark .glass-header { background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
         .fab { position: absolute; bottom: 90px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 24px rgba(29, 161, 242, 0.35); transition: transform 0.2s; z-index: 40; }
         .fab:active { transform: scale(0.85); }
         @media (min-width: 768px) { .fab { position: static; width: 100%; height: 50px; border-radius: 30px; margin-top: 20px; font-size: 16px; font-weight: bold; } .fab i { display: none; } .fab::after { content: 'Post'; } }
@@ -136,27 +176,41 @@
         .lightbox img { max-width: 100%; max-height: 100%; transform: scale(0.9); transition: transform 0.3s; }
         .lightbox.open img { transform: scale(1); }
 
-        /* --- Premium Badges --- */
-        .badge-container { display: inline-flex; align-items: center; justify-content: center; position: relative; width: 22px; height: 22px; margin-left: 6px; vertical-align: middle; }
-        .purple-badge-bg { font-size: 22px; background: radial-gradient(circle at 30% 30%, #e879f9, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 3px rgba(124, 58, 237, 0.4)); }
-        .gold-seal-bg { font-size: 22px; background: radial-gradient(circle at 30% 30%, #fde68a, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 3px rgba(217, 119, 6, 0.4)); }
-        .badge-check { position: absolute; color: #fff; font-size: 10px; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
+        /* --- Custom Stunning Badges --- */
+        .badge-wrapper {
+            display: inline-flex; align-items: center; justify-content: center;
+            vertical-align: middle; margin-left: 6px; transform: translateY(-1px);
+        }
+        .badge-wrapper i { font-size: 18px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+        html.dark .badge-wrapper i { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+        .purple-badge-bg { background: radial-gradient(circle at 30% 30%, #e879f9, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gold-seal-bg { background: radial-gradient(circle at 30% 30%, #fde68a, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .badge-container { display: inline-flex; align-items: center; justify-content: center; position: relative; width: 22px; height: 22px; }
+        .badge-container i:first-child { font-size: 22px; }
+        .badge-check { position: absolute; color: #fff; font-size: 10px !important; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)) !important; -webkit-text-fill-color: white !important;}
+        
         .badge-container.purple::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #e879f9; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(232, 121, 249, 0.8); }
         .badge-container.gold::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #fde68a; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(253, 230, 138, 0.8); }
         @keyframes sparkle { 0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(1) rotate(20deg); opacity: 1; } }
 
         /* --- Notification Badge --- */
         .nav-badge {
-            position: absolute; top: 5px; right: 15px;
-            background: var(--like); color: white;
-            font-size: 10px; font-weight: bold;
-            padding: 2px 5px; border-radius: 10px;
-            border: 2px solid white;
+            position: absolute; top: 5px; right: 15px; background: var(--like); color: white;
+            font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; border: 2px solid white;
         }
+        html.dark .nav-badge { border-color: #000; }
         @media (min-width: 768px) { .nav-badge { top: 10px; right: auto; left: 30px; } }
+
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 10px; }
+        html.dark ::-webkit-scrollbar-thumb { background-color: #374151; }
     </style>
 </head>
-<body>
+<body class="bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
 
     <div id="login-screen">
         <div class="login-container">
@@ -176,25 +230,25 @@
         </div>
     </div>
 
-    <div id="app-root">
-        <nav>
-            <div class="nav-logo hidden text-3xl font-black tracking-tighter text-gray-900 cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-4xl leading-none">.</span></div>
+    <div id="app-root" class="bg-white dark:bg-black border-r border-l border-transparent md:border-gray-100 md:dark:border-darkborder">
+        <nav class="bg-white dark:bg-black border-t border-gray-100 dark:border-darkborder md:border-r md:border-t-0">
+            <div class="nav-logo hidden text-3xl font-black tracking-tighter text-gray-900 dark:text-white cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-4xl leading-none">.</span></div>
             
-            <button onclick="app.router('feed')" class="nav-item active text-blue-500" data-target="feed">
+            <button onclick="app.router('feed')" class="nav-item active text-blue-500 hover:bg-gray-50 dark:hover:bg-gray-900" data-target="feed">
                 <i class="fa-solid fa-house text-2xl"></i><span class="hidden">Home</span>
             </button>
-            <button onclick="app.router('search')" class="nav-item text-gray-400 hover:text-gray-900" data-target="search">
+            <button onclick="app.router('search')" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900" data-target="search">
                 <i class="fa-solid fa-magnifying-glass text-2xl"></i><span class="hidden">Search</span>
             </button>
-            <button onclick="app.router('notifications')" class="nav-item text-gray-400 hover:text-gray-900 relative" data-target="notifications">
+            <button onclick="app.router('notifications')" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 relative" data-target="notifications">
                 <i class="fa-regular fa-bell text-2xl"></i><span class="hidden">Notifications</span>
                 <div id="nav-notif-badge" class="nav-badge hidden">0</div>
             </button>
-            <button onclick="app.viewUserProfile('me')" class="nav-item text-gray-400 hover:text-gray-900" data-target="profile">
+            <button onclick="app.viewUserProfile('me')" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900" data-target="profile">
                 <i class="fa-solid fa-user text-2xl"></i><span class="hidden">Profile</span>
             </button>
 
-            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-400 hover:text-gray-900 hidden" data-target="dev">
+            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 hidden" data-target="dev">
                 <i class="fa-solid fa-code text-2xl"></i><span class="hidden">Broadcast</span>
             </button>
 
@@ -202,68 +256,106 @@
         </nav>
 
         <header class="absolute top-0 left-0 w-full h-[60px] glass-header z-50 flex items-center justify-between px-5 md:hidden">
-            <div class="text-xl font-black tracking-tighter text-gray-900 flex items-center gap-1 cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-2xl leading-none">.</span></div>
-            <div id="header-status" class="opacity-0 transition-opacity duration-500 flex items-center space-x-1.5 bg-yellow-50 border border-yellow-100 px-2.5 py-1 rounded-full">
-                <i class="fa-solid fa-crown text-yellow-600 text-[10px]"></i><span class="text-[10px] font-bold text-yellow-700 uppercase tracking-wider">Admin</span>
+            <div class="text-xl font-black tracking-tighter text-gray-900 dark:text-white flex items-center gap-1 cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-2xl leading-none">.</span></div>
+            <div id="header-status" class="opacity-0 transition-opacity duration-500 flex items-center space-x-1.5 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-100 dark:border-yellow-700/50 px-2.5 py-1 rounded-full">
+                <i class="fa-solid fa-crown text-yellow-600 dark:text-yellow-500 text-[10px]"></i><span class="text-[10px] font-bold text-yellow-700 dark:text-yellow-400 uppercase tracking-wider">Admin</span>
             </div>
         </header>
 
         <div class="flex-1 relative h-full w-full overflow-hidden md:overflow-visible">
-            <div id="feed-view" class="page active"><div id="feed-list" class="pb-24 pt-2 min-h-full relative"></div></div>
+            <div id="feed-view" class="page bg-white dark:bg-black active"><div id="feed-list" class="pb-24 pt-2 min-h-full relative"></div></div>
             
-            <div id="search-view" class="page">
+            <div id="search-view" class="page bg-white dark:bg-black">
                 <div class="p-5">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Search</h2>
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Search</h2>
                     
-                    <div class="flex items-center bg-gray-100 rounded-full px-4 py-3 mb-6 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-                        <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-                        <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 placeholder-gray-400" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
+                    <div class="flex items-center bg-gray-100 dark:bg-gray-900 rounded-full px-4 py-3 mb-6 focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 transition-all border border-transparent dark:border-darkborder">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500"></i>
+                        <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
                     </div>
 
-                    <div id="admin-controls-banner" class="bg-red-50 p-4 rounded-2xl mb-6 text-sm text-red-800 border border-red-100 flex gap-3 hidden">
-                        <div class="bg-white p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
+                    <div id="admin-controls-banner" class="bg-red-50 dark:bg-red-900/20 p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-100 dark:border-red-900/30 flex gap-3 hidden">
+                        <div class="bg-white dark:bg-black p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="font-semibold text-gray-900">Admin Mode</p>
-                                    <p class="text-xs mt-0.5 mb-2">You can permanently delete accounts and manage specific badges.</p>
+                                    <p class="font-semibold text-gray-900 dark:text-white">Admin Mode</p>
+                                    <p class="text-xs mt-0.5 mb-2 opacity-80">You can permanently delete accounts and manage specific badges.</p>
                                 </div>
                             </div>
-                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white border border-red-200 text-red-600 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 transition-colors">Toggle Admin Highlight</button>
+                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors">Toggle Admin Highlight</button>
                         </div>
                     </div>
                     
-                    <div id="user-list" class="space-y-3 text-left text-gray-400 mt-2"></div>
+                    <div id="user-list" class="space-y-3 text-left text-gray-400 dark:text-gray-500 mt-2"></div>
                 </div>
             </div>
 
-            <div id="notifications-view" class="page">
+            <div id="notifications-view" class="page bg-white dark:bg-black">
                 <div class="p-5">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold text-gray-900">Notifications</h2>
-                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors active:scale-95">Clear All</button>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h2>
+                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95">Clear All</button>
                     </div>
                     <div id="notification-list" class="space-y-0 pb-24"></div>
                 </div>
             </div>
 
-            <div id="profile-view" class="page"></div>
+            <div id="profile-view" class="page bg-white dark:bg-black"></div>
         </div>
 
         <div id="lightbox" class="lightbox" onclick="app.closeLightbox()"><button class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl z-50"><i class="fa-solid fa-xmark"></i></button><img id="lightbox-img" src="" onclick="event.stopPropagation()"></div>
 
+        <!-- SETTINGS MODAL -->
+        <div id="settings-modal" class="modal-backdrop">
+            <div class="modal-sheet h-auto md:w-[450px] bg-white dark:bg-darker">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder">
+                    <div class="flex items-center gap-3 text-gray-900 dark:text-white">
+                        <i class="fa-solid fa-gear text-lg text-gray-400"></i>
+                        <h3 class="text-xl font-bold">Settings</h3>
+                    </div>
+                    <button onclick="app.closeModal('settings-modal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                </div>
+                <div class="p-6 space-y-6">
+                    
+                    <!-- Dark Mode Toggle Component -->
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-[#27272a] rounded-2xl transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-500 dark:text-indigo-400">
+                                <i class="fa-solid fa-moon text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm">Dark Mode</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Toggle app appearance</p>
+                            </div>
+                        </div>
+                        
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" onchange="app.toggleDarkMode(this.checked)">
+                            <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 shadow-inner"></div>
+                        </label>
+                    </div>
+
+                    <!-- Additional Settings info could go here -->
+                    <div class="pt-4 border-t border-gray-100 dark:border-darkborder text-center">
+                        <p class="text-xs text-gray-400 dark:text-gray-600 font-medium">Circle App v1.0.0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- EDIT POST MODAL -->
         <div id="edit-post-modal" class="modal-backdrop">
-            <div class="modal-sheet h-auto md:w-[500px]">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100">
-                    <div class="flex items-center gap-2 text-gray-900">
+            <div class="modal-sheet h-auto md:w-[500px] bg-white dark:bg-darker">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder">
+                    <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-pen text-lg"></i>
                         <h3 class="text-xl font-bold">Edit Post</h3>
                     </div>
-                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 <div class="p-6 space-y-4">
-                    <textarea id="edit-post-content" class="w-full h-32 bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none text-gray-800 resize-none focus:border-blue-500 transition-colors" placeholder="Update your post..."></textarea>
+                    <textarea id="edit-post-content" class="w-full h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-darkborder rounded-xl p-4 outline-none text-gray-800 dark:text-gray-100 resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors" placeholder="Update your post..."></textarea>
                     <button onclick="app.saveEditedPost()" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-600 transition-transform active:scale-95">Save Changes</button>
                 </div>
             </div>
@@ -271,96 +363,98 @@
 
         <!-- POST MODAL WITH POLL FEATURE -->
         <div id="post-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[80%] md:h-auto max-h-[90%] flex flex-col">
-                <div class="p-4 flex justify-between items-center border-b border-gray-50 flex-shrink-0">
-                    <button onclick="app.closeModal('post-modal')" class="text-gray-500 font-medium text-sm hover:bg-gray-100 px-3 py-1 rounded-full transition-colors">Cancel</button>
-                    <button onclick="app.submitPost()" class="bg-blue-500 text-white px-5 py-1.5 rounded-full font-bold text-sm shadow-lg shadow-blue-200 transition-transform active:scale-95">Post</button>
+            <div class="modal-sheet h-[80%] md:h-auto max-h-[90%] flex flex-col bg-white dark:bg-darker">
+                <div class="p-4 flex justify-between items-center border-b border-gray-50 dark:border-darkborder flex-shrink-0">
+                    <button onclick="app.closeModal('post-modal')" class="text-gray-500 dark:text-gray-400 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-1 rounded-full transition-colors">Cancel</button>
+                    <button onclick="app.submitPost()" class="bg-blue-500 text-white px-5 py-1.5 rounded-full font-bold text-sm shadow-lg shadow-blue-200 dark:shadow-none transition-transform active:scale-95">Post</button>
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
-                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 object-cover border border-gray-100 flex-shrink-0">
+                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 object-cover border border-gray-100 dark:border-darkborder flex-shrink-0">
                     <div class="w-full">
-                        <textarea id="post-content" class="w-full h-24 outline-none resize-none text-lg placeholder-gray-300 leading-relaxed" placeholder="What's happening?"></textarea>
+                        <textarea id="post-content" class="w-full h-24 bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 leading-relaxed" placeholder="What's happening?"></textarea>
                         
                         <!-- Poll Creation Container -->
-                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white dark:bg-gray-900 p-4 rounded-xl border border-blue-100 dark:border-blue-900 shadow-sm">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-bold text-blue-500 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
                                 <button onclick="app.removePoll()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                            <input type="text" id="poll-opt-1" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all" placeholder="Choice 1">
-                            <input type="text" id="poll-opt-2" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all" placeholder="Choice 2">
-                            <input type="text" id="poll-opt-3" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all hidden" placeholder="Choice 3 (optional)">
+                            <input type="text" id="poll-opt-1" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all" placeholder="Choice 1">
+                            <input type="text" id="poll-opt-2" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all" placeholder="Choice 2">
+                            <input type="text" id="poll-opt-3" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all hidden" placeholder="Choice 3 (optional)">
                             <button id="add-poll-opt-btn" onclick="app.addPollOption()" class="text-blue-500 text-xs font-bold mt-2 hover:underline">+ Add Choice</button>
                         </div>
                     </div>
                 </div>
-                <div class="p-4 border-t border-gray-50 flex items-center gap-4 flex-shrink-0 bg-white rounded-b-24">
-                    <!-- File upload for images removed, only poll and location left -->
-                    <button onclick="app.togglePoll()" class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
-                    <button class="text-blue-500 p-2 rounded-full hover:bg-blue-50 cursor-pointer transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
+                <div class="p-4 border-t border-gray-50 dark:border-darkborder flex items-center gap-4 flex-shrink-0 bg-white dark:bg-darker rounded-b-24">
+                    <button onclick="app.togglePoll()" class="text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
+                    <button class="text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="dev-modal" class="modal-backdrop">
-            <div class="modal-sheet h-auto md:w-[500px]">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100">
-                    <div class="flex items-center gap-2 text-gray-900">
-                        <i class="fa-solid fa-code text-xl"></i>
-                        <h3 class="text-xl font-bold">Developer Broadcast</h3>
+            <div class="modal-sheet h-auto md:w-[500px] bg-white dark:bg-darker">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder">
+                    <div class="flex items-center gap-2 text-gray-900 dark:text-white">
+                        <i class="fa-solid fa-bullhorn text-xl"></i>
+                        <h3 class="text-xl font-bold">Circle Broadcast</h3>
                     </div>
-                    <button onclick="app.closeModal('dev-modal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    <button onclick="app.closeModal('dev-modal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 <div class="p-6 space-y-4">
-                    <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-100 text-sm text-yellow-800 mb-2">
-                        <i class="fa-solid fa-triangle-exclamation mr-2"></i>
-                        This will send a notification to <b>ALL</b> users from the "Circle Team".
+                    <div>
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Broadcast Method</label>
+                        <select id="dev-broadcast-type" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors mb-2 cursor-pointer">
+                            <option value="post">Create Feed Post</option>
+                            <option value="notification">Send Push Notification to All Users</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Update Message</label>
-                        <textarea id="dev-message" class="w-full h-32 bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none text-gray-800 resize-none focus:border-blue-500 transition-colors" placeholder="What's new in Circle?"></textarea>
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Update Message</label>
+                        <textarea id="dev-message" class="w-full h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 outline-none text-gray-800 dark:text-gray-100 resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors" placeholder="What's new in Circle?"></textarea>
                     </div>
-                    <button onclick="app.sendDevBroadcast()" class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-black transition-transform active:scale-95">Send Broadcast</button>
+                    <button onclick="app.sendDevBroadcast()" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-600 transition-transform active:scale-95">Send Broadcast</button>
                 </div>
             </div>
         </div>
 
         <!-- COMMENT / REPLIES MODAL -->
         <div id="comment-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[80%] md:h-[600px]">
-                <div class="p-4 flex justify-between items-center border-b border-gray-100 bg-white rounded-t-3xl z-10 flex-shrink-0">
-                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900">Replies</h3><span id="comment-count-badge" class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span></div>
-                    <button onclick="app.closeModal('comment-modal')" class="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-full text-gray-400 hover:bg-gray-200 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-sheet h-[80%] md:h-[600px] bg-white dark:bg-darker">
+                <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-darkborder bg-white dark:bg-darker rounded-t-3xl z-10 flex-shrink-0">
+                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span></div>
+                    <button onclick="app.closeModal('comment-modal')" class="w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-full text-gray-400 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-5 pb-24"></div>
-                <div class="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 p-3 pb-6 flex items-center gap-3 shadow-[0_-5px_20px_rgba(0,0,0,0.02)] rounded-b-3xl">
-                    <img id="comment-input-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-100">
-                    <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-                        <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-800 placeholder-gray-400" onkeypress="if(event.key === 'Enter') app.submitComment()">
+                <div class="absolute bottom-0 left-0 w-full bg-white dark:bg-darker border-t border-gray-100 dark:border-darkborder p-3 pb-6 flex items-center gap-3 shadow-[0_-5px_20px_rgba(0,0,0,0.02)] rounded-b-3xl">
+                    <img id="comment-input-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-100 dark:border-gray-800">
+                    <div class="flex-1 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 border border-transparent dark:border-darkborder transition-all">
+                        <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.submitComment()">
                     </div>
-                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="edit-profile-modal" class="modal-backdrop">
-            <div class="modal-sheet h-auto md:w-[500px]">
-                <div class="p-5 flex justify-between items-center"><h3 class="text-xl font-bold text-gray-900">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button></div>
-                <div class="px-6 pb-8 space-y-6">
+            <div class="modal-sheet h-auto md:w-[500px] bg-white dark:bg-darker">
+                <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-400 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+                <div class="px-6 pb-8 space-y-5 mt-2">
                     
                     <div class="flex flex-col items-center">
                         <div class="relative mb-2">
-                            <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-50 shadow-sm">
+                            <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-50 dark:border-darkborder shadow-sm">
                             
-                            <!-- Randomize/Shuffle Avatar Button (Replaced file upload camera) -->
+                            <!-- Randomize/Shuffle Avatar Button -->
                             <button type="button" onclick="app.shuffleAvatar()" class="absolute bottom-0 right-0 bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Generate Random Avatar">
                                 <i class="fa-solid fa-dice text-xs"></i>
                             </button>
                         </div>
                         
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Style:</span>
-                            <select id="avatar-category" class="text-xs bg-gray-50 border border-gray-200 rounded-md px-2 py-1 outline-none text-gray-700 font-medium focus:border-blue-400">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Style:</span>
+                            <select id="avatar-category" class="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md px-2 py-1 outline-none text-gray-700 dark:text-gray-200 font-medium focus:border-blue-400">
                                 <option value="avataaars">Avataaars</option>
                                 <option value="bottts">Bots</option>
                                 <option value="micah">Micah</option>
@@ -370,28 +464,29 @@
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-semibold text-gray-900"></div>
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none text-gray-700"></div>
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-800"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-semibold text-gray-900 dark:text-white"></div>
+                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-800"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-semibold text-blue-500 dark:text-blue-400"></div>
+                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-800"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none text-gray-700 dark:text-gray-200"></div>
                     </div>
-                    <button onclick="app.saveProfile()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold text-lg shadow-xl active:scale-95 transition-transform">Save Changes</button>
+                    <button onclick="app.saveProfile()" class="w-full bg-gray-900 dark:bg-white text-white dark:text-black py-4 rounded-2xl font-bold text-lg shadow-xl active:scale-95 transition-transform mt-2">Save Changes</button>
                 </div>
             </div>
         </div>
 
         <!-- BAN MODAL -->
         <div id="ban-modal" class="modal-backdrop z-[9999]">
-            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center bg-white rounded-t-3xl md:rounded-3xl">
-                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 mb-6">
-                    <i class="fa-solid fa-user-slash text-4xl text-red-500"></i>
+            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center bg-white dark:bg-darker rounded-t-3xl md:rounded-3xl">
+                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 dark:bg-red-900/20 mb-6">
+                    <i class="fa-solid fa-user-slash text-4xl text-red-500 dark:text-red-400"></i>
                 </div>
-                <h3 class="text-2xl font-black text-gray-900 mb-2">Account Banned</h3>
-                <p class="text-gray-500 text-[15px] mb-8 leading-relaxed">Your account has been permanently removed by an administrator. You can no longer access this platform.</p>
-                <button onclick="app.closeBanModal()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-200 transition-all active:scale-95 text-lg">Acknowledge & Leave</button>
+                <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2">Account Banned</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-[15px] mb-8 leading-relaxed">Your account has been permanently removed by an administrator. You can no longer access this platform.</p>
+                <button onclick="app.closeBanModal()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-200 dark:shadow-none transition-all active:scale-95 text-lg">Acknowledge & Leave</button>
             </div>
         </div>
 
-        <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-md text-gray-900 px-5 py-3 rounded-full shadow-xl border border-gray-100 opacity-0 transition-all pointer-events-none z-[70] flex items-center gap-3 scale-90"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> <span id="toast-msg" class="font-semibold text-sm">Success</span></div>
+        <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md text-gray-900 dark:text-white px-5 py-3 rounded-full shadow-xl border border-gray-100 dark:border-gray-700 opacity-0 transition-all pointer-events-none z-[70] flex items-center gap-3 scale-90"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> <span id="toast-msg" class="font-semibold text-sm">Success</span></div>
     </div>
 
     <script type="module">
@@ -420,6 +515,17 @@
                 this.isLoginMode = true;
                 this.activeProfileUid = null; 
                 this.editingPostId = null; 
+                this.isDarkMode = localStorage.getItem('circle_dark') === 'true';
+
+                // Apply initial theme
+                if (this.isDarkMode) {
+                    document.documentElement.classList.add('dark');
+                    // Setting the checkbox dynamically if it exists on load
+                    setTimeout(() => {
+                        const toggle = document.getElementById('dark-mode-toggle');
+                        if (toggle) toggle.checked = true;
+                    }, 100);
+                }
                 
                 this.initDefaultUsers();
 
@@ -434,6 +540,22 @@
                 });
 
                 this.listenToFirebase();
+            }
+
+            toggleDarkMode(isDark) {
+                this.isDarkMode = isDark;
+                localStorage.setItem('circle_dark', isDark);
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+
+            openSettings() {
+                const toggle = document.getElementById('dark-mode-toggle');
+                if(toggle) toggle.checked = this.isDarkMode;
+                document.getElementById('settings-modal').classList.add('open');
             }
 
             initDefaultUsers() {
@@ -457,10 +579,15 @@
                     bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple', adminGlowEnabled: true,
                     followers: 0, following: [], notifications: [] 
                 };
-                if (adminIndex !== -1) this.users[adminIndex] = { ...this.users[adminIndex], ...adminData };
-                else this.users.push(adminData);
                 
-                // Force a sync to Firebase to fix old overlapping database data immediately for the system accounts
+                if (adminIndex !== -1) {
+                    const existingAdmin = this.users[adminIndex];
+                    adminData.badgeType = existingAdmin.badgeType !== undefined ? existingAdmin.badgeType : 'purple';
+                    this.users[adminIndex] = { ...existingAdmin, ...adminData };
+                } else {
+                    this.users.push(adminData);
+                }
+                
                 set(ref(db, 'users/admin_saad/followers'), 0).catch(e => {});
                 set(ref(db, 'users/circle_team/followers'), 0).catch(e => {});
 
@@ -594,7 +721,7 @@
                         name: nameVal, handle: '@' + nameVal.toLowerCase().replace(/\s/g, '_'),
                         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${nameVal}`,
                         banner: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
-                        bio: 'New to Circle!', isAdmin: false, isVerified: false, badgeType: null, followers: 0, following: [], notifications: []
+                        bio: 'New to Circle!', isAdmin: false, isVerified: false, badgeType: 'none', followers: 0, following: [], notifications: []
                     };
                     
                     const userRef = ref(db, 'users/' + newUser.uid);
@@ -611,6 +738,12 @@
             loginUser(user) {
                 this.currentUser = user;
                 if(!this.currentUser.notifications) this.currentUser.notifications = [];
+                
+                // Make sure admin overrides push to database on first login correctly
+                if (this.currentUser.isAdmin) {
+                    set(ref(db, 'users/' + this.currentUser.uid), JSON.parse(JSON.stringify(this.currentUser)));
+                }
+                
                 this.initApp();
             }
 
@@ -826,7 +959,7 @@
                 document.getElementById('comment-count-badge').innerText = commentsArray.length;
 
                 if (commentsArray.length === 0) {
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-300"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-300 dark:text-gray-600"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
                     return;
                 }
 
@@ -834,15 +967,15 @@
                     const u = this.getUser(c.uid);
                     list.innerHTML += `
                     <div class="flex gap-3 animate-entry">
-                        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-100 flex-shrink-0" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
+                        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-100 dark:border-gray-800 flex-shrink-0 cursor-pointer" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
                         <div class="flex-1">
-                            <div class="bg-gray-50 p-3.5 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm">
+                            <div class="bg-gray-50 dark:bg-[#18181b] p-3.5 rounded-2xl rounded-tl-none border border-gray-100 dark:border-darkborder shadow-sm">
                                 <div class="flex items-center justify-between mb-1">
-                                    <span class="font-bold text-sm text-gray-900 cursor-pointer hover:underline" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">${u.name} ${this.getBadgeMarkup(u)}</span>
+                                    <span class="font-bold text-sm text-gray-900 dark:text-white cursor-pointer hover:underline" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">${u.name} ${this.getBadgeMarkup(u)}</span>
                                 </div>
-                                <p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">${this.linkify(c.text)}</p>
+                                <p class="text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">${this.linkify(c.text)}</p>
                             </div>
-                            <span class="text-[11px] text-gray-400 font-medium ml-2 mt-1 block">${c.time}</span>
+                            <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium ml-2 mt-1 block">${c.time}</span>
                         </div>
                     </div>`;
                 });
@@ -893,10 +1026,11 @@
 
                     if (hasVoted) {
                         const isSelected = userVoteIdx === idx;
-                        const barClass = isSelected ? 'bg-blue-100' : 'bg-gray-100';
-                        const textClass = isSelected ? 'text-blue-700 font-bold' : 'text-gray-700 font-medium';
+                        const barClass = isSelected ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-gray-100 dark:bg-gray-800';
+                        const textClass = isSelected ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium';
+                        const borderClass = isSelected ? 'border-blue-300 dark:border-blue-800 shadow-sm' : 'border-gray-200 dark:border-gray-700';
                         pollHTML += `
-                        <div class="relative w-full h-10 rounded-xl overflow-hidden bg-gray-50 border ${isSelected ? 'border-blue-300 shadow-sm' : 'border-gray-200'} flex items-center px-4">
+                        <div class="relative w-full h-10 rounded-xl overflow-hidden bg-gray-50 dark:bg-[#18181b] border ${borderClass} flex items-center px-4">
                             <div class="absolute left-0 top-0 h-full ${barClass} poll-bar-fill" style="width: ${percent}%;"></div>
                             <div class="relative z-10 flex justify-between w-full text-sm ${textClass}">
                                 <span>${opt} ${isSelected ? '<i class="fa-solid fa-circle-check ml-1 text-blue-500"></i>' : ''}</span>
@@ -905,12 +1039,12 @@
                         </div>`;
                     } else {
                         pollHTML += `
-                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200 text-blue-600 font-bold text-sm hover:bg-blue-50 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm">
+                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm">
                             ${opt}
                         </button>`;
                     }
                 });
-                pollHTML += `<div class="text-[11px] text-gray-400 mt-2 font-medium uppercase tracking-wider">${totalVotes} votes</div></div>`;
+                pollHTML += `<div class="text-[11px] text-gray-400 dark:text-gray-500 mt-2 font-medium uppercase tracking-wider">${totalVotes} votes</div></div>`;
                 return pollHTML;
             }
 
@@ -925,7 +1059,7 @@
                 const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
                 
                 const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
+                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
 
                 postEls.forEach(el => {
                     const avatarEl = el.querySelector('.post-user-avatar');
@@ -939,13 +1073,13 @@
 
                     const timeContentEl = el.querySelector('.post-time-content');
                     if (timeContentEl && post.isEdited && !timeContentEl.innerHTML.includes('(edited)')) {
-                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 font-medium ml-1.5 italic opacity-80">(edited)</span>`;
+                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80">(edited)</span>`;
                     }
 
                     const likeBtn = el.querySelector('.like-btn');
                     if (likeBtn) {
                         likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
-                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50' : 'bg-gray-50'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
+                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50 dark:bg-red-900/20' : 'bg-gray-50 dark:bg-gray-800'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
                     }
 
                     const commentCount = el.querySelector('.comment-count');
@@ -987,15 +1121,34 @@
             openDevModal() { document.getElementById('dev-modal').classList.add('open'); }
             sendDevBroadcast() {
                 const msg = document.getElementById('dev-message').value.trim();
+                const type = document.getElementById('dev-broadcast-type').value;
                 if (!msg) return;
                 
-                push(ref(db, 'posts'), {
-                    id: Date.now(), uid: 'circle_team', text: "📢 BROADCAST: " + msg,
-                    image: null, likes: 0, likedBy: {}, comments: {}, time: 'Just now',
-                    isEdited: false
-                });
+                if (type === 'post') {
+                    push(ref(db, 'posts'), {
+                        id: Date.now(), uid: 'circle_team', text: msg,
+                        image: null, likes: 0, likedBy: {}, comments: {}, time: 'Just now',
+                        isEdited: false
+                    });
+                    this.showToast('Broadcast Post Sent!');
+                } else if (type === 'notification') {
+                    let updates = {};
+                    this.users.forEach(u => {
+                        if (u.uid === 'circle_team') return;
+                        let notifs = u.notifications || [];
+                        notifs.unshift({
+                            id: Date.now(), type: 'dev', actorId: 'circle_team', text: msg,
+                            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                            isRead: false
+                        });
+                        updates['users/' + u.uid + '/notifications'] = notifs;
+                    });
+                    
+                    update(ref(db), updates).then(() => {
+                        this.showToast('Mass Notification Sent!');
+                    });
+                }
                 
-                this.showToast('Broadcast Sent!');
                 this.closeModal('dev-modal');
                 document.getElementById('dev-message').value = '';
             }
@@ -1005,17 +1158,20 @@
                 return this.users.find(u => u.uid === uid) || { name: 'Unknown', avatar: '', handle: '@unknown' };
             }
 
-            // --- Custom External Badges System ---
+            // --- Custom External Badges System (Upgraded Visuals) ---
             getBadgeMarkup(user) {
-                if (user.badgeType === 'purple' || (user.isAdmin && !user.badgeType)) return `<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
-                if (user.badgeType === 'gold') return `<span class="badge-container gold" title="Premium"><i class="fa-solid fa-certificate gold-seal-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
-                if (user.badgeType === 'youtube') return `<i class="fa-brands fa-youtube text-red-600 ml-1.5 text-[16px]" title="YouTube Creator"></i>`;
-                if (user.badgeType === 'dev') return `<i class="fa-solid fa-code text-green-600 ml-1.5 text-[14px]" title="Developer"></i>`;
-                if (user.badgeType === 'diamond') return `<i class="fa-solid fa-gem text-cyan-400 ml-1.5 text-[14px]" title="VIP Diamond"></i>`;
-                if (user.badgeType === 'trophy') return `<i class="fa-solid fa-trophy text-yellow-500 ml-1.5 text-[14px]" title="Top Contributor"></i>`;
-                if (user.badgeType === 'rocket') return `<i class="fa-solid fa-rocket text-orange-500 ml-1.5 text-[14px]" title="Early Adopter"></i>`;
-                if (user.badgeType === 'shield') return `<i class="fa-solid fa-shield-halved text-emerald-500 ml-1.5 text-[14px]" title="Moderator"></i>`;
-                if (user.badgeType === 'blue' || user.isVerified) return `<i class="fa-solid fa-circle-check text-blue-500 ml-1.5 text-[14px]" title="Verified"></i>`;
+                const wrap = (inner) => `<span class="badge-wrapper">${inner}</span>`;
+                
+                if (user.badgeType === 'none') return '';
+                if (user.badgeType === 'purple' || (user.isAdmin && user.badgeType === undefined)) return wrap(`<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`);
+                if (user.badgeType === 'gold') return wrap(`<span class="badge-container gold" title="Premium"><i class="fa-solid fa-certificate gold-seal-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`);
+                if (user.badgeType === 'youtube') return wrap(`<i class="fa-brands fa-youtube text-red-600 text-[20px]" title="YouTube Creator"></i>`);
+                if (user.badgeType === 'dev') return wrap(`<i class="fa-solid fa-code text-green-500 text-[18px]" title="Developer"></i>`);
+                if (user.badgeType === 'diamond') return wrap(`<i class="fa-solid fa-gem text-cyan-400 text-[18px]" title="VIP Diamond"></i>`);
+                if (user.badgeType === 'trophy') return wrap(`<i class="fa-solid fa-trophy text-yellow-500 text-[18px]" title="Top Contributor"></i>`);
+                if (user.badgeType === 'rocket') return wrap(`<i class="fa-solid fa-rocket text-orange-500 text-[18px]" title="Early Adopter"></i>`);
+                if (user.badgeType === 'shield') return wrap(`<i class="fa-solid fa-shield-halved text-emerald-500 text-[18px]" title="Moderator"></i>`);
+                if (user.badgeType === 'blue' || user.isVerified) return wrap(`<i class="fa-solid fa-circle-check text-blue-500 text-[18px]" title="Verified"></i>`);
                 return '';
             }
 
@@ -1033,7 +1189,6 @@
                 if (targetUser) {
                     let notifs = targetUser.notifications || [];
 
-                    // Prevent spam: if this is a follow notification, strip out any previous follow notification from the exact same actor
                     if (type === 'follow') {
                         notifs = notifs.filter(n => !(n.type === 'follow' && n.actorId === actor.uid));
                     }
@@ -1084,7 +1239,6 @@
                 
                 const notifs = this.currentUser.notifications || [];
                 
-                // Automatically filter out notifications from users who were deleted/banned by an admin
                 const validNotifs = notifs.filter(n => {
                     const actor = this.users.find(u => u.uid === n.actorId);
                     return actor && actor.uid !== 'undefined';
@@ -1100,18 +1254,24 @@
                 }
                 
                 if (validNotifs.length === 0) { 
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400"><i class="fa-regular fa-bell text-4xl mb-3"></i><p>No notifications yet</p></div>`; 
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-600"><i class="fa-regular fa-bell text-4xl mb-3"></i><p>No notifications yet</p></div>`; 
                     return; 
                 }
                 
                 validNotifs.forEach(n => {
                     const actor = this.getUser(n.actorId);
-                    let icon = '', bgClass = n.isRead ? 'bg-white' : 'bg-blue-50';
+                    let icon = '', bgClass = n.isRead ? 'bg-white dark:bg-black' : 'bg-blue-50 dark:bg-blue-900/20';
+                    let extraClass = '';
+                    
                     if (n.type === 'follow') icon = '<i class="fa-solid fa-user text-blue-500"></i>';
                     else if (n.type === 'like') icon = '<i class="fa-solid fa-heart text-red-500"></i>';
                     else if (n.type === 'reply') icon = '<i class="fa-solid fa-comment text-green-500"></i>';
-                    else if (n.type === 'dev') icon = '<i class="fa-solid fa-bullhorn text-yellow-600"></i>';
-                    list.innerHTML += `<div class="p-4 border-b border-gray-100 flex gap-4 items-start ${bgClass}"><div class="mt-1 text-xl w-8 text-center">${icon}</div><div class="flex-1"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-400">${n.timestamp}</span></div><p class="text-sm text-gray-900"><span class="font-bold cursor-pointer hover:underline" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
+                    else if (n.type === 'dev') {
+                        icon = '<i class="fa-solid fa-bullhorn text-yellow-600 dark:text-yellow-500"></i>';
+                        extraClass = 'dev-notif-row relative overflow-hidden';
+                    }
+                    
+                    list.innerHTML += `<div class="p-4 border-b border-gray-100 dark:border-darkborder flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-400 dark:text-gray-500">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white"><span class="font-bold cursor-pointer hover:underline" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
                 });
             }
 
@@ -1155,50 +1315,50 @@
                 
                 const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
                 const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
+                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
 
                 const formattedText = this.linkify(post.text);
-                const editedBadgeMarkup = post.isEdited ? `<span class="text-[10px] text-gray-400 font-medium ml-1.5 italic opacity-80">(edited)</span>` : '';
+                const editedBadgeMarkup = post.isEdited ? `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80">(edited)</span>` : '';
 
                 const isOwnPostOrAdmin = post.uid === this.currentUser?.uid || this.currentUser?.isAdmin;
                 const optionsMenuHTML = `
                     <div class="post-options-container relative">
-                        <button onclick="app.togglePostOptions('${post.dbKey}')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"><i class="fa-solid fa-ellipsis"></i></button>
-                        <div id="options-${post.dbKey}" class="hidden absolute right-0 top-8 mt-1 w-36 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 z-50 overflow-hidden transform origin-top-right transition-all">
+                        <button onclick="app.togglePostOptions('${post.dbKey}')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"><i class="fa-solid fa-ellipsis"></i></button>
+                        <div id="options-${post.dbKey}" class="hidden absolute right-0 top-8 mt-1 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-darkborder z-50 overflow-hidden transform origin-top-right transition-all">
                             ${isOwnPostOrAdmin ? `
-                                <button onclick="app.openEditPostModal('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center"><i class="fa-solid fa-pen mr-2 text-gray-400 w-4"></i> Edit</button>
-                                <button onclick="app.deletePost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-red-600 hover:bg-red-50 flex items-center"><i class="fa-solid fa-trash mr-2 text-red-400 w-4"></i> Delete</button>
+                                <button onclick="app.openEditPostModal('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center"><i class="fa-solid fa-pen mr-2 text-gray-400 w-4"></i> Edit</button>
+                                <button onclick="app.deletePost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"><i class="fa-solid fa-trash mr-2 text-red-400 w-4"></i> Delete</button>
                             ` : `
-                                <button onclick="app.reportPost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center"><i class="fa-solid fa-flag mr-2 text-gray-400 w-4"></i> Report</button>
+                                <button onclick="app.reportPost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center"><i class="fa-solid fa-flag mr-2 text-gray-400 w-4"></i> Report</button>
                             `}
                         </div>
                     </div>
                 `;
 
                 return `
-                <div class="p-4 border-b border-gray-50 bg-white animate-entry hover:bg-gray-50/50 transition-colors" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s">
+                <div class="p-4 border-b border-gray-50 dark:border-darkborder bg-white dark:bg-black animate-entry hover:bg-gray-50/50 dark:hover:bg-[#080808] transition-colors" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s">
                     <div class="flex items-start gap-3">
                         <div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer">
-                            <img src="${user.avatar}" class="post-user-avatar w-10 h-10 rounded-full object-cover border border-gray-100 flex-shrink-0 hover:opacity-80 transition-opacity">
+                            <img src="${user.avatar}" class="post-user-avatar w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-darkborder flex-shrink-0 hover:opacity-80 transition-opacity">
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between">
-                                <div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center flex-wrap truncate cursor-pointer group mt-0.5">
-                                    <span class="post-user-name font-bold text-gray-900 text-[15px] group-hover:underline mr-1">${user.name}</span>
+                                <div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center flex-wrap cursor-pointer group mt-0.5">
+                                    <span class="post-user-name font-bold text-gray-900 dark:text-white text-[15px] group-hover:underline mr-1">${user.name}</span>
                                     ${badge}
-                                    <span class="post-time-content text-gray-400 text-xs ml-2 font-medium flex items-center">${post.time} ${editedBadgeMarkup}</span>
+                                    <span class="post-time-content text-gray-400 dark:text-gray-500 text-xs ml-2 font-medium flex items-center">${post.time} ${editedBadgeMarkup}</span>
                                 </div>
                                 ${optionsMenuHTML}
                             </div>
-                            <p class="post-text-content text-gray-800 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${formattedText}</p>
+                            <p class="post-text-content text-gray-800 dark:text-gray-200 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${formattedText}</p>
                             ${pollHTML}
                             <div class="mt-3 flex items-center gap-6">
                                 <button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors">
-                                    <div class="p-1.5 -ml-2 rounded-full group-hover:bg-red-50 transition-colors"><i class="${heartIconClass} text-lg"></i></div>
+                                    <div class="p-1.5 -ml-2 rounded-full group-hover:bg-red-50 dark:group-hover:bg-red-900/20 transition-colors"><i class="${heartIconClass} text-lg"></i></div>
                                     <span class="text-xs font-bold like-count">${formattedLikes}</span>
                                 </button>
-                                <button onclick="app.openCommentModal('${post.dbKey}')" class="flex items-center gap-1.5 group text-gray-500 hover:text-blue-500 transition-colors">
-                                    <div class="p-1.5 -ml-2 rounded-full group-hover:bg-blue-50 transition-colors"><i class="fa-regular fa-comment text-lg"></i></div>
+                                <button onclick="app.openCommentModal('${post.dbKey}')" class="flex items-center gap-1.5 group text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+                                    <div class="p-1.5 -ml-2 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors"><i class="fa-regular fa-comment text-lg"></i></div>
                                     <span class="text-xs font-bold comment-count">${formattedComments}</span>
                                 </button>
                             </div>
@@ -1209,7 +1369,7 @@
 
             renderFeed() {
                 const list = document.getElementById('feed-list'); list.innerHTML = '';
-                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-300"><i class="fa-regular fa-pen-to-square text-5xl mb-4"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
+                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-300 dark:text-gray-700"><i class="fa-regular fa-pen-to-square text-5xl mb-4"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
                 this.posts.forEach((post, index) => list.innerHTML += this.createPostCardHTML(post, this.getUser(post.uid), index));
             }
 
@@ -1223,6 +1383,7 @@
                     if(view === 'profile' && n.dataset.target === 'profile') n.classList.add('text-blue-500');
                     else n.classList.toggle('text-blue-500', active);
                     n.classList.toggle('text-gray-300', !active && n.dataset.target !== 'profile');
+                    n.classList.toggle('dark:text-gray-500', !active && n.dataset.target !== 'profile');
                 });
                 document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
                 document.getElementById(view + '-view').classList.add('active');
@@ -1262,6 +1423,7 @@
 
             openEditProfile() { 
                 document.getElementById('edit-name').value = this.currentUser.name; 
+                document.getElementById('edit-handle').value = this.currentUser.handle || ''; 
                 document.getElementById('edit-bio').value = this.currentUser.bio; 
                 document.getElementById('edit-avatar-preview').src = this.currentUser.avatar; 
                 this.tempAvatar = this.currentUser.avatar; 
@@ -1271,6 +1433,20 @@
             saveProfile() { 
                 this.currentUser.name = document.getElementById('edit-name').value; 
                 this.currentUser.bio = document.getElementById('edit-bio').value; 
+                
+                let newHandle = document.getElementById('edit-handle').value.trim().toLowerCase();
+                if (newHandle && !newHandle.startsWith('@')) newHandle = '@' + newHandle;
+
+                // Enforce handle uniqueness check
+                if (newHandle !== this.currentUser.handle) {
+                    const handleTaken = this.users.some(u => u.uid !== this.currentUser.uid && u.handle === newHandle);
+                    if (handleTaken) {
+                        this.showToast('Error: Handle is already taken!');
+                        return; // Prevent saving if taken
+                    }
+                    this.currentUser.handle = newHandle;
+                }
+
                 if (this.tempAvatar) { 
                     this.currentUser.avatar = this.tempAvatar; 
                     this.tempAvatar = null; 
@@ -1292,13 +1468,16 @@
 
             // --- Custom Badge Administrator Menu ---
             setBadge(uid, badgeType) {
-                const bType = badgeType === 'none' ? null : badgeType;
-                update(ref(db, 'users/' + uid), { 
-                    badgeType: bType, 
-                    isVerified: (bType === 'blue' || bType === 'gold')
-                }).then(() => {
+                const bType = badgeType === 'none' ? 'none' : badgeType;
+                const userToUpdate = this.users.find(u => u.uid === uid);
+                if (!userToUpdate) return;
+                
+                // Full object replace to prevent Firebase ghosting on default accounts
+                const updatedUser = { ...userToUpdate, badgeType: bType, isVerified: (bType === 'blue' || bType === 'gold') };
+                
+                set(ref(db, 'users/' + uid), JSON.parse(JSON.stringify(updatedUser))).then(() => {
                     this.showToast('Badge updated!');
-                    if (bType) {
+                    if (bType !== 'none') {
                         this.pushNotification(uid, 'dev', this.currentUser, `granted you a new badge!`);
                     }
                 });
@@ -1307,7 +1486,10 @@
             toggleAdminGlow() {
                 if (!this.currentUser || !this.currentUser.isAdmin) return;
                 const newState = !this.currentUser.adminGlowEnabled;
-                update(ref(db, 'users/' + this.currentUser.uid), { adminGlowEnabled: newState }).then(() => {
+                
+                const updatedUser = { ...this.currentUser, adminGlowEnabled: newState };
+                
+                set(ref(db, 'users/' + this.currentUser.uid), JSON.parse(JSON.stringify(updatedUser))).then(() => {
                     this.showToast(newState ? 'Admin Highlight Enabled' : 'Admin Highlight Disabled');
                 });
             }
@@ -1333,7 +1515,7 @@
                 }
 
                 if (displayUsers.length === 0) { 
-                    list.innerHTML = `<p class="text-gray-400 text-sm mt-8 text-center">No users found.</p>`; 
+                    list.innerHTML = `<p class="text-gray-400 dark:text-gray-500 text-sm mt-8 text-center">No users found.</p>`; 
                     return; 
                 }
                 
@@ -1348,8 +1530,8 @@
                     if (this.currentUser.isAdmin) {
                         actionsHTML = `
                         <div class="flex gap-2 items-center">
-                            <select onchange="app.setBadge('${safeUid}', this.value)" class="text-[11px] font-bold border border-gray-200 rounded-lg p-1.5 bg-gray-50 outline-none hover:bg-gray-100 cursor-pointer">
-                                <option value="none" ${!u.badgeType ? 'selected' : ''}>No Badge</option>
+                            <select onchange="app.setBadge('${safeUid}', this.value)" class="text-[11px] font-bold border border-gray-200 dark:border-darkborder rounded-lg p-1.5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white outline-none hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                                <option value="none" ${!u.badgeType || u.badgeType === 'none' ? 'selected' : ''}>No Badge</option>
                                 <option value="blue" ${u.badgeType === 'blue' ? 'selected' : ''}>Verified (Blue)</option>
                                 <option value="gold" ${u.badgeType === 'gold' ? 'selected' : ''}>Premium (Gold)</option>
                                 <option value="purple" ${u.badgeType === 'purple' ? 'selected' : ''}>Admin (Purple)</option>
@@ -1360,14 +1542,14 @@
                                 <option value="rocket" ${u.badgeType === 'rocket' ? 'selected' : ''}>Early (Rocket)</option>
                                 <option value="shield" ${u.badgeType === 'shield' ? 'selected' : ''}>Mod (Shield)</option>
                             </select>
-                            <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-lg transition-all active:scale-95 bg-red-50 text-red-500 hover:bg-red-100"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-lg transition-all active:scale-95 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40"><i class="fa-solid fa-trash"></i></button>
                         </div>`;
                     }
 
                     const isGlowingAdmin = u.isAdmin && u.adminGlowEnabled;
-                    const rowClass = isGlowingAdmin ? 'admin-glow-row' : 'border-gray-50';
+                    const rowClass = isGlowingAdmin ? 'admin-glow-row' : 'border-gray-50 dark:border-darkborder bg-white dark:bg-[#18181b]';
 
-                    list.innerHTML += `<div class="flex justify-between items-center bg-white p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate mr-1">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-400 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
+                    list.innerHTML += `<div class="flex justify-between items-center p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 dark:text-white flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-400 dark:text-gray-500 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
                 });
             }
 
@@ -1448,7 +1630,7 @@
                 const container = document.getElementById('profile-view');
                 const userPosts = this.posts.filter(p => p.uid === targetUid);
                 
-                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400"><i class="fa-regular fa-file-lines text-3xl mb-2"></i><p>No posts yet</p></div>`;
+                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400 dark:text-gray-600"><i class="fa-regular fa-file-lines text-3xl mb-2"></i><p>No posts yet</p></div>`;
                 userPosts.forEach((post, idx) => postsHTML += this.createPostCardHTML(post, u, idx));
                 
                 const followerCount = this.formatCount((u.followers !== undefined) ? u.followers : 0);
@@ -1457,48 +1639,63 @@
                 const isFollowing = (this.currentUser.following || []).includes(targetUid);
                 
                 let actionButton = '';
-                if (targetUid === 'circle_team') {
-                    actionButton = `<div class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 shadow-sm"><i class="fa-solid fa-building text-gray-400 mr-1"></i> Official</div>`;
-                } else if (isMe) {
-                    actionButton = `<button onclick="app.openEditProfile()" class="px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white shadow-sm hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all">Edit Profile</button>`;
-                } else {
-                    actionButton = `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="px-6 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all ${isFollowing ? 'bg-white border border-gray-300 text-gray-900' : 'bg-gray-900 text-white border border-gray-900'}">${isFollowing ? 'Following' : 'Follow'}</button>`;
+                let statsHTML = '';
+
+                // Completely remove stats layout for the circle_team system profile
+                if (targetUid !== 'circle_team') {
+                    statsHTML = `
+                        <div><span id="profile-follower-count" class="font-bold text-gray-900 dark:text-white">${followerCount}</span> <span class="text-gray-400 dark:text-gray-500 text-xs uppercase font-bold tracking-wide">Followers</span></div>
+                        <div><span class="font-bold text-gray-900 dark:text-white">${followingCount}</span> <span class="text-gray-400 dark:text-gray-500 text-xs uppercase font-bold tracking-wide">Following</span></div>
+                    `;
                 }
 
-                let logoutBtn = isMe ? `<button onclick="app.handleLogout()" class="absolute top-4 right-4 z-30 bg-black/40 hover:bg-red-500 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105" title="Log Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button>` : '';
+                if (targetUid === 'circle_team') {
+                    actionButton = `<div class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-darkborder shadow-sm"><i class="fa-solid fa-building mr-1"></i> Official</div>`;
+                } else if (isMe) {
+                    actionButton = `<button onclick="app.openEditProfile()" class="px-5 py-2 border border-gray-200 dark:border-darkborder rounded-full text-xs font-bold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 shadow-sm hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all">Edit Profile</button>`;
+                } else {
+                    actionButton = `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="px-6 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all ${isFollowing ? 'bg-white dark:bg-gray-900 border border-gray-300 dark:border-darkborder text-gray-900 dark:text-white' : 'bg-gray-900 dark:bg-white text-white dark:text-black border border-gray-900 dark:border-white'}">${isFollowing ? 'Following' : 'Follow'}</button>`;
+                }
+
+                // Settings & Logout top-right container
+                let topButtons = isMe ? `
+                    <div class="absolute top-4 right-4 z-30 flex items-center gap-2">
+                        <button onclick="app.openSettings()" class="bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105" title="Settings"><i class="fa-solid fa-gear text-sm"></i></button>
+                        <button onclick="app.handleLogout()" class="bg-black/40 hover:bg-red-500 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105" title="Log Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button>
+                    </div>
+                ` : '';
                 
                 const safeBio = this.linkify(u.bio || '');
 
                 container.innerHTML = `
-                    <div class="relative pb-0">
-                        ${logoutBtn}
-                        <div class="h-36 bg-gray-200 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
+                    <div class="relative pb-0 border-b border-gray-50 dark:border-darkborder bg-white dark:bg-black">
+                        ${topButtons}
+                        <div class="h-36 bg-gray-200 dark:bg-gray-800 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
                             <img src="${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/10"></div>
-                            ${isMe ? `<button type="button" onclick="app.shuffleBanner(event)" class="absolute top-4 right-16 bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:rotate-180 z-20" title="Shuffle Banner Theme"><i class="fa-solid fa-dice text-sm"></i></button>` : ''}
+                            ${isMe ? `<button type="button" onclick="app.shuffleBanner(event)" class="absolute top-4 right-28 bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:rotate-180 z-20" title="Shuffle Banner Theme"><i class="fa-solid fa-dice text-sm"></i></button>` : ''}
                         </div>
-                        <div class="px-5 bg-white relative z-10">
+                        <div class="px-5 bg-white dark:bg-black relative z-10">
                             <div class="relative -top-12 flex justify-between items-end mb-[-30px] pt-2">
                                 <div class="relative">
-                                    <img src="${u.avatar || ''}" class="w-24 h-24 rounded-full border-[4px] border-white bg-white object-cover shadow-lg cursor-pointer" onclick="app.openLightbox('${u.avatar || ''}')">
+                                    <img src="${u.avatar || ''}" class="w-24 h-24 rounded-full border-[4px] border-white dark:border-black bg-white dark:bg-black object-cover shadow-lg cursor-pointer" onclick="app.openLightbox('${u.avatar || ''}')">
                                 </div>
                                 <div class="pb-2">
                                     ${actionButton}
                                 </div>
                             </div>
                             <div class="mt-8">
-                                <h1 class="text-2xl font-black text-gray-900 flex items-center tracking-tight">${u.name || 'User'} ${badge}</h1>
-                                <p class="text-gray-400 text-sm font-medium">${u.handle || ''}</p>
-                                <p class="mt-3 text-gray-800 leading-relaxed font-normal text-[15px]">${safeBio}</p>
+                                <h1 class="text-2xl font-black text-gray-900 dark:text-white flex items-center flex-wrap tracking-tight">${u.name || 'User'} ${badge}</h1>
+                                <p class="text-gray-400 dark:text-gray-500 text-sm font-medium">${u.handle || ''}</p>
+                                <p class="mt-3 text-gray-800 dark:text-gray-200 leading-relaxed font-normal text-[15px]">${safeBio}</p>
                             </div>
-                            <div class="flex gap-6 mt-5 py-4 border-b border-gray-50">
-                                <div><span class="font-bold text-gray-900">${postCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Posts</span></div>
-                                <div><span id="profile-follower-count" class="font-bold text-gray-900">${followerCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Followers</span></div>
-                                <div><span class="font-bold text-gray-900">${followingCount}</span> <span class="text-gray-400 text-xs uppercase font-bold tracking-wide">Following</span></div>
+                            <div class="flex gap-6 mt-5 py-4">
+                                <div><span class="font-bold text-gray-900 dark:text-white">${postCount}</span> <span class="text-gray-400 dark:text-gray-500 text-xs uppercase font-bold tracking-wide">Posts</span></div>
+                                ${statsHTML}
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white min-h-[300px]">${postsHTML}</div>
+                    <div class="bg-white dark:bg-black min-h-[300px]">${postsHTML}</div>
                 `;
             }
         }
