@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Circle - Social</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,6 +10,11 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+        /* Complete Box Sizing Fix for Android Overlap */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
         :root {
             --primary: #1DA1F2;
@@ -23,7 +28,7 @@
             max-width: 100vw;
             overflow-x: hidden;
             width: 100%;
-            touch-action: manipulation; /* Prevents double-tap zoom on Android */
+            touch-action: manipulation; 
         }
 
         body {
@@ -47,105 +52,46 @@
             transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.6s;
         }
 
-        #login-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
+        #login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
         .login-container {
-            width: 90%;
-            max-width: 380px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
+            width: 90%; max-width: 380px; padding: 40px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px; backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center;
             animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
         }
 
-        @keyframes floatUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-            20%, 40%, 60%, 80% { transform: translateX(4px); }
-        }
-        .input-error {
-            animation: shake 0.4s ease-in-out;
-            border-color: #ef4444 !important;
-            background-color: rgba(239, 68, 68, 0.1) !important;
-        }
+        @keyframes floatUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); } 20%, 40%, 60%, 80% { transform: translateX(4px); } }
+        .input-error { animation: shake 0.4s ease-in-out; border-color: #ef4444 !important; background-color: rgba(239, 68, 68, 0.1) !important; }
 
         .login-input {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 16px;
-            border-radius: 14px;
-            width: 100%;
-            margin-bottom: 16px;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.2s;
+            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); color: white;
+            padding: 16px; border-radius: 14px; width: 100%; margin-bottom: 16px; font-size: 15px; outline: none; transition: all 0.2s;
         }
-        .login-input:focus {
-            border-color: var(--primary);
-            background: rgba(29, 161, 242, 0.05);
-            transform: translateY(-1px);
-        }
+        .login-input:focus { border-color: var(--primary); background: rgba(29, 161, 242, 0.05); transform: translateY(-1px); }
         .login-input::placeholder { color: rgba(255, 255, 255, 0.4); }
 
         .login-btn {
-            background: white;
-            color: black;
-            width: 100%;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            margin-top: 10px;
+            background: white; color: black; width: 100%; padding: 16px; border-radius: 14px;
+            font-weight: 700; font-size: 15px; cursor: pointer; border: none; transition: all 0.2s; margin-top: 10px;
         }
         .login-btn:hover { background: #f3f4f6; transform: translateY(-1px); }
         .login-btn:active { transform: scale(0.98); }
 
-        .auth-toggle {
-            color: #9ca3af;
-            font-size: 13px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .auth-toggle:hover { color: white; }
-        .auth-toggle b { color: var(--primary); }
+        .auth-toggle { color: #9ca3af; font-size: 13px; margin-top: 20px; cursor: pointer; transition: color 0.2s; }
+        .auth-toggle:hover { color: white; } .auth-toggle b { color: var(--primary); }
 
         /* --- App Container --- */
         #app-root {
-            width: 100%; 
-            max-width: 100vw;
-            height: 100dvh;
-            background-color: #ffffff;
-            position: relative;
-            display: flex; flex-direction: column;
-            overflow: hidden;
-            opacity: 0; transition: opacity 0.8s ease;
-            transform: scale(0.98); transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
+            width: 100%; max-width: 100vw; height: 100dvh; background-color: #ffffff;
+            position: relative; display: flex; flex-direction: column; overflow: hidden;
+            opacity: 0; transition: opacity 0.8s ease; transform: scale(0.98); transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s;
         }
         #app-root.visible { opacity: 1; transform: scale(1); }
 
-        /* Desktop */
-        @media (min-width: 768px) {
-            #app-root { max-width: 1200px; box-shadow: 0 0 50px rgba(0,0,0,0.5); flex-direction: row; }
-            :root { --sidebar-width: 240px; }
-        }
+        @media (min-width: 768px) { #app-root { max-width: 1200px; box-shadow: 0 0 50px rgba(0,0,0,0.5); flex-direction: row; } :root { --sidebar-width: 240px; } }
 
         /* --- Animations & Layout --- */
         @keyframes heartBurst { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
@@ -155,7 +101,19 @@
         @keyframes fillBar { from { width: 0%; } }
         .poll-bar-fill { animation: fillBar 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
-        .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: var(--header-height); padding-bottom: 70px; overflow-y: auto; scrollbar-width: none; background-color: #fff; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 10; }
+        /* Admin Special Glow Animation */
+        @keyframes adminGlow {
+            0% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.6), inset 0 0 10px rgba(124, 58, 237, 0.2); }
+            100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); }
+        }
+        .admin-glow-row {
+            animation: adminGlow 2.5s infinite ease-in-out;
+            background: linear-gradient(145deg, #ffffff, #f9f5ff);
+            border-color: rgba(124, 58, 237, 0.4) !important;
+        }
+
+        .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: var(--header-height); padding-bottom: 90px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; background-color: #fff; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 10; }
         .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
         @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 600px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; border-right: 1px solid #f3f4f6; border-left: 1px solid #f3f4f6; display: none; opacity: 1; transform: none; } .page.active { display: block; } header { display: none !important; } }
 
@@ -264,16 +222,27 @@
 
                     <div id="admin-controls-banner" class="bg-red-50 p-4 rounded-2xl mb-6 text-sm text-red-800 border border-red-100 flex gap-3 hidden">
                         <div class="bg-white p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
-                        <div class="flex-1"><p class="font-semibold text-gray-900">Admin Mode</p><p class="text-xs mt-0.5">You can permanently delete accounts and manage verifications.</p></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Admin Mode</p>
+                                    <p class="text-xs mt-0.5 mb-2">You can permanently delete accounts and manage specific badges.</p>
+                                </div>
+                            </div>
+                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white border border-red-200 text-red-600 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 transition-colors">Toggle Admin Highlight</button>
+                        </div>
                     </div>
                     
-                    <div id="user-list" class="space-y-3 text-center text-gray-400 mt-2"></div>
+                    <div id="user-list" class="space-y-3 text-left text-gray-400 mt-2"></div>
                 </div>
             </div>
 
             <div id="notifications-view" class="page">
                 <div class="p-5">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Notifications</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900">Notifications</h2>
+                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors active:scale-95">Clear All</button>
+                    </div>
                     <div id="notification-list" class="space-y-0 pb-24"></div>
                 </div>
             </div>
@@ -450,7 +419,7 @@
                 this.activePostId = null;
                 this.isLoginMode = true;
                 this.activeProfileUid = null; 
-                this.editingPostId = null; // Track post being edited
+                this.editingPostId = null; 
                 
                 this.initDefaultUsers();
 
@@ -458,7 +427,6 @@
                     if (e.key === 'Enter') this.handleAuth();
                 });
 
-                // Global click listener to close post options dropdowns
                 document.addEventListener('click', (e) => {
                     if (!e.target.closest('.post-options-container')) {
                         document.querySelectorAll('[id^="options-"]').forEach(el => el.classList.add('hidden'));
@@ -486,12 +454,16 @@
                     uid: 'admin_saad', name: 'Saad Shaikh', handle: '@saad',
                     avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=Doraemon&backgroundColor=1da1f2',
                     banner: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80',
-                    bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple',
-                    followers: 0, following: [], notifications: [] // Fixed: Reset fake followers to 0
+                    bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple', adminGlowEnabled: true,
+                    followers: 0, following: [], notifications: [] 
                 };
                 if (adminIndex !== -1) this.users[adminIndex] = { ...this.users[adminIndex], ...adminData };
                 else this.users.push(adminData);
                 
+                // Force a sync to Firebase to fix old overlapping database data immediately for the system accounts
+                set(ref(db, 'users/admin_saad/followers'), 0).catch(e => {});
+                set(ref(db, 'users/circle_team/followers'), 0).catch(e => {});
+
                 localStorage.setItem('circle_users', JSON.stringify(this.users));
             }
 
@@ -518,11 +490,9 @@
                                 profileView.scrollTop = scrollPos;
                             }
                         } else {
-                            // Update counts & interactions WITHOUT re-rendering full feed
                             this.posts.forEach(p => this.updatePostUI(p));
                         }
 
-                        // Live update comments if modal is open
                         if (document.getElementById('comment-modal').classList.contains('open') && this.activePostId) {
                             this.renderComments();
                         }
@@ -537,7 +507,6 @@
                         internetUsers = Object.values(data);
                     }
                     
-                    // Allow Firebase to override hardcoded local accounts if they exist on the internet
                     const internetUids = internetUsers.map(u => u.uid);
                     const systemUsers = this.users.filter(u => u && (u.uid === 'circle_team' || u.uid === 'admin_saad'));
                     const defaultUsers = systemUsers.filter(u => !internetUids.includes(u.uid));
@@ -548,7 +517,6 @@
                     if (this.currentUser) {
                         const freshUserData = this.users.find(u => u.uid === this.currentUser.uid);
                         
-                        // Check if current user was deleted (banned) by an admin
                         if (!freshUserData && this.currentUser.uid !== 'circle_team' && this.currentUser.uid !== 'admin_saad') {
                             this.handleBan();
                             return;
@@ -570,7 +538,6 @@
                             searchView.scrollTop = scrollPos;
                         }
                         
-                        // Real-time DOM avatar updates for the feed (no jumping/refreshing)
                         if (document.getElementById('feed-view').classList.contains('active')) {
                             this.posts.forEach(p => this.updatePostUI(p));
                         }
@@ -680,7 +647,6 @@
                 }, 500);
             }
 
-            // --- BAN LOGIC ---
             handleBan() {
                 document.getElementById('ban-modal').classList.add('open');
             }
@@ -690,19 +656,15 @@
                 this.handleLogout();
             }
 
-            // --- CLICKABLE LINKS PARSER ---
             linkify(text) {
                 if (!text) return '';
-                // First escape HTML tags to prevent XSS
                 let escapedText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                // Regex to find URLs
                 const urlRegex = /(https?:\/\/[^\s]+)/g;
                 return escapedText.replace(urlRegex, function(url) {
                     return `<a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-blue-500 hover:underline break-all font-medium">${url}</a>`;
                 });
             }
 
-            // --- POLL LOGIC ---
             togglePoll() {
                 const container = document.getElementById('poll-container');
                 container.classList.toggle('hidden');
@@ -737,9 +699,7 @@
                 });
             }
 
-            // --- EDIT & DELETE LOGIC ---
             togglePostOptions(dbKey) {
-                // Close other open options first
                 document.querySelectorAll('[id^="options-"]').forEach(el => {
                     if (el.id !== `options-${dbKey}`) el.classList.add('hidden');
                 });
@@ -750,7 +710,7 @@
             }
 
             openEditPostModal(dbKey) {
-                this.togglePostOptions(dbKey); // Close dropdown
+                this.togglePostOptions(dbKey);
                 const post = this.posts.find(p => p.dbKey === dbKey);
                 if (!post) return;
                 this.editingPostId = dbKey;
@@ -779,7 +739,7 @@
             }
 
             deletePost(dbKey) {
-                this.togglePostOptions(dbKey); // Close dropdown
+                this.togglePostOptions(dbKey); 
                 if(confirm('Are you sure you want to delete this post permanently?')) {
                     remove(ref(db, 'posts/' + dbKey)).then(() => {
                         this.showToast('Post deleted');
@@ -797,13 +757,11 @@
 
 
             openPostModal() { document.getElementById('modal-avatar').src = this.currentUser.avatar; document.getElementById('post-modal').classList.add('open'); }
-            removePostImage() { this.tempPostImage = null; document.getElementById('post-file-input').value = ""; document.getElementById('post-img-preview-container').classList.add('hidden'); }
             
             submitPost() {
                 const t = document.getElementById('post-content').value.trim();
                 let pollData = null;
 
-                // Check if poll is active and valid
                 if (!document.getElementById('poll-container').classList.contains('hidden')) {
                     const o1 = document.getElementById('poll-opt-1').value.trim();
                     const o2 = document.getElementById('poll-opt-2').value.trim();
@@ -821,17 +779,17 @@
                     }
                 }
 
-                if (!t && !this.tempPostImage && !pollData) { this.showToast("Post is empty"); return; }
+                if (!t && !pollData) { this.showToast("Post is empty"); return; }
                 
                 const newPost = {
                     id: Date.now(),
                     uid: this.currentUser.uid,
                     text: t,
-                    image: this.tempPostImage || null,
+                    image: null,
                     poll: pollData,
                     likes: 0,
                     likedBy: {},
-                    comments: {}, // Stored as object in RTDB
+                    comments: {}, 
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     isEdited: false
                 };
@@ -839,7 +797,6 @@
                 push(ref(db, 'posts'), newPost).then(() => {
                     this.showToast('Posted Online!');
                     document.getElementById('post-content').value = '';
-                    this.removePostImage();
                     this.removePoll();
                     this.closeModal('post-modal');
                 }).catch((err) => {
@@ -848,14 +805,11 @@
                 });
             }
 
-            // --- REPLIES / COMMENTS LOGIC ---
             openCommentModal(dbKey) {
                 this.activePostId = dbKey;
                 document.getElementById('comment-input-avatar').src = this.currentUser.avatar;
                 document.getElementById('comment-modal').classList.add('open');
                 this.renderComments();
-                
-                // Slight delay to focus input smoothly for mobile
                 setTimeout(() => document.getElementById('comment-input').focus(), 300);
             }
 
@@ -866,7 +820,6 @@
                 const list = document.getElementById('comments-list');
                 list.innerHTML = '';
 
-                // Firebase stores empty arrays as undefined or converts associative arrays to objects
                 const commentsObj = post.comments || {}; 
                 const commentsArray = Object.keys(commentsObj).map(key => commentsObj[key]);
 
@@ -894,7 +847,6 @@
                     </div>`;
                 });
                 
-                // Scroll to bottom
                 list.scrollTop = list.scrollHeight;
             }
 
@@ -976,14 +928,12 @@
                 const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
 
                 postEls.forEach(el => {
-                    // Instantly sync author's avatar and name natively if they just changed it
                     const avatarEl = el.querySelector('.post-user-avatar');
                     if (avatarEl && avatarEl.src !== user.avatar) avatarEl.src = user.avatar;
                     
                     const nameEl = el.querySelector('.post-user-name');
                     if (nameEl && nameEl.innerText !== user.name) nameEl.innerText = user.name;
 
-                    // Update main text and apply edited badge safely
                     const textContentEl = el.querySelector('.post-text-content');
                     if (textContentEl) textContentEl.innerHTML = this.linkify(post.text);
 
@@ -992,18 +942,15 @@
                         timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 font-medium ml-1.5 italic opacity-80">(edited)</span>`;
                     }
 
-                    // Update like counter
                     const likeBtn = el.querySelector('.like-btn');
                     if (likeBtn) {
                         likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
                         likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50' : 'bg-gray-50'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
                     }
 
-                    // Update comment counter
                     const commentCount = el.querySelector('.comment-count');
                     if (commentCount) commentCount.innerText = formattedComments;
 
-                    // Update poll UI specifically if it exists
                     const pollContainer = el.querySelector('.poll-container');
                     if (pollContainer && post.poll) {
                         pollContainer.innerHTML = this.generatePollHTML(post);
@@ -1058,9 +1005,16 @@
                 return this.users.find(u => u.uid === uid) || { name: 'Unknown', avatar: '', handle: '@unknown' };
             }
 
+            // --- Custom External Badges System ---
             getBadgeMarkup(user) {
-                if (user.uid === 'admin_saad' || user.isAdmin) return `<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
+                if (user.badgeType === 'purple' || (user.isAdmin && !user.badgeType)) return `<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
                 if (user.badgeType === 'gold') return `<span class="badge-container gold" title="Premium"><i class="fa-solid fa-certificate gold-seal-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`;
+                if (user.badgeType === 'youtube') return `<i class="fa-brands fa-youtube text-red-600 ml-1.5 text-[16px]" title="YouTube Creator"></i>`;
+                if (user.badgeType === 'dev') return `<i class="fa-solid fa-code text-green-600 ml-1.5 text-[14px]" title="Developer"></i>`;
+                if (user.badgeType === 'diamond') return `<i class="fa-solid fa-gem text-cyan-400 ml-1.5 text-[14px]" title="VIP Diamond"></i>`;
+                if (user.badgeType === 'trophy') return `<i class="fa-solid fa-trophy text-yellow-500 ml-1.5 text-[14px]" title="Top Contributor"></i>`;
+                if (user.badgeType === 'rocket') return `<i class="fa-solid fa-rocket text-orange-500 ml-1.5 text-[14px]" title="Early Adopter"></i>`;
+                if (user.badgeType === 'shield') return `<i class="fa-solid fa-shield-halved text-emerald-500 ml-1.5 text-[14px]" title="Moderator"></i>`;
                 if (user.badgeType === 'blue' || user.isVerified) return `<i class="fa-solid fa-circle-check text-blue-500 ml-1.5 text-[14px]" title="Verified"></i>`;
                 return '';
             }
@@ -1078,6 +1032,12 @@
                 const targetUser = this.users.find(u => u.uid === targetUid);
                 if (targetUser) {
                     let notifs = targetUser.notifications || [];
+
+                    // Prevent spam: if this is a follow notification, strip out any previous follow notification from the exact same actor
+                    if (type === 'follow') {
+                        notifs = notifs.filter(n => !(n.type === 'follow' && n.actorId === actor.uid));
+                    }
+
                     notifs.unshift({
                         id: Date.now(), type, actorId: actor.uid, text, 
                         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 
@@ -1106,12 +1066,31 @@
                 }
             }
 
+            clearNotifications() {
+                if (!this.currentUser) return;
+                if (confirm('Clear all your notifications?')) {
+                    update(ref(db, 'users/' + this.currentUser.uid), { notifications: [] }).then(() => {
+                        this.currentUser.notifications = [];
+                        this.renderNotifications();
+                        this.showToast('Notifications cleared');
+                    });
+                }
+            }
+
             renderNotifications() {
                 const list = document.getElementById('notification-list');
                 const badge = document.getElementById('nav-notif-badge');
                 list.innerHTML = '';
+                
                 const notifs = this.currentUser.notifications || [];
-                const unreadCount = notifs.filter(n => !n.isRead).length;
+                
+                // Automatically filter out notifications from users who were deleted/banned by an admin
+                const validNotifs = notifs.filter(n => {
+                    const actor = this.users.find(u => u.uid === n.actorId);
+                    return actor && actor.uid !== 'undefined';
+                });
+
+                const unreadCount = validNotifs.filter(n => !n.isRead).length;
                 
                 if (unreadCount > 0) { 
                     badge.innerText = unreadCount; 
@@ -1120,12 +1099,12 @@
                     badge.classList.add('hidden'); 
                 }
                 
-                if (notifs.length === 0) { 
+                if (validNotifs.length === 0) { 
                     list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400"><i class="fa-regular fa-bell text-4xl mb-3"></i><p>No notifications yet</p></div>`; 
                     return; 
                 }
                 
-                notifs.forEach(n => {
+                validNotifs.forEach(n => {
                     const actor = this.getUser(n.actorId);
                     let icon = '', bgClass = n.isRead ? 'bg-white' : 'bg-blue-50';
                     if (n.type === 'follow') icon = '<i class="fa-solid fa-user text-blue-500"></i>';
@@ -1137,7 +1116,7 @@
             }
 
             toggleFollow(targetUid) {
-                if (targetUid === 'circle_team') return; // Cannot follow official team
+                if (targetUid === 'circle_team') return; 
                 
                 let targetUser = this.users.find(u => u.uid === targetUid);
                 if (!targetUser) return;
@@ -1164,9 +1143,7 @@
 
             createPostCardHTML(post, user, index) {
                 const badge = this.getBadgeMarkup(user);
-                const postImageHtml = post.image ? `<div class="mt-3 rounded-2xl border border-gray-100 bg-gray-50 shadow-sm cursor-pointer overflow-hidden flex justify-center" onclick="app.openLightbox('${post.image}')"><img src="${post.image}" class="w-full h-auto max-h-[500px] object-contain transition-transform duration-500 hover:scale-[1.02]"></div>` : '';
                 
-                // RENDER POLL UI (Wrapped in specific container for targeted updates)
                 let pollHTML = '';
                 if (post.poll && post.poll.options) {
                     pollHTML = `<div class="poll-container w-full">${this.generatePollHTML(post)}</div>`;
@@ -1180,11 +1157,9 @@
                 const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
                 const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500';
 
-                // Use linkify engine on post text
                 const formattedText = this.linkify(post.text);
                 const editedBadgeMarkup = post.isEdited ? `<span class="text-[10px] text-gray-400 font-medium ml-1.5 italic opacity-80">(edited)</span>` : '';
 
-                // Handle Post Options UI (Edit/Delete vs Report)
                 const isOwnPostOrAdmin = post.uid === this.currentUser?.uid || this.currentUser?.isAdmin;
                 const optionsMenuHTML = `
                     <div class="post-options-container relative">
@@ -1217,7 +1192,6 @@
                             </div>
                             <p class="post-text-content text-gray-800 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${formattedText}</p>
                             ${pollHTML}
-                            ${postImageHtml}
                             <div class="mt-3 flex items-center gap-6">
                                 <button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors">
                                     <div class="p-1.5 -ml-2 rounded-full group-hover:bg-red-50 transition-colors"><i class="${heartIconClass} text-lg"></i></div>
@@ -1261,7 +1235,6 @@
 
             showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg; t.style.opacity = '1'; t.style.transform = 'translate(-50%, 0) scale(1)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, -10px) scale(0.9)'; }, 2500); }
             
-            // --- AVATAR SHUFFLE LOGIC ---
             shuffleAvatar() {
                 const categoryEl = document.getElementById('avatar-category');
                 const category = categoryEl ? categoryEl.value : 'avataaars';
@@ -1273,10 +1246,8 @@
                 this.showToast('Avatar Shuffled! 🎲');
             }
 
-            // --- BANNER SHUFFLE LOGIC (No Firebase Storage Used) ---
             shuffleBanner(event) {
                 if (event) event.stopPropagation();
-                // Generates a nice random banner using picsum without caching issues
                 const randomId = Math.floor(Math.random() * 1000);
                 const newBannerUrl = `https://picsum.photos/seed/${randomId}/800/300`;
                 
@@ -1293,7 +1264,7 @@
                 document.getElementById('edit-name').value = this.currentUser.name; 
                 document.getElementById('edit-bio').value = this.currentUser.bio; 
                 document.getElementById('edit-avatar-preview').src = this.currentUser.avatar; 
-                this.tempAvatar = this.currentUser.avatar; // Reset temp avatar to current
+                this.tempAvatar = this.currentUser.avatar; 
                 document.getElementById('edit-profile-modal').classList.add('open'); 
             }
             
@@ -1307,7 +1278,6 @@
 
                 const userRef = ref(db, 'users/' + this.currentUser.uid);
                 
-                // Write the full user object back to database so default system accounts correctly initialize their status
                 set(userRef, JSON.parse(JSON.stringify(this.currentUser))).then(() => {
                     this.renderProfile('me'); 
                     this.closeModal('edit-profile-modal'); 
@@ -1319,6 +1289,28 @@
             }
             
             handleSearch() { this.renderUserList(); }
+
+            // --- Custom Badge Administrator Menu ---
+            setBadge(uid, badgeType) {
+                const bType = badgeType === 'none' ? null : badgeType;
+                update(ref(db, 'users/' + uid), { 
+                    badgeType: bType, 
+                    isVerified: (bType === 'blue' || bType === 'gold')
+                }).then(() => {
+                    this.showToast('Badge updated!');
+                    if (bType) {
+                        this.pushNotification(uid, 'dev', this.currentUser, `granted you a new badge!`);
+                    }
+                });
+            }
+
+            toggleAdminGlow() {
+                if (!this.currentUser || !this.currentUser.isAdmin) return;
+                const newState = !this.currentUser.adminGlowEnabled;
+                update(ref(db, 'users/' + this.currentUser.uid), { adminGlowEnabled: newState }).then(() => {
+                    this.showToast(newState ? 'Admin Highlight Enabled' : 'Admin Highlight Disabled');
+                });
+            }
 
             renderUserList() {
                 const list = document.getElementById('user-list'); 
@@ -1341,25 +1333,41 @@
                 }
 
                 if (displayUsers.length === 0) { 
-                    list.innerHTML = `<p class="text-gray-400 text-sm mt-8">No users found.</p>`; 
+                    list.innerHTML = `<p class="text-gray-400 text-sm mt-8 text-center">No users found.</p>`; 
                     return; 
                 }
                 
                 displayUsers.forEach(u => {
                     const badge = this.getBadgeMarkup(u);
                     const safeName = u.name || 'Ghost Account';
-                    const safeHandle = u.handle || '@unknown';
                     const safeAvatar = u.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback';
                     const safeUid = u.uid || 'undefined';
+                    const followersStr = `${this.formatCount(u.followers || 0)} followers`;
                     
                     let actionsHTML = '';
                     if (this.currentUser.isAdmin) {
-                        const btnText = (u.badgeType === 'gold') ? 'Unverify' : (u.badgeType === 'blue' || u.isVerified) ? 'Promote' : 'Verify';
-                        const btnClass = (u.badgeType === 'gold') ? 'bg-gray-100 text-gray-500' : (u.badgeType === 'blue' || u.isVerified) ? 'bg-yellow-500 text-white' : 'bg-blue-500 text-white';
-                        actionsHTML = `<div class="flex gap-2"><button onclick="app.toggleVerify('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 ${btnClass}">${btnText}</button><button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-full transition-all active:scale-95 bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-trash"></i></button></div>`;
+                        actionsHTML = `
+                        <div class="flex gap-2 items-center">
+                            <select onchange="app.setBadge('${safeUid}', this.value)" class="text-[11px] font-bold border border-gray-200 rounded-lg p-1.5 bg-gray-50 outline-none hover:bg-gray-100 cursor-pointer">
+                                <option value="none" ${!u.badgeType ? 'selected' : ''}>No Badge</option>
+                                <option value="blue" ${u.badgeType === 'blue' ? 'selected' : ''}>Verified (Blue)</option>
+                                <option value="gold" ${u.badgeType === 'gold' ? 'selected' : ''}>Premium (Gold)</option>
+                                <option value="purple" ${u.badgeType === 'purple' ? 'selected' : ''}>Admin (Purple)</option>
+                                <option value="youtube" ${u.badgeType === 'youtube' ? 'selected' : ''}>YouTube (Red)</option>
+                                <option value="dev" ${u.badgeType === 'dev' ? 'selected' : ''}>Dev (Green)</option>
+                                <option value="diamond" ${u.badgeType === 'diamond' ? 'selected' : ''}>VIP (Diamond)</option>
+                                <option value="trophy" ${u.badgeType === 'trophy' ? 'selected' : ''}>Top (Trophy)</option>
+                                <option value="rocket" ${u.badgeType === 'rocket' ? 'selected' : ''}>Early (Rocket)</option>
+                                <option value="shield" ${u.badgeType === 'shield' ? 'selected' : ''}>Mod (Shield)</option>
+                            </select>
+                            <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-lg transition-all active:scale-95 bg-red-50 text-red-500 hover:bg-red-100"><i class="fa-solid fa-trash"></i></button>
+                        </div>`;
                     }
 
-                    list.innerHTML += `<div class="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-gray-50 shadow-sm"><div class="flex items-center gap-3" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer"><div><div class="font-bold text-sm text-gray-900 flex items-center cursor-pointer hover:underline">${safeName} ${badge}</div><div class="text-xs text-gray-400 font-medium">${safeHandle}</div></div></div>${actionsHTML}</div>`;
+                    const isGlowingAdmin = u.isAdmin && u.adminGlowEnabled;
+                    const rowClass = isGlowingAdmin ? 'admin-glow-row' : 'border-gray-50';
+
+                    list.innerHTML += `<div class="flex justify-between items-center bg-white p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate mr-1">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-400 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
                 });
             }
 
@@ -1379,13 +1387,10 @@
                     }
 
                     remove(ref(db, 'users/' + uid)).then(() => {
-                        // Cascading Delete: Scrub all their posts, likes, votes, and comments
                         this.posts.forEach(post => {
                             if (post.uid === uid) {
-                                // Delete posts created by user
                                 remove(ref(db, 'posts/' + post.dbKey));
                             } else {
-                                // Clean up their interactions on other posts
                                 let updates = {};
                                 let needsUpdate = false;
 
@@ -1429,29 +1434,6 @@
                 }
             }
 
-            toggleVerify(uid) {
-                const user = this.users.find(u => u.uid === uid);
-                if (user) {
-                    let newBadge = user.badgeType;
-                    let newVerified = user.isVerified;
-                    
-                    if (user.badgeType === 'gold') { newBadge = null; newVerified = false; }
-                    else if (user.badgeType === 'blue' || user.isVerified) { newBadge = 'gold'; newVerified = true; }
-                    else { newBadge = 'blue'; newVerified = true; }
-                    
-                    update(ref(db, 'users/' + uid), {
-                        badgeType: newBadge,
-                        isVerified: newVerified
-                    }).then(() => {
-                        this.showToast('Verification updated!');
-                        if (newVerified) {
-                            const badgeName = newBadge === 'gold' ? 'Premium Gold' : 'Verified Blue';
-                            this.pushNotification(uid, 'dev', this.currentUser, `granted you a ${badgeName} badge!`);
-                        }
-                    });
-                }
-            }
-
             viewUserProfile(uid) { 
                 this.activeProfileUid = (uid === 'me' || uid === this.currentUser?.uid) ? this.currentUser.uid : uid;
                 this.router('profile'); 
@@ -1469,16 +1451,13 @@
                 let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400"><i class="fa-regular fa-file-lines text-3xl mb-2"></i><p>No posts yet</p></div>`;
                 userPosts.forEach((post, idx) => postsHTML += this.createPostCardHTML(post, u, idx));
                 
-                // Safe fallbacks to prevent length errors on blank accounts
                 const followerCount = this.formatCount((u.followers !== undefined) ? u.followers : 0);
                 const followingCount = this.formatCount(isMe ? (this.currentUser.following || []).length : 0);
                 const postCount = this.formatCount(userPosts.length);
                 const isFollowing = (this.currentUser.following || []).includes(targetUid);
                 
-                // Construct logic for follow/official/edit buttons
                 let actionButton = '';
                 if (targetUid === 'circle_team') {
-                    // Block follows for the official team, provide an indicator instead
                     actionButton = `<div class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 shadow-sm"><i class="fa-solid fa-building text-gray-400 mr-1"></i> Official</div>`;
                 } else if (isMe) {
                     actionButton = `<button onclick="app.openEditProfile()" class="px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white shadow-sm hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all">Edit Profile</button>`;
@@ -1496,7 +1475,6 @@
                         <div class="h-36 bg-gray-200 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
                             <img src="${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/10"></div>
-                            <!-- Banner Shuffle Button (Replaced file upload camera) -->
                             ${isMe ? `<button type="button" onclick="app.shuffleBanner(event)" class="absolute top-4 right-16 bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:rotate-180 z-20" title="Shuffle Banner Theme"><i class="fa-solid fa-dice text-sm"></i></button>` : ''}
                         </div>
                         <div class="px-5 bg-white relative z-10">
