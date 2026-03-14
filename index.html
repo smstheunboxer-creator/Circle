@@ -16,17 +16,6 @@
                         darker: '#121212',
                         darkest: '#0a0a0a',
                         darkborder: '#1f1f1f'
-                    },
-                    animation: {
-                        blob: "blob 7s infinite",
-                    },
-                    keyframes: {
-                        blob: {
-                            "0%": { transform: "translate(0px, 0px) scale(1)" },
-                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-                            "100%": { transform: "translate(0px, 0px) scale(1)" }
-                        }
                     }
                 }
             }
@@ -38,7 +27,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
 
-        /* Complete Box Sizing & Android Performance Fixes */
         *, *::before, *::after { box-sizing: border-box; }
 
         :root {
@@ -51,49 +39,62 @@
 
         html, body {
             max-width: 100vw;
-            overflow: hidden; /* Prevent Android overscroll lag */
+            overflow: hidden; 
             width: 100%;
             height: 100%;
             touch-action: manipulation; 
         }
 
+        /* --- Animated Ambient Background --- */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000;
-            display: flex;
-            justify-content: center;
-            position: fixed; /* Locks viewport to prevent squishing on Android */
-            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; justify-content: center;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.4s ease;
+            transition: background 0.5s ease;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #dbeafe 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
         }
 
-        html.dark body { background-color: #000000; }
+        html.dark body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         /* --- Stunning New Login Screen --- */
         #login-screen {
-            position: fixed; inset: 0;
-            z-index: 9999;
-            background-color: #f8fafc;
+            position: fixed; inset: 0; z-index: 9999;
+            background-color: transparent; /* Lets body ambient animation through */
             display: flex; justify-content: center; align-items: center;
             transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.6s;
             overflow: hidden;
         }
         #login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-
         .login-container {
-            width: 90%; max-width: 380px; padding: 40px;
-            background: rgba(255, 255, 255, 0.6); 
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            width: 90%; max-width: 400px; padding: 40px;
+            background: rgba(255, 255, 255, 0.5); 
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 32px; 
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255,255,255,0.5); 
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255,255,255,0.4); 
             text-align: center;
             animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
             position: relative; z-index: 10;
+        }
+        
+        html.dark .login-container {
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.05); 
         }
 
         @keyframes floatUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -102,25 +103,42 @@
         .input-error { animation: shake 0.4s ease-in-out; border-color: #ef4444 !important; background-color: rgba(239, 68, 68, 0.05) !important; }
 
         .login-input {
-            background: rgba(255, 255, 255, 0.8); 
-            border: 1px solid rgba(0, 0, 0, 0.05); 
+            background: rgba(255, 255, 255, 0.7); 
+            border: 1px solid rgba(255, 255, 255, 0.4); 
             color: #1f2937;
-            padding: 16px 20px; border-radius: 16px; width: 100%; margin-bottom: 16px; 
-            font-size: 15px; outline: none; transition: all 0.3s;
+            padding: 16px 20px; border-radius: 16px; width: 100%; 
+            font-size: 15px; font-weight: 500; outline: none; transition: all 0.3s;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .login-input:focus { border-color: var(--primary); background: #ffffff; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(29, 161, 242, 0.1); }
+        html.dark .login-input {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: #f3f4f6;
+        }
+        
+        .login-input:focus { border-color: var(--primary); background: #ffffff; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(29, 161, 242, 0.15); }
+        html.dark .login-input:focus { background: rgba(0,0,0,0.8); box-shadow: 0 10px 15px -3px rgba(29, 161, 242, 0.2); }
         .login-input::placeholder { color: #9ca3af; font-weight: 500; }
+        html.dark .login-input::placeholder { color: #6b7280; }
 
-        /* --- App Container --- */
+        /* --- Master App Glassmorphism --- */
+        .glass-app {
+            background: rgba(255, 255, 255, 0.5) !important;
+            backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+        }
+        html.dark .glass-app { background: rgba(0, 0, 0, 0.5) !important; }
+        
         #app-root {
             width: 100%; height: 100%;
             position: relative; display: flex; flex-direction: column; overflow: hidden;
-            opacity: 0; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; transform: scale(0.98);
+            opacity: 0; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); transform: scale(0.98);
         }
         #app-root.visible { opacity: 1; transform: scale(1); }
 
-        @media (min-width: 768px) { #app-root { max-width: 1200px; box-shadow: 0 0 50px rgba(0,0,0,0.5); flex-direction: row; } :root { --sidebar-width: 240px; } }
+        @media (min-width: 768px) { 
+            #app-root { max-width: 1200px; flex-direction: row; } 
+            .glass-app { border-radius: 32px; margin: 20px; height: calc(100dvh - 40px) !important; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); }
+            html.dark .glass-app { border: 1px solid rgba(255,255,255,0.05); }
+            :root { --sidebar-width: 260px; } 
+        }
 
         /* --- Animations & Layout --- */
         @keyframes heartBurst { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
@@ -130,16 +148,14 @@
         @keyframes fillBar { from { width: 0%; } }
         .poll-bar-fill { animation: fillBar 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
-        /* Admin Special Glow */
         @keyframes adminGlow {
             0% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.4); }
             50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.6), inset 0 0 10px rgba(124, 58, 237, 0.2); border-color: rgba(124, 58, 237, 0.8); }
             100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.3), inset 0 0 5px rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.4); }
         }
-        .admin-glow-row { animation: adminGlow 2.5s infinite ease-in-out; background: linear-gradient(145deg, #ffffff, #f9f5ff); }
-        html.dark .admin-glow-row { background: linear-gradient(145deg, #0a0a0a, #160a2c); }
+        .admin-glow-row { animation: adminGlow 2.5s infinite ease-in-out; background: linear-gradient(145deg, rgba(255,255,255,0.7), rgba(249,245,255,0.8)); }
+        html.dark .admin-glow-row { background: linear-gradient(145deg, rgba(10,10,10,0.7), rgba(22,10,44,0.8)); }
 
-        /* Broadcast Glow */
         @keyframes devNotifGlow {
             0% { box-shadow: inset 4px 0 0 0 var(--gold), inset 0 0 0 rgba(245, 158, 11, 0); }
             50% { box-shadow: inset 4px 0 0 0 var(--gold), inset 0 0 15px rgba(245, 158, 11, 0.15); }
@@ -154,35 +170,36 @@
             padding-top: var(--header-height); padding-bottom: 90px; 
             overflow-y: auto; overflow-x: hidden; scrollbar-width: none; 
             opacity: 0; transform: translateX(20px); pointer-events: none; 
-            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.4s ease; 
-            z-index: 10;
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            z-index: 10; background: transparent;
             -webkit-overflow-scrolling: touch;
             will-change: transform, opacity;
-            transform: translateZ(0); /* Force GPU acceleration */
+            transform: translateZ(0); 
         }
         .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
-        @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 600px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; display: none; opacity: 1; transform: none; } .page.active { display: block; } header { display: none !important; } }
+        @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 650px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; display: none; opacity: 1; transform: none; border-left: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2); } html.dark .page { border-color: rgba(255,255,255,0.05); } .page.active { display: block; } header { display: none !important; } }
 
-        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; transition: background-color 0.4s ease, border-color 0.4s ease; }
-        @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; padding: 40px 20px; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
+        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.3); transition: background-color 0.4s ease, border-color 0.4s ease; }
+        html.dark nav { background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255,255,255,0.05); }
+        @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; padding: 40px 20px; background: transparent; backdrop-filter: none; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
 
-        /* Keyboard Open Android Fix */
         @media (max-width: 767px) and (max-height: 600px) {
             nav { display: none !important; }
             .page { padding-bottom: 20px !important; }
             .fab { display: none !important; }
         }
 
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
         .modal-backdrop.open { opacity: 1; pointer-events: auto; }
-        .modal-sheet { width: 100%; max-height: 85%; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.4s ease; transform: translateZ(0); }
+        .modal-sheet { width: 100%; max-height: 85%; border-radius: 32px 32px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); transform: translateZ(0); background: rgba(255,255,255,0.85); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.5); }
+        html.dark .modal-sheet { background: rgba(15,15,15,0.85); border: 1px solid rgba(255,255,255,0.1); }
         .modal-backdrop.open .modal-sheet { transform: translateY(0); }
-        @media (min-width: 768px) { .modal-backdrop { align-items: center; } .modal-sheet { width: 600px; max-height: 80vh; border-radius: 24px; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; } .modal-backdrop.open .modal-sheet { transform: scale(1); opacity: 1; } }
+        @media (min-width: 768px) { .modal-backdrop { align-items: center; } .modal-sheet { width: 600px; max-height: 80vh; border-radius: 32px; transform: scale(0.95); opacity: 0; transition: all 0.2s ease; } .modal-backdrop.open .modal-sheet { transform: scale(1); opacity: 1; } }
 
-        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.03); transition: background-color 0.4s ease, border-color 0.4s ease; }
-        html.dark .glass-header { background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-header { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.2); transition: background-color 0.4s ease, border-color 0.4s ease; }
+        html.dark .glass-header { background: rgba(0, 0, 0, 0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        .fab { position: absolute; bottom: 90px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 24px rgba(29, 161, 242, 0.35); transition: transform 0.2s; z-index: 40; }
+        .fab { position: absolute; bottom: 90px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 24px rgba(29, 161, 242, 0.4); transition: transform 0.2s; z-index: 40; }
         .fab:active { transform: scale(0.85); }
         @media (min-width: 768px) { .fab { position: static; width: 100%; height: 50px; border-radius: 30px; margin-top: 20px; font-size: 16px; font-weight: bold; } .fab i { display: none; } .fab::after { content: 'Post'; } }
 
@@ -191,11 +208,7 @@
         .lightbox img { max-width: 100%; max-height: 100%; transform: scale(0.9); transition: transform 0.3s; }
         .lightbox.open img { transform: scale(1); }
 
-        /* --- Custom Stunning Badges --- */
-        .badge-wrapper {
-            display: inline-flex; align-items: center; justify-content: center;
-            vertical-align: middle; margin-left: 6px; transform: translateY(-1px);
-        }
+        .badge-wrapper { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; margin-left: 6px; transform: translateY(-1px); }
         .badge-wrapper i { font-size: 18px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
         html.dark .badge-wrapper i { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
 
@@ -209,66 +222,62 @@
         .badge-container.purple::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #e879f9; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(232, 121, 249, 0.8); }
         .badge-container.gold::after { content: '✦'; position: absolute; top: -6px; right: -6px; color: #fde68a; font-size: 10px; animation: sparkle 2.5s infinite ease-in-out; text-shadow: 0 0 4px rgba(253, 230, 138, 0.8); }
 
-        .nav-badge {
-            position: absolute; top: 5px; right: 15px; background: var(--like); color: white;
-            font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; border: 2px solid white;
-        }
+        .nav-badge { position: absolute; top: 5px; right: 15px; background: var(--like); color: white; font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; border: 2px solid white; }
         html.dark .nav-badge { border-color: #000; }
         @media (min-width: 768px) { .nav-badge { top: 10px; right: auto; left: 30px; } }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 10px; }
-        html.dark ::-webkit-scrollbar-thumb { background-color: #374151; }
+        ::-webkit-scrollbar-thumb { background-color: rgba(209, 213, 219, 0.5); border-radius: 10px; }
+        html.dark ::-webkit-scrollbar-thumb { background-color: rgba(55, 65, 81, 0.5); }
     </style>
 </head>
-<body class="bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
+<body class="text-gray-900 dark:text-white">
 
     <div id="login-screen">
-        <!-- Stunning Animated Glassmorphism Background Blobs -->
-        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-        <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-4000"></div>
-
         <div class="login-container">
-            <div class="mb-8 text-gray-900">
-                <i class="fa-solid fa-circle-nodes text-blue-600 text-5xl mb-4 drop-shadow-md"></i>
-                <h1 class="text-3xl font-black tracking-tight drop-shadow-sm">Welcome to Circle</h1>
-                <p class="text-gray-500 text-sm mt-2 font-medium">Connect, Share, and Discover.</p>
+            <div class="mb-6">
+                <!-- OG Circle Logo -->
+                <div class="text-[54px] font-black tracking-tighter text-gray-900 dark:text-white mb-2 drop-shadow-sm leading-none">Circle<span class="text-blue-600">.</span></div>
+                <h1 id="auth-title" class="text-2xl font-black text-gray-900 dark:text-white tracking-tight drop-shadow-sm mt-4">Welcome to Circle</h1>
+                <p id="auth-subtitle" class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">Connect, Share, and Discover.</p>
             </div>
             
-            <div class="space-y-4 text-left">
-                <div><input type="text" id="login-username" class="login-input" placeholder="Username"></div>
+            <div id="login-form-fields" class="space-y-3 text-left transition-all duration-300">
+                <div id="field-name" class="hidden"><input type="text" id="login-name" class="login-input" placeholder="Full Name"></div>
+                <div><input type="text" id="login-username" class="login-input" placeholder="Username (Login ID)"></div>
+                <div id="field-handle" class="hidden"><input type="text" id="login-handle" class="login-input" placeholder="Choose a @handle"></div>
                 <div><input type="password" id="login-password" class="login-input" placeholder="Password"></div>
+                <div id="field-city" class="hidden"><input type="text" id="login-city" class="login-input" placeholder="City (e.g. Pune)"></div>
                 
-                <div class="flex gap-3 pt-2">
-                    <button onclick="app.handleAuth('login')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform active:scale-95 text-[15px]">Sign In</button>
-                    <button onclick="app.handleAuth('signup')" class="flex-1 bg-white/60 hover:bg-white border-2 border-white text-gray-800 py-3.5 rounded-xl font-bold shadow-sm transition-all active:scale-95 text-[15px] backdrop-blur-md">Sign Up</button>
+                <div class="flex gap-3 pt-3">
+                    <button id="btn-primary" onclick="app.handleAuthAction()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-blue-500/30 transition-transform active:scale-95 text-[15px]">Sign In</button>
+                    <button id="btn-secondary" onclick="app.toggleAuthMode()" class="flex-1 bg-white/40 dark:bg-black/40 hover:bg-white/60 dark:hover:bg-black/60 border border-white/50 dark:border-white/10 text-gray-800 dark:text-white py-3.5 rounded-2xl font-bold shadow-sm transition-all active:scale-95 text-[15px] backdrop-blur-md">Create Account</button>
                 </div>
             </div>
             <div id="login-error" class="text-red-500 text-sm mt-5 h-4 font-bold text-center"></div>
         </div>
     </div>
 
-    <div id="app-root" class="bg-white dark:bg-black border-r border-l border-transparent md:border-gray-100 md:dark:border-darkborder">
-        <nav class="bg-white dark:bg-black border-t border-gray-100 dark:border-darkborder md:border-r md:border-t-0">
+    <div id="app-root" class="glass-app">
+        <nav>
             <div class="nav-logo hidden text-3xl font-black tracking-tighter text-gray-900 dark:text-white cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-4xl leading-none">.</span></div>
             
-            <button onclick="app.router('feed')" class="nav-item active text-blue-500 hover:bg-gray-50 dark:hover:bg-gray-900" data-target="feed">
+            <button onclick="app.router('feed')" class="nav-item active text-blue-500 hover:bg-gray-100/50 dark:hover:bg-gray-800/50" data-target="feed">
                 <i class="fa-solid fa-house text-2xl"></i><span class="hidden">Home</span>
             </button>
-            <button onclick="app.router('search')" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900" data-target="search">
+            <button onclick="app.router('search')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50" data-target="search">
                 <i class="fa-solid fa-magnifying-glass text-2xl"></i><span class="hidden">Search</span>
             </button>
-            <button onclick="app.router('notifications')" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 relative" data-target="notifications">
+            <button onclick="app.router('notifications')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 relative" data-target="notifications">
                 <i class="fa-regular fa-bell text-2xl"></i><span class="hidden">Notifications</span>
                 <div id="nav-notif-badge" class="nav-badge hidden">0</div>
             </button>
-            <button onclick="app.viewUserProfile('me')" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900" data-target="profile">
+            <button onclick="app.viewUserProfile('me')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50" data-target="profile">
                 <i class="fa-solid fa-user text-2xl"></i><span class="hidden">Profile</span>
             </button>
 
-            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 hidden" data-target="dev">
+            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 hidden" data-target="dev">
                 <i class="fa-solid fa-code text-2xl"></i><span class="hidden">Broadcast</span>
             </button>
 
@@ -283,18 +292,18 @@
         </header>
 
         <div class="flex-1 relative h-full w-full overflow-hidden md:overflow-visible">
-            <div id="feed-view" class="page bg-white dark:bg-black active"><div id="feed-list" class="pb-24 pt-2 min-h-full relative"></div></div>
+            <div id="feed-view" class="page active"><div id="feed-list" class="pb-24 pt-2 min-h-full relative"></div></div>
             
-            <div id="search-view" class="page bg-white dark:bg-black">
+            <div id="search-view" class="page">
                 <div class="p-5">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Search</h2>
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-sm">Search</h2>
                     
-                    <div class="flex items-center bg-gray-100 dark:bg-gray-900 rounded-full px-4 py-3 mb-6 focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 transition-all border border-transparent dark:border-darkborder">
+                    <div class="flex items-center bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-2xl px-4 py-3.5 mb-6 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 transition-all border border-white/60 dark:border-white/10 shadow-sm">
                         <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500"></i>
-                        <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
+                        <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 dark:text-white placeholder-gray-500 font-medium" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
                     </div>
 
-                    <div id="admin-controls-banner" class="bg-red-50 dark:bg-red-900/20 p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-100 dark:border-red-900/30 flex gap-3 hidden">
+                    <div id="admin-controls-banner" class="bg-red-50/80 dark:bg-red-900/30 backdrop-blur-md p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-200/50 dark:border-red-900/50 flex gap-3 hidden shadow-sm">
                         <div class="bg-white dark:bg-black p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
@@ -303,7 +312,7 @@
                                     <p class="text-xs mt-0.5 mb-2 opacity-80">You can permanently delete accounts and manage specific badges.</p>
                                 </div>
                             </div>
-                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors">Toggle Admin Highlight</button>
+                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white/80 dark:bg-black/50 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors backdrop-blur-sm">Toggle Admin Highlight</button>
                         </div>
                     </div>
                     
@@ -311,36 +320,35 @@
                 </div>
             </div>
 
-            <div id="notifications-view" class="page bg-white dark:bg-black">
+            <div id="notifications-view" class="page">
                 <div class="p-5">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex justify-between items-center mb-4 drop-shadow-sm">
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h2>
-                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95">Clear All</button>
+                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-white/50 dark:bg-black/50 border border-red-200 dark:border-red-900/30 backdrop-blur-sm hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
                     </div>
-                    <div id="notification-list" class="space-y-0 pb-24"></div>
+                    <div id="notification-list" class="space-y-3 pb-24"></div>
                 </div>
             </div>
 
-            <div id="profile-view" class="page bg-white dark:bg-black"></div>
+            <div id="profile-view" class="page"></div>
         </div>
 
         <div id="lightbox" class="lightbox" onclick="app.closeLightbox()"><button class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl z-50"><i class="fa-solid fa-xmark"></i></button><img id="lightbox-img" src="" onclick="event.stopPropagation()"></div>
 
         <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[80%] md:h-auto md:w-[450px] bg-white dark:bg-darker flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+            <div class="modal-sheet h-[80%] md:h-auto md:w-[450px] flex flex-col">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <div class="flex items-center gap-3 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-gear text-lg text-gray-400"></i>
                         <h3 class="text-xl font-bold">Settings</h3>
                     </div>
-                    <button onclick="app.closeModal('settings-modal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    <button onclick="app.closeModal('settings-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <!-- Dark Mode Toggle Component -->
-                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-[#27272a] rounded-2xl transition-colors">
+                    <div class="flex items-center justify-between p-4 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 rounded-2xl transition-colors shadow-sm">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-500 dark:text-indigo-400">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100/80 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                                 <i class="fa-solid fa-moon text-lg"></i>
                             </div>
                             <div>
@@ -351,12 +359,12 @@
                         
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" onchange="app.toggleDarkMode(this.checked)">
-                            <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 shadow-inner"></div>
+                            <div class="w-14 h-7 bg-gray-300/80 peer-focus:outline-none rounded-full peer dark:bg-gray-700/80 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 shadow-inner"></div>
                         </label>
                     </div>
 
-                    <div class="pt-4 border-t border-gray-100 dark:border-darkborder text-center">
-                        <p class="text-xs text-gray-400 dark:text-gray-600 font-medium">Circle App v1.0.0</p>
+                    <div class="pt-4 border-t border-gray-200/50 dark:border-white/10 text-center">
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v1.1.0</p>
                     </div>
                 </div>
             </div>
@@ -364,145 +372,145 @@
 
         <!-- EDIT POST MODAL -->
         <div id="edit-post-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] bg-white dark:bg-darker flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+            <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-pen text-lg"></i>
                         <h3 class="text-xl font-bold">Edit Post</h3>
                     </div>
-                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-4">
-                    <textarea id="edit-post-content" class="w-full h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-darkborder rounded-xl p-4 outline-none text-gray-800 dark:text-gray-100 resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors" placeholder="Update your post..."></textarea>
-                    <button onclick="app.saveEditedPost()" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-600 transition-transform active:scale-95">Save Changes</button>
+                    <textarea id="edit-post-content" class="w-full h-32 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="Update your post..."></textarea>
+                    <button onclick="app.saveEditedPost()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95">Save Changes</button>
                 </div>
             </div>
         </div>
 
         <!-- POST MODAL WITH POLL FEATURE -->
         <div id="post-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[85%] md:h-auto max-h-[90%] flex flex-col bg-white dark:bg-darker">
-                <div class="p-4 flex justify-between items-center border-b border-gray-50 dark:border-darkborder flex-shrink-0">
-                    <button onclick="app.closeModal('post-modal')" class="text-gray-500 dark:text-gray-400 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-1 rounded-full transition-colors">Cancel</button>
-                    <button onclick="app.submitPost()" class="bg-blue-500 text-white px-5 py-1.5 rounded-full font-bold text-sm shadow-lg shadow-blue-200 dark:shadow-none transition-transform active:scale-95">Post</button>
+            <div class="modal-sheet h-[85%] md:h-auto max-h-[90%] flex flex-col">
+                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                    <button onclick="app.closeModal('post-modal')" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
+                    <button onclick="app.submitPost()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Post</button>
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
-                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 object-cover border border-gray-100 dark:border-darkborder flex-shrink-0">
+                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 object-cover border border-white/50 dark:border-white/10 flex-shrink-0 shadow-sm">
                     <div class="w-full">
-                        <textarea id="post-content" class="w-full h-24 bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 leading-relaxed" placeholder="What's happening?"></textarea>
+                        <textarea id="post-content" class="w-full h-24 bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed" placeholder="What's happening?"></textarea>
                         
                         <!-- Poll Creation Container -->
-                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white dark:bg-gray-900 p-4 rounded-xl border border-blue-100 dark:border-blue-900 shadow-sm">
+                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white/60 dark:bg-black/40 p-4 rounded-2xl border border-blue-200/50 dark:border-blue-900/30 shadow-sm">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-bold text-blue-500 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
-                                <button onclick="app.removePoll()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
+                                <button onclick="app.removePoll()" class="text-gray-400 hover:text-red-500 transition-colors w-6 h-6 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                            <input type="text" id="poll-opt-1" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all" placeholder="Choice 1">
-                            <input type="text" id="poll-opt-2" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all" placeholder="Choice 2">
-                            <input type="text" id="poll-opt-3" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all hidden" placeholder="Choice 3 (optional)">
-                            <button id="add-poll-opt-btn" onclick="app.addPollOption()" class="text-blue-500 text-xs font-bold mt-2 hover:underline">+ Add Choice</button>
+                            <input type="text" id="poll-opt-1" class="w-full bg-white dark:bg-black/50 border border-gray-200/50 dark:border-white/10 rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all shadow-sm" placeholder="Choice 1">
+                            <input type="text" id="poll-opt-2" class="w-full bg-white dark:bg-black/50 border border-gray-200/50 dark:border-white/10 rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all shadow-sm" placeholder="Choice 2">
+                            <input type="text" id="poll-opt-3" class="w-full bg-white dark:bg-black/50 border border-gray-200/50 dark:border-white/10 rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all hidden shadow-sm" placeholder="Choice 3 (optional)">
+                            <button id="add-poll-opt-btn" onclick="app.addPollOption()" class="text-blue-600 dark:text-blue-400 text-xs font-bold mt-2 hover:underline px-2 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">+ Add Choice</button>
                         </div>
                     </div>
                 </div>
-                <div class="p-4 border-t border-gray-50 dark:border-darkborder flex items-center gap-4 flex-shrink-0 bg-white dark:bg-darker rounded-b-24">
-                    <button onclick="app.togglePoll()" class="text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
-                    <button class="text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
+                <div class="p-4 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-4 flex-shrink-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-b-[32px]">
+                    <button onclick="app.togglePoll()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
+                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="dev-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] bg-white dark:bg-darker flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+            <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-bullhorn text-xl"></i>
                         <h3 class="text-xl font-bold">Circle Broadcast</h3>
                     </div>
-                    <button onclick="app.closeModal('dev-modal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    <button onclick="app.closeModal('dev-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
-                <div class="p-6 flex-1 overflow-y-auto space-y-4">
+                <div class="p-6 flex-1 overflow-y-auto space-y-5">
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Broadcast Method</label>
-                        <select id="dev-broadcast-type" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors mb-2 cursor-pointer">
+                        <select id="dev-broadcast-type" class="w-full bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/10 rounded-xl p-3.5 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors cursor-pointer shadow-sm">
                             <option value="post">Create Feed Post</option>
-                            <option value="notification">Send Push Notification to All Users</option>
+                            <option value="notification">Send Push Notification to All</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Update Message</label>
-                        <textarea id="dev-message" class="w-full h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 outline-none text-gray-800 dark:text-gray-100 resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors" placeholder="What's new in Circle?"></textarea>
+                        <textarea id="dev-message" class="w-full h-32 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/10 rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="What's new in Circle?"></textarea>
                     </div>
-                    <button onclick="app.sendDevBroadcast()" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-600 transition-transform active:scale-95 mt-2">Send Broadcast</button>
+                    <button onclick="app.sendDevBroadcast()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95 mt-2">Send Broadcast</button>
                 </div>
             </div>
         </div>
 
         <!-- COMMENT / REPLIES MODAL -->
         <div id="comment-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[85%] md:h-[600px] bg-white dark:bg-darker flex flex-col">
-                <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
-                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span></div>
-                    <button onclick="app.closeModal('comment-modal')" class="w-8 h-8 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-full text-gray-400 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-sheet h-[85%] md:h-[600px] flex flex-col">
+                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-200/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 text-xs px-2.5 py-0.5 rounded-full font-bold">0</span></div>
+                    <button onclick="app.closeModal('comment-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
-                <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-5"></div>
-                <div class="p-3 border-t border-gray-100 dark:border-darkborder flex items-center gap-3 bg-white dark:bg-darker flex-shrink-0 rounded-b-24 shadow-[0_-5px_20px_rgba(0,0,0,0.02)]">
-                    <img id="comment-input-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-gray-100 dark:border-gray-800">
-                    <div class="flex-1 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 border border-transparent dark:border-darkborder transition-all">
-                        <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.submitComment()">
+                <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+                <div class="p-3 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-3 bg-white/60 dark:bg-black/60 backdrop-blur-xl flex-shrink-0 rounded-b-[32px] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
+                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 shadow-sm">
+                    <div class="flex-1 bg-white dark:bg-black/50 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 border border-gray-200/50 dark:border-white/10 transition-all shadow-inner">
+                        <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.submitComment()">
                     </div>
-                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="edit-profile-modal" class="modal-backdrop">
-            <div class="modal-sheet h-[85%] md:h-auto md:w-[500px] bg-white dark:bg-darker flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-400 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center"><i class="fa-solid fa-xmark text-lg"></i></button></div>
-                <div class="px-6 pb-6 pt-2 flex-1 overflow-y-auto space-y-5">
+            <div class="modal-sheet h-[85%] md:h-auto md:w-[500px] flex flex-col">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+                <div class="px-6 pb-6 pt-4 flex-1 overflow-y-auto space-y-6">
                     
                     <div class="flex flex-col items-center">
-                        <div class="relative mb-2">
-                            <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-gray-50 dark:border-darkborder shadow-sm">
-                            <button type="button" onclick="app.shuffleAvatar()" class="absolute bottom-0 right-0 bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Generate Random Avatar">
-                                <i class="fa-solid fa-dice text-xs"></i>
+                        <div class="relative mb-3">
+                            <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-[4px] border-white dark:border-black shadow-lg">
+                            <button type="button" onclick="app.shuffleAvatar()" class="absolute bottom-0 right-[-5px] bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border-2 border-white dark:border-black" title="Generate Random Avatar">
+                                <i class="fa-solid fa-dice text-sm"></i>
                             </button>
                         </div>
                         
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Style:</span>
-                            <select id="avatar-category" class="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md px-2 py-1 outline-none text-gray-700 dark:text-gray-200 font-medium focus:border-blue-400">
-                                <option value="avataaars">Avataaars</option>
-                                <option value="bottts">Bots</option>
-                                <option value="micah">Micah</option>
-                                <option value="adventurer">Adventurer</option>
-                                <option value="fun-emoji">Emoji</option>
+                        <div class="flex items-center gap-2 bg-white/50 dark:bg-black/30 px-3 py-1.5 rounded-lg border border-gray-200/50 dark:border-white/10 shadow-sm">
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Style:</span>
+                            <select id="avatar-category" class="text-xs bg-transparent outline-none text-gray-900 dark:text-white font-bold cursor-pointer">
+                                <option value="avataaars" class="text-gray-900">Avataaars</option>
+                                <option value="bottts" class="text-gray-900">Bots</option>
+                                <option value="micah" class="text-gray-900">Micah</option>
+                                <option value="adventurer" class="text-gray-900">Adventurer</option>
+                                <option value="fun-emoji" class="text-gray-900">Emoji</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-800"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-semibold text-gray-900 dark:text-white"></div>
-                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-800"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-semibold text-blue-500 dark:text-blue-400"></div>
-                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-800"><label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none text-gray-700 dark:text-gray-200"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-gray-900 dark:text-white"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-blue-600 dark:text-blue-400"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">City / Location</label><input id="edit-city" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-900 dark:text-white" placeholder="Where are you?"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-800 dark:text-gray-200"></div>
                     </div>
-                    <button onclick="app.saveProfile()" class="w-full bg-gray-900 dark:bg-white text-white dark:text-black py-4 rounded-2xl font-bold text-lg shadow-xl active:scale-95 transition-transform mt-2">Save Changes</button>
+                    <button onclick="app.saveProfile()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 active:scale-95 transition-transform mt-4">Save Changes</button>
                 </div>
             </div>
         </div>
 
-        <!-- BAN MODAL -->
         <div id="ban-modal" class="modal-backdrop z-[9999]">
-            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center bg-white dark:bg-darker rounded-t-3xl md:rounded-3xl">
-                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 dark:bg-red-900/20 mb-6">
-                    <i class="fa-solid fa-user-slash text-4xl text-red-500 dark:text-red-400"></i>
+            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center">
+                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-100/80 dark:bg-red-900/30 mb-6 shadow-inner">
+                    <i class="fa-solid fa-user-slash text-4xl text-red-600 dark:text-red-400"></i>
                 </div>
-                <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2">Account Banned</h3>
-                <p class="text-gray-500 dark:text-gray-400 text-[15px] mb-8 leading-relaxed">Your account has been permanently removed by an administrator. You can no longer access this platform.</p>
-                <button onclick="app.closeBanModal()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-200 dark:shadow-none transition-all active:scale-95 text-lg">Acknowledge & Leave</button>
+                <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2 drop-shadow-sm">Account Banned</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-[15px] mb-8 leading-relaxed font-medium">Your account has been permanently removed by an administrator. You can no longer access this platform.</p>
+                <button onclick="app.closeBanModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-500/30 transition-all active:scale-95 text-[15px]">Acknowledge & Leave</button>
             </div>
         </div>
 
-        <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md text-gray-900 dark:text-white px-5 py-3 rounded-full shadow-xl border border-gray-100 dark:border-gray-700 opacity-0 transition-all pointer-events-none z-[70] flex items-center gap-3 scale-90"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> <span id="toast-msg" class="font-semibold text-sm">Success</span></div>
+        <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-black/90 backdrop-blur-xl text-gray-900 dark:text-white px-5 py-3.5 rounded-full shadow-2xl border border-gray-200/50 dark:border-white/10 opacity-0 transition-all pointer-events-none z-[70] flex items-center gap-3 scale-90 font-medium"><i class="fa-solid fa-check-circle text-green-500 text-lg"></i> <span id="toast-msg" class="text-sm">Success</span></div>
     </div>
 
     <script type="module">
@@ -544,7 +552,7 @@
                 this.initDefaultUsers();
 
                 document.getElementById('login-password').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleAuth('login');
+                    if (e.key === 'Enter') this.handleAuthAction();
                 });
 
                 document.addEventListener('click', (e) => {
@@ -575,7 +583,7 @@
             initDefaultUsers() {
                 const teamIndex = this.users.findIndex(u => u.uid === 'circle_team');
                 const teamData = {
-                    uid: 'circle_team', name: 'Circle Team', handle: '@circle_team',
+                    uid: 'circle_team', name: 'Circle Team', handle: '@circle_team', city: 'San Francisco, CA',
                     avatar: `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' style='background-color: %23ffffff;'%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='24' fill='%23111827'%3ECircle%3Ctspan fill='%233b82f6'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E`,
                     banner: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b',
                     bio: 'Official updates from the Circle Developers.',
@@ -587,7 +595,7 @@
 
                 const adminIndex = this.users.findIndex(u => u.uid === 'admin_saad');
                 const adminData = {
-                    uid: 'admin_saad', name: 'Saad Shaikh', handle: '@saad',
+                    uid: 'admin_saad', name: 'Saad Shaikh', handle: '@saad', city: 'Pune, India',
                     avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=Doraemon&backgroundColor=1da1f2',
                     banner: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80',
                     bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple', adminGlowEnabled: true,
@@ -694,37 +702,76 @@
                 });
             }
 
-            handleAuth(mode) {
-                this.isLoginMode = (mode === 'login');
-                const nameInput = document.getElementById('login-username');
-                const passInput = document.getElementById('login-password');
+            toggleAuthMode() {
+                this.isLoginMode = !this.isLoginMode;
+                document.getElementById('auth-title').innerText = this.isLoginMode ? 'Welcome to Circle' : 'Create Account';
+                document.getElementById('auth-subtitle').innerText = this.isLoginMode ? 'Connect, Share, and Discover.' : 'Join the circle today.';
+                
+                const extraFields = ['field-name', 'field-handle', 'field-city'];
+                extraFields.forEach(id => {
+                    document.getElementById(id).classList.toggle('hidden', this.isLoginMode);
+                });
+
+                document.getElementById('login-username').placeholder = this.isLoginMode ? 'Username (Login ID)' : 'Choose a Username ID';
+
+                document.getElementById('btn-primary').innerText = this.isLoginMode ? 'Sign In' : 'Sign Up';
+                document.getElementById('btn-secondary').innerText = this.isLoginMode ? 'Create Account' : 'Back to Login';
+                document.getElementById('login-error').innerText = "";
+            }
+
+            handleAuthAction() {
+                const userVal = document.getElementById('login-username').value.trim();
+                const passVal = document.getElementById('login-password').value.trim();
                 const errorMsg = document.getElementById('login-error');
-                const nameVal = nameInput.value.trim();
-                const passVal = passInput.value.trim();
 
-                nameInput.classList.remove('input-error'); passInput.classList.remove('input-error'); errorMsg.innerText = "";
+                document.getElementById('login-username').classList.remove('input-error'); 
+                document.getElementById('login-password').classList.remove('input-error'); 
+                document.getElementById('login-handle').classList.remove('input-error'); 
+                errorMsg.innerText = "";
 
-                if (!nameVal) { nameInput.classList.add('input-error'); return; }
-                if (!passVal) { passInput.classList.add('input-error'); return; }
+                if (!userVal) { document.getElementById('login-username').classList.add('input-error'); return; }
+                if (!passVal) { document.getElementById('login-password').classList.add('input-error'); return; }
 
                 if (this.isLoginMode) {
-                    if (nameVal === "Saad Shaikh" && passVal === "@1234") {
+                    if (userVal === "Saad Shaikh" && passVal === "@1234") {
                         let adminUser = this.users.find(u => u.uid === 'admin_saad');
                         this.loginUser(adminUser);
                     } else {
-                        const foundUser = this.users.find(u => u.username === nameVal && u.password === passVal);
+                        const foundUser = this.users.find(u => u.username === userVal && u.password === passVal);
                         if (foundUser) this.loginUser(foundUser);
                         else {
-                            nameInput.classList.add('input-error'); passInput.classList.add('input-error');
-                            errorMsg.innerText = "Invalid username or password"; this.showToast("Authentication failed");
+                            document.getElementById('login-username').classList.add('input-error'); 
+                            document.getElementById('login-password').classList.add('input-error');
+                            errorMsg.innerText = "Invalid username or password"; 
+                            this.showToast("Authentication failed");
                         }
                     }
                 } else {
-                    if (nameVal === "Saad Shaikh" || this.users.find(u => u.username === nameVal)) { errorMsg.innerText = "Username not available"; return; }
+                    const nameVal = document.getElementById('login-name').value.trim();
+                    let handleVal = document.getElementById('login-handle').value.trim().toLowerCase();
+                    const cityVal = document.getElementById('login-city').value.trim();
+
+                    if (!nameVal || !handleVal || !cityVal) {
+                        errorMsg.innerText = "Please fill all fields to sign up";
+                        return;
+                    }
+
+                    if (userVal === "Saad Shaikh" || this.users.find(u => u.username === userVal)) { 
+                        errorMsg.innerText = "Username ID is already taken"; 
+                        document.getElementById('login-username').classList.add('input-error');
+                        return; 
+                    }
+
+                    if (!handleVal.startsWith('@')) handleVal = '@' + handleVal;
+                    if (this.users.some(u => u.handle === handleVal)) {
+                        errorMsg.innerText = "Handle is already taken";
+                        document.getElementById('login-handle').classList.add('input-error');
+                        return;
+                    }
                     
                     const newUser = {
-                        uid: 'user_' + Date.now(), username: nameVal, password: passVal,
-                        name: nameVal, handle: '@' + nameVal.toLowerCase().replace(/\s/g, '_'),
+                        uid: 'user_' + Date.now(), username: userVal, password: passVal,
+                        name: nameVal, handle: handleVal, city: cityVal,
                         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${nameVal}`,
                         banner: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
                         bio: 'New to Circle!', isAdmin: false, isVerified: false, badgeType: 'none', followers: 0, following: [], notifications: []
@@ -780,6 +827,7 @@
                     this.currentUser = null;
                     document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
                     document.getElementById('login-error').innerText = '';
+                    this.isLoginMode = false; this.toggleAuthMode(); // Resets UI back to default login mode
                     loginScreen.style.display = 'flex'; void loginScreen.offsetWidth; loginScreen.classList.remove('hidden');
                 }, 500);
             }
@@ -963,7 +1011,7 @@
                 document.getElementById('comment-count-badge').innerText = commentsArray.length;
 
                 if (commentsArray.length === 0) {
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-300 dark:text-gray-600"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-400 dark:text-gray-500"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
                     return;
                 }
 
@@ -971,9 +1019,9 @@
                     const u = this.getUser(c.uid);
                     list.innerHTML += `
                     <div class="flex gap-3 animate-entry">
-                        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-100 dark:border-gray-800 flex-shrink-0 cursor-pointer" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
+                        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-200/50 dark:border-white/10 flex-shrink-0 cursor-pointer shadow-sm" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
                         <div class="flex-1">
-                            <div class="bg-gray-50 dark:bg-[#18181b] p-3.5 rounded-2xl rounded-tl-none border border-gray-100 dark:border-darkborder shadow-sm">
+                            <div class="bg-white/60 dark:bg-black/40 backdrop-blur-md p-3.5 rounded-2xl rounded-tl-none border border-gray-200/50 dark:border-white/10 shadow-sm">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="font-bold text-sm text-gray-900 dark:text-white cursor-pointer hover:underline" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">${u.name} ${this.getBadgeMarkup(u)}</span>
                                 </div>
@@ -1030,11 +1078,11 @@
 
                     if (hasVoted) {
                         const isSelected = userVoteIdx === idx;
-                        const barClass = isSelected ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-gray-100 dark:bg-gray-800';
+                        const barClass = isSelected ? 'bg-blue-100/80 dark:bg-blue-900/40' : 'bg-gray-100/80 dark:bg-gray-800/80';
                         const textClass = isSelected ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium';
-                        const borderClass = isSelected ? 'border-blue-300 dark:border-blue-800 shadow-sm' : 'border-gray-200 dark:border-gray-700';
+                        const borderClass = isSelected ? 'border-blue-300 dark:border-blue-800 shadow-sm' : 'border-gray-200/50 dark:border-white/10';
                         pollHTML += `
-                        <div class="relative w-full h-10 rounded-xl overflow-hidden bg-gray-50 dark:bg-[#18181b] border ${borderClass} flex items-center px-4">
+                        <div class="relative w-full h-10 rounded-xl overflow-hidden bg-white/40 dark:bg-black/20 border ${borderClass} flex items-center px-4">
                             <div class="absolute left-0 top-0 h-full ${barClass} poll-bar-fill" style="width: ${percent}%;"></div>
                             <div class="relative z-10 flex justify-between w-full text-sm ${textClass}">
                                 <span>${opt} ${isSelected ? '<i class="fa-solid fa-circle-check ml-1 text-blue-500"></i>' : ''}</span>
@@ -1043,7 +1091,7 @@
                         </div>`;
                     } else {
                         pollHTML += `
-                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm">
+                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200/80 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold text-sm hover:bg-blue-50/50 dark:hover:bg-blue-900/20 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm bg-white/40 dark:bg-black/20 backdrop-blur-sm">
                             ${opt}
                         </button>`;
                     }
@@ -1083,7 +1131,7 @@
                     const likeBtn = el.querySelector('.like-btn');
                     if (likeBtn) {
                         likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
-                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50 dark:bg-red-900/20' : 'bg-gray-50 dark:bg-gray-800'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
+                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50 dark:bg-red-900/20' : 'bg-gray-100/50 dark:bg-gray-800/50'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
                     }
 
                     const commentCount = el.querySelector('.comment-count');
@@ -1162,7 +1210,6 @@
                 return this.users.find(u => u.uid === uid) || { name: 'Unknown', avatar: '', handle: '@unknown' };
             }
 
-            // --- Custom External Badges System (Upgraded Visuals) ---
             getBadgeMarkup(user) {
                 const wrap = (inner) => `<span class="badge-wrapper">${inner}</span>`;
                 
@@ -1258,13 +1305,13 @@
                 }
                 
                 if (validNotifs.length === 0) { 
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-600"><i class="fa-regular fa-bell text-4xl mb-3"></i><p>No notifications yet</p></div>`; 
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500"><i class="fa-regular fa-bell text-4xl mb-3 drop-shadow-sm"></i><p class="font-medium">No notifications yet</p></div>`; 
                     return; 
                 }
                 
                 validNotifs.forEach(n => {
                     const actor = this.getUser(n.actorId);
-                    let icon = '', bgClass = n.isRead ? 'bg-white dark:bg-black' : 'bg-blue-50 dark:bg-blue-900/20';
+                    let icon = '', bgClass = n.isRead ? 'bg-white/40 dark:bg-black/20' : 'bg-blue-50/80 dark:bg-blue-900/30 shadow-sm border-blue-100/50 dark:border-blue-800/30';
                     let extraClass = '';
                     
                     if (n.type === 'follow') icon = '<i class="fa-solid fa-user text-blue-500"></i>';
@@ -1275,7 +1322,7 @@
                         extraClass = 'dev-notif-row relative overflow-hidden';
                     }
                     
-                    list.innerHTML += `<div class="p-4 border-b border-gray-100 dark:border-darkborder flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-400 dark:text-gray-500">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white"><span class="font-bold cursor-pointer hover:underline" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
+                    list.innerHTML += `<div class="p-4 border border-gray-200/50 dark:border-white/5 rounded-2xl backdrop-blur-sm flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-white/50 dark:border-white/10 shadow-sm" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed"><span class="font-bold cursor-pointer hover:underline" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
                 });
             }
 
@@ -1327,30 +1374,30 @@
                 const isOwnPostOrAdmin = post.uid === this.currentUser?.uid || this.currentUser?.isAdmin;
                 const optionsMenuHTML = `
                     <div class="post-options-container relative">
-                        <button onclick="app.togglePostOptions('${post.dbKey}')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"><i class="fa-solid fa-ellipsis"></i></button>
-                        <div id="options-${post.dbKey}" class="hidden absolute right-0 top-8 mt-1 w-36 bg-white dark:bg-[#18181b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-darkborder z-50 overflow-hidden transform origin-top-right transition-all">
+                        <button onclick="app.togglePostOptions('${post.dbKey}')" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"><i class="fa-solid fa-ellipsis"></i></button>
+                        <div id="options-${post.dbKey}" class="hidden absolute right-0 top-8 mt-1 w-36 bg-white/90 dark:bg-black/90 backdrop-blur-xl rounded-xl shadow-lg border border-gray-200/50 dark:border-white/10 z-50 overflow-hidden transform origin-top-right transition-all">
                             ${isOwnPostOrAdmin ? `
-                                <button onclick="app.openEditPostModal('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center"><i class="fa-solid fa-pen mr-2 text-gray-400 w-4"></i> Edit</button>
-                                <button onclick="app.deletePost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"><i class="fa-solid fa-trash mr-2 text-red-400 w-4"></i> Delete</button>
+                                <button onclick="app.openEditPostModal('${post.dbKey}')" class="w-full text-left px-4 py-3 text-[13px] font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 flex items-center"><i class="fa-solid fa-pen mr-2 text-gray-400 w-4"></i> Edit</button>
+                                <button onclick="app.deletePost('${post.dbKey}')" class="w-full text-left px-4 py-3 text-[13px] font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"><i class="fa-solid fa-trash mr-2 text-red-400 w-4"></i> Delete</button>
                             ` : `
-                                <button onclick="app.reportPost('${post.dbKey}')" class="w-full text-left px-4 py-2.5 text-[13px] font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center"><i class="fa-solid fa-flag mr-2 text-gray-400 w-4"></i> Report</button>
+                                <button onclick="app.reportPost('${post.dbKey}')" class="w-full text-left px-4 py-3 text-[13px] font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 flex items-center"><i class="fa-solid fa-flag mr-2 text-gray-400 w-4"></i> Report</button>
                             `}
                         </div>
                     </div>
                 `;
 
                 return `
-                <div class="p-4 border-b border-gray-50 dark:border-darkborder bg-white dark:bg-black animate-entry hover:bg-gray-50/50 dark:hover:bg-[#080808] transition-colors" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s">
+                <div class="p-4 border-b border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-black/40 backdrop-blur-sm animate-entry hover:bg-white/60 dark:hover:bg-black/60 transition-colors" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s">
                     <div class="flex items-start gap-3">
-                        <div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer">
-                            <img src="${user.avatar}" class="post-user-avatar w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-darkborder flex-shrink-0 hover:opacity-80 transition-opacity">
+                        <div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer drop-shadow-sm">
+                            <img src="${user.avatar}" class="post-user-avatar w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 flex-shrink-0 hover:opacity-80 transition-opacity">
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between">
                                 <div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center flex-wrap cursor-pointer group mt-0.5">
                                     <span class="post-user-name font-bold text-gray-900 dark:text-white text-[15px] group-hover:underline mr-1">${user.name}</span>
                                     ${badge}
-                                    <span class="post-time-content text-gray-400 dark:text-gray-500 text-xs ml-2 font-medium flex items-center">${post.time} ${editedBadgeMarkup}</span>
+                                    <span class="post-time-content text-gray-500 dark:text-gray-400 text-xs ml-2 font-medium flex items-center">${post.time} ${editedBadgeMarkup}</span>
                                 </div>
                                 ${optionsMenuHTML}
                             </div>
@@ -1373,7 +1420,7 @@
 
             renderFeed() {
                 const list = document.getElementById('feed-list'); list.innerHTML = '';
-                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-300 dark:text-gray-700"><i class="fa-regular fa-pen-to-square text-5xl mb-4"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
+                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-400 dark:text-gray-600"><i class="fa-regular fa-pen-to-square text-5xl mb-4 drop-shadow-sm"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
                 this.posts.forEach((post, index) => list.innerHTML += this.createPostCardHTML(post, this.getUser(post.uid), index));
             }
 
@@ -1386,8 +1433,8 @@
                     const active = n.dataset.target === view;
                     if(view === 'profile' && n.dataset.target === 'profile') n.classList.add('text-blue-500');
                     else n.classList.toggle('text-blue-500', active);
-                    n.classList.toggle('text-gray-300', !active && n.dataset.target !== 'profile');
-                    n.classList.toggle('dark:text-gray-500', !active && n.dataset.target !== 'profile');
+                    n.classList.toggle('text-gray-500', !active && n.dataset.target !== 'profile');
+                    n.classList.toggle('dark:text-gray-400', !active && n.dataset.target !== 'profile');
                 });
                 document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
                 document.getElementById(view + '-view').classList.add('active');
@@ -1429,24 +1476,25 @@
                 document.getElementById('edit-name').value = this.currentUser.name; 
                 document.getElementById('edit-handle').value = this.currentUser.handle || ''; 
                 document.getElementById('edit-bio').value = this.currentUser.bio; 
+                document.getElementById('edit-city').value = this.currentUser.city || ''; 
                 document.getElementById('edit-avatar-preview').src = this.currentUser.avatar; 
                 this.tempAvatar = this.currentUser.avatar; 
                 document.getElementById('edit-profile-modal').classList.add('open'); 
             }
             
             saveProfile() { 
-                this.currentUser.name = document.getElementById('edit-name').value; 
-                this.currentUser.bio = document.getElementById('edit-bio').value; 
+                this.currentUser.name = document.getElementById('edit-name').value.trim(); 
+                this.currentUser.bio = document.getElementById('edit-bio').value.trim(); 
+                this.currentUser.city = document.getElementById('edit-city').value.trim(); 
                 
                 let newHandle = document.getElementById('edit-handle').value.trim().toLowerCase();
                 if (newHandle && !newHandle.startsWith('@')) newHandle = '@' + newHandle;
 
-                // Enforce handle uniqueness check
                 if (newHandle !== this.currentUser.handle) {
                     const handleTaken = this.users.some(u => u.uid !== this.currentUser.uid && u.handle === newHandle);
                     if (handleTaken) {
                         this.showToast('Error: Handle is already taken!');
-                        return; // Prevent saving if taken
+                        return; 
                     }
                     this.currentUser.handle = newHandle;
                 }
@@ -1470,13 +1518,11 @@
             
             handleSearch() { this.renderUserList(); }
 
-            // --- Custom Badge Administrator Menu ---
             setBadge(uid, badgeType) {
                 const bType = badgeType === 'none' ? 'none' : badgeType;
                 const userToUpdate = this.users.find(u => u.uid === uid);
                 if (!userToUpdate) return;
                 
-                // Full object replace to prevent Firebase ghosting on default accounts
                 const updatedUser = { ...userToUpdate, badgeType: bType, isVerified: (bType === 'blue' || bType === 'gold') };
                 
                 set(ref(db, 'users/' + uid), JSON.parse(JSON.stringify(updatedUser))).then(() => {
@@ -1519,7 +1565,7 @@
                 }
 
                 if (displayUsers.length === 0) { 
-                    list.innerHTML = `<p class="text-gray-400 dark:text-gray-500 text-sm mt-8 text-center">No users found.</p>`; 
+                    list.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-sm mt-8 text-center font-medium">No users found.</p>`; 
                     return; 
                 }
                 
@@ -1534,7 +1580,7 @@
                     if (this.currentUser.isAdmin) {
                         actionsHTML = `
                         <div class="flex gap-2 items-center">
-                            <select onchange="app.setBadge('${safeUid}', this.value)" class="text-[11px] font-bold border border-gray-200 dark:border-darkborder rounded-lg p-1.5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white outline-none hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <select onchange="app.setBadge('${safeUid}', this.value)" class="text-[11px] font-bold border border-gray-200/80 dark:border-white/10 rounded-lg p-2 bg-white/60 dark:bg-black/60 text-gray-900 dark:text-white outline-none hover:bg-white dark:hover:bg-black/80 cursor-pointer shadow-sm">
                                 <option value="none" ${!u.badgeType || u.badgeType === 'none' ? 'selected' : ''}>No Badge</option>
                                 <option value="blue" ${u.badgeType === 'blue' ? 'selected' : ''}>Verified (Blue)</option>
                                 <option value="gold" ${u.badgeType === 'gold' ? 'selected' : ''}>Premium (Gold)</option>
@@ -1546,14 +1592,14 @@
                                 <option value="rocket" ${u.badgeType === 'rocket' ? 'selected' : ''}>Early (Rocket)</option>
                                 <option value="shield" ${u.badgeType === 'shield' ? 'selected' : ''}>Mod (Shield)</option>
                             </select>
-                            <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2 rounded-lg transition-all active:scale-95 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2.5 rounded-lg transition-all active:scale-95 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40 shadow-sm border border-red-100 dark:border-red-900/30"><i class="fa-solid fa-trash"></i></button>
                         </div>`;
                     }
 
                     const isGlowingAdmin = u.isAdmin && u.adminGlowEnabled;
-                    const rowClass = isGlowingAdmin ? 'admin-glow-row' : 'border-gray-50 dark:border-darkborder bg-white dark:bg-[#18181b]';
+                    const rowClass = isGlowingAdmin ? 'admin-glow-row' : 'border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-black/40 backdrop-blur-md';
 
-                    list.innerHTML += `<div class="flex justify-between items-center p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 dark:text-white flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-400 dark:text-gray-500 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
+                    list.innerHTML += `<div class="flex justify-between items-center p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0 border border-white/50 dark:border-white/10 shadow-sm"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 dark:text-white flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
                 });
             }
 
@@ -1634,7 +1680,7 @@
                 const container = document.getElementById('profile-view');
                 const userPosts = this.posts.filter(p => p.uid === targetUid);
                 
-                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400 dark:text-gray-600"><i class="fa-regular fa-file-lines text-3xl mb-2"></i><p>No posts yet</p></div>`;
+                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400 dark:text-gray-500"><i class="fa-regular fa-file-lines text-4xl mb-3 drop-shadow-sm"></i><p class="font-medium">No posts yet</p></div>`;
                 userPosts.forEach((post, idx) => postsHTML += this.createPostCardHTML(post, u, idx));
                 
                 const followerCount = this.formatCount((u.followers !== undefined) ? u.followers : 0);
@@ -1645,61 +1691,60 @@
                 let actionButton = '';
                 let statsHTML = '';
 
-                // Completely remove stats layout for the circle_team system profile
                 if (targetUid !== 'circle_team') {
                     statsHTML = `
-                        <div><span id="profile-follower-count" class="font-bold text-gray-900 dark:text-white">${followerCount}</span> <span class="text-gray-400 dark:text-gray-500 text-xs uppercase font-bold tracking-wide">Followers</span></div>
-                        <div><span class="font-bold text-gray-900 dark:text-white">${followingCount}</span> <span class="text-gray-400 dark:text-gray-500 text-xs uppercase font-bold tracking-wide">Following</span></div>
+                        <div><span id="profile-follower-count" class="font-bold text-gray-900 dark:text-white text-lg">${followerCount}</span> <span class="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wide">Followers</span></div>
+                        <div><span class="font-bold text-gray-900 dark:text-white text-lg">${followingCount}</span> <span class="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wide">Following</span></div>
                     `;
                 }
 
                 if (targetUid === 'circle_team') {
-                    actionButton = `<div class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-darkborder shadow-sm"><i class="fa-solid fa-building mr-1"></i> Official</div>`;
+                    actionButton = `<div class="px-5 py-2 rounded-full text-xs font-bold text-gray-500 dark:text-gray-300 bg-white/60 dark:bg-black/60 border border-gray-200/50 dark:border-white/10 shadow-sm backdrop-blur-md"><i class="fa-solid fa-building mr-1.5"></i> Official Profile</div>`;
                 } else if (isMe) {
-                    actionButton = `<button onclick="app.openEditProfile()" class="px-5 py-2 border border-gray-200 dark:border-darkborder rounded-full text-xs font-bold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 shadow-sm hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all">Edit Profile</button>`;
+                    actionButton = `<button onclick="app.openEditProfile()" class="px-6 py-2 border border-gray-200/80 dark:border-white/10 rounded-full text-xs font-bold text-gray-800 dark:text-gray-100 bg-white/80 dark:bg-gray-800/80 shadow-sm hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all backdrop-blur-md">Edit Profile</button>`;
                 } else {
-                    actionButton = `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="px-6 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all ${isFollowing ? 'bg-white dark:bg-gray-900 border border-gray-300 dark:border-darkborder text-gray-900 dark:text-white' : 'bg-gray-900 dark:bg-white text-white dark:text-black border border-gray-900 dark:border-white'}">${isFollowing ? 'Following' : 'Follow'}</button>`;
+                    actionButton = `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="px-7 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all ${isFollowing ? 'bg-white/80 dark:bg-gray-800/80 border border-gray-300/80 dark:border-white/10 text-gray-900 dark:text-white backdrop-blur-md' : 'bg-gray-900 dark:bg-white text-white dark:text-black border border-transparent'}">${isFollowing ? 'Following' : 'Follow'}</button>`;
                 }
 
-                // Settings & Logout top-right container
                 let topButtons = isMe ? `
                     <div class="absolute top-4 right-4 z-30 flex items-center gap-2">
-                        <button onclick="app.openSettings()" class="bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105" title="Settings"><i class="fa-solid fa-gear text-sm"></i></button>
-                        <button onclick="app.handleLogout()" class="bg-black/40 hover:bg-red-500 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105" title="Log Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button>
+                        <button onclick="app.openSettings()" class="bg-black/40 hover:bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105 border border-white/20" title="Settings"><i class="fa-solid fa-gear text-sm"></i></button>
+                        <button onclick="app.handleLogout()" class="bg-black/40 hover:bg-red-500/80 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105 border border-white/20" title="Log Out"><i class="fa-solid fa-right-from-bracket text-sm"></i></button>
                     </div>
                 ` : '';
                 
                 const safeBio = this.linkify(u.bio || '');
+                const cityHTML = u.city ? `<span class="ml-3 inline-flex items-center text-gray-500 dark:text-gray-400"><i class="fa-solid fa-location-dot text-[10px] mr-1.5 text-blue-500"></i>${u.city}</span>` : '';
 
                 container.innerHTML = `
-                    <div class="relative pb-0 border-b border-gray-50 dark:border-darkborder bg-white dark:bg-black">
+                    <div class="relative pb-0 border-b border-gray-200/50 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md">
                         ${topButtons}
-                        <div class="h-36 bg-gray-200 dark:bg-gray-800 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
+                        <div class="h-40 bg-gray-200 dark:bg-gray-800 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
                             <img src="${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-black/10"></div>
-                            ${isMe ? `<button type="button" onclick="app.shuffleBanner(event)" class="absolute top-4 right-28 bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:rotate-180 z-20" title="Shuffle Banner Theme"><i class="fa-solid fa-dice text-sm"></i></button>` : ''}
+                            <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60"></div>
+                            ${isMe ? `<button type="button" onclick="app.shuffleBanner(event)" class="absolute bottom-4 right-4 bg-white/20 hover:bg-white/40 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:rotate-180 z-20 border border-white/30" title="Shuffle Banner Theme"><i class="fa-solid fa-dice text-sm"></i></button>` : ''}
                         </div>
-                        <div class="px-5 bg-white dark:bg-black relative z-10">
-                            <div class="relative -top-12 flex justify-between items-end mb-[-30px] pt-2">
-                                <div class="relative">
-                                    <img src="${u.avatar || ''}" class="w-24 h-24 rounded-full border-[4px] border-white dark:border-black bg-white dark:bg-black object-cover shadow-lg cursor-pointer" onclick="app.openLightbox('${u.avatar || ''}')">
+                        <div class="px-6 bg-transparent relative z-10">
+                            <div class="relative -top-14 flex justify-between items-end mb-[-40px] pt-2">
+                                <div class="relative drop-shadow-md">
+                                    <img src="${u.avatar || ''}" class="w-28 h-28 rounded-full border-[4px] border-white dark:border-[#121212] bg-white dark:bg-black object-cover shadow-xl cursor-pointer" onclick="app.openLightbox('${u.avatar || ''}')">
                                 </div>
-                                <div class="pb-2">
+                                <div class="pb-3">
                                     ${actionButton}
                                 </div>
                             </div>
-                            <div class="mt-8">
-                                <h1 class="text-2xl font-black text-gray-900 dark:text-white flex items-center flex-wrap tracking-tight">${u.name || 'User'} ${badge}</h1>
-                                <p class="text-gray-400 dark:text-gray-500 text-sm font-medium">${u.handle || ''}</p>
-                                <p class="mt-3 text-gray-800 dark:text-gray-200 leading-relaxed font-normal text-[15px]">${safeBio}</p>
+                            <div class="mt-12">
+                                <h1 class="text-2xl font-black text-gray-900 dark:text-white flex items-center flex-wrap tracking-tight drop-shadow-sm">${u.name || 'User'} ${badge}</h1>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-semibold mt-0.5 flex items-center flex-wrap">${u.handle || ''} ${cityHTML}</p>
+                                <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed font-medium text-[15px]">${safeBio}</p>
                             </div>
-                            <div class="flex gap-6 mt-5 py-4">
-                                <div><span class="font-bold text-gray-900 dark:text-white">${postCount}</span> <span class="text-gray-400 dark:text-gray-500 text-xs uppercase font-bold tracking-wide">Posts</span></div>
+                            <div class="flex gap-8 mt-6 py-5 border-t border-gray-200/50 dark:border-white/10">
+                                <div><span class="font-bold text-gray-900 dark:text-white text-lg">${postCount}</span> <span class="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wide">Posts</span></div>
                                 ${statsHTML}
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white dark:bg-black min-h-[300px]">${postsHTML}</div>
+                    <div class="bg-transparent min-h-[300px]">${postsHTML}</div>
                 `;
             }
         }
