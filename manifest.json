@@ -1,0 +1,21 @@
+{
+  "name": "Circle Social",
+  "short_name": "Circle",
+  "description": "Connect, Share, and Discover.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1DA1F2",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=Circle",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=Circle",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
