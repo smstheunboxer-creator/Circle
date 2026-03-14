@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <title>Circle - Social</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,6 +27,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
 
+        /* Complete Box Sizing & Anti-aliasing */
         *, *::before, *::after { box-sizing: border-box; }
 
         :root {
@@ -39,17 +40,20 @@
 
         html, body {
             max-width: 100vw;
-            overflow: hidden; 
             width: 100%;
             height: 100%;
-            touch-action: manipulation; 
+            margin: 0; padding: 0;
+            overflow: hidden; /* App root manages scrolling to prevent double scrollbars */
+            overscroll-behavior-y: none; /* Stops bounce/pull-to-refresh on mobile */
+            touch-action: manipulation;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* --- Animated Ambient Background --- */
         body {
             font-family: 'Inter', sans-serif;
             display: flex; justify-content: center;
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             -webkit-tap-highlight-color: transparent;
             transition: background 0.5s ease;
             background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #dbeafe 100%);
@@ -72,15 +76,18 @@
         /* --- Stunning New Login Screen --- */
         #login-screen {
             position: fixed; inset: 0; z-index: 9999;
-            background-color: transparent; /* Lets body ambient animation through */
-            display: flex; justify-content: center; align-items: center;
+            background-color: transparent; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            overflow-y: auto; overflow-x: hidden;
             transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.6s;
-            overflow: hidden;
+            padding: 20px;
+            overscroll-behavior-y: contain;
         }
         #login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
         .login-container {
-            width: 90%; max-width: 400px; padding: 40px;
+            width: 100%; max-width: 400px; padding: 35px 30px;
             background: rgba(255, 255, 255, 0.5); 
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 32px; 
@@ -89,12 +96,19 @@
             text-align: center;
             animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
             position: relative; z-index: 10;
+            transition: all 0.4s ease;
+            transform: translateZ(0); /* Hardware acceleration */
         }
         
         html.dark .login-container {
             background: rgba(0, 0, 0, 0.4); 
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.05); 
+        }
+
+        @media (max-height: 650px) {
+            /* Prevents the login container from violently shifting up when keyboard opens */
+            #login-screen { justify-content: flex-start; padding-top: 40px; }
         }
 
         @keyframes floatUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -109,6 +123,7 @@
             padding: 16px 20px; border-radius: 16px; width: 100%; 
             font-size: 15px; font-weight: 500; outline: none; transition: all 0.3s;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            appearance: none; /* Removes native iOS styles */
         }
         html.dark .login-input {
             background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: #f3f4f6;
@@ -172,12 +187,19 @@
             opacity: 0; transform: translateX(20px); pointer-events: none; 
             transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); 
             z-index: 10; background: transparent;
+            overscroll-behavior-y: contain; /* Stop nested pulling */
             -webkit-overflow-scrolling: touch;
             will-change: transform, opacity;
             transform: translateZ(0); 
         }
         .page.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 20; }
         @media (min-width: 768px) { .page { position: relative; left: 0; top: 0; width: 100%; max-width: 650px; margin: 0 auto; height: 100%; padding-bottom: 0; padding-top: 20px; display: none; opacity: 1; transform: none; border-left: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2); } html.dark .page { border-color: rgba(255,255,255,0.05); } .page.active { display: block; } header { display: none !important; } }
+
+        /* Ensure long texts do not break the container grid */
+        .word-break-fix {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
 
         nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.3); transition: background-color 0.4s ease, border-color 0.4s ease; }
         html.dark nav { background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255,255,255,0.05); }
@@ -237,14 +259,12 @@
     <div id="login-screen">
         <div class="login-container">
             <div class="mb-6">
-                <!-- OG Circle Logo -->
                 <div class="text-[54px] font-black tracking-tighter text-gray-900 dark:text-white mb-2 drop-shadow-sm leading-none">Circle<span class="text-blue-600">.</span></div>
                 <h1 id="auth-title" class="text-2xl font-black text-gray-900 dark:text-white tracking-tight drop-shadow-sm mt-4">Welcome to Circle</h1>
                 <p id="auth-subtitle" class="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">Connect, Share, and Discover.</p>
             </div>
             
             <div id="login-form-fields" class="space-y-3 text-left transition-all duration-300">
-                <div id="field-name" class="hidden"><input type="text" id="login-name" class="login-input" placeholder="Full Name"></div>
                 <div><input type="text" id="login-username" class="login-input" placeholder="Username (Login ID)"></div>
                 <div id="field-handle" class="hidden"><input type="text" id="login-handle" class="login-input" placeholder="Choose a @handle"></div>
                 <div><input type="password" id="login-password" class="login-input" placeholder="Password"></div>
@@ -364,7 +384,7 @@
                     </div>
 
                     <div class="pt-4 border-t border-gray-200/50 dark:border-white/10 text-center">
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v1.1.0</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v1.3.0</p>
                     </div>
                 </div>
             </div>
@@ -396,8 +416,8 @@
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
                     <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 object-cover border border-white/50 dark:border-white/10 flex-shrink-0 shadow-sm">
-                    <div class="w-full">
-                        <textarea id="post-content" class="w-full h-24 bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed" placeholder="What's happening?"></textarea>
+                    <div class="w-full flex flex-col">
+                        <textarea id="post-content" class="w-full flex-1 min-h-[100px] bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed" placeholder="What's happening?"></textarea>
                         
                         <!-- Poll Creation Container -->
                         <div id="poll-container" class="hidden mt-3 space-y-2 bg-white/60 dark:bg-black/40 p-4 rounded-2xl border border-blue-200/50 dark:border-blue-900/30 shadow-sm">
@@ -454,18 +474,18 @@
                 </div>
                 <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
                 <div class="p-3 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-3 bg-white/60 dark:bg-black/60 backdrop-blur-xl flex-shrink-0 rounded-b-[32px] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
-                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 shadow-sm">
+                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 shadow-sm flex-shrink-0">
                     <div class="flex-1 bg-white dark:bg-black/50 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 border border-gray-200/50 dark:border-white/10 transition-all shadow-inner">
                         <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.submitComment()">
                     </div>
-                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors flex-shrink-0"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="edit-profile-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-auto md:w-[500px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+                <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
                 <div class="px-6 pb-6 pt-4 flex-1 overflow-y-auto space-y-6">
                     
                     <div class="flex flex-col items-center">
@@ -707,7 +727,7 @@
                 document.getElementById('auth-title').innerText = this.isLoginMode ? 'Welcome to Circle' : 'Create Account';
                 document.getElementById('auth-subtitle').innerText = this.isLoginMode ? 'Connect, Share, and Discover.' : 'Join the circle today.';
                 
-                const extraFields = ['field-name', 'field-handle', 'field-city'];
+                const extraFields = ['field-handle', 'field-city'];
                 extraFields.forEach(id => {
                     document.getElementById(id).classList.toggle('hidden', this.isLoginMode);
                 });
@@ -726,7 +746,8 @@
 
                 document.getElementById('login-username').classList.remove('input-error'); 
                 document.getElementById('login-password').classList.remove('input-error'); 
-                document.getElementById('login-handle').classList.remove('input-error'); 
+                const handleInput = document.getElementById('login-handle');
+                if(handleInput) handleInput.classList.remove('input-error'); 
                 errorMsg.innerText = "";
 
                 if (!userVal) { document.getElementById('login-username').classList.add('input-error'); return; }
@@ -737,7 +758,7 @@
                         let adminUser = this.users.find(u => u.uid === 'admin_saad');
                         this.loginUser(adminUser);
                     } else {
-                        const foundUser = this.users.find(u => u.username === userVal && u.password === passVal);
+                        const foundUser = this.users.find(u => u.username.toLowerCase() === userVal.toLowerCase() && u.password === passVal);
                         if (foundUser) this.loginUser(foundUser);
                         else {
                             document.getElementById('login-username').classList.add('input-error'); 
@@ -747,23 +768,23 @@
                         }
                     }
                 } else {
-                    const nameVal = document.getElementById('login-name').value.trim();
                     let handleVal = document.getElementById('login-handle').value.trim().toLowerCase();
                     const cityVal = document.getElementById('login-city').value.trim();
 
-                    if (!nameVal || !handleVal || !cityVal) {
+                    if (!handleVal || !cityVal) {
                         errorMsg.innerText = "Please fill all fields to sign up";
                         return;
                     }
 
-                    if (userVal === "Saad Shaikh" || this.users.find(u => u.username === userVal)) { 
+                    const userValLower = userVal.toLowerCase();
+                    if (userValLower === "saad shaikh".toLowerCase() || this.users.find(u => u.username.toLowerCase() === userValLower)) { 
                         errorMsg.innerText = "Username ID is already taken"; 
                         document.getElementById('login-username').classList.add('input-error');
                         return; 
                     }
 
                     if (!handleVal.startsWith('@')) handleVal = '@' + handleVal;
-                    if (this.users.some(u => u.handle === handleVal)) {
+                    if (this.users.some(u => (u.handle || '').toLowerCase() === handleVal)) {
                         errorMsg.innerText = "Handle is already taken";
                         document.getElementById('login-handle').classList.add('input-error');
                         return;
@@ -771,8 +792,8 @@
                     
                     const newUser = {
                         uid: 'user_' + Date.now(), username: userVal, password: passVal,
-                        name: nameVal, handle: handleVal, city: cityVal,
-                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${nameVal}`,
+                        name: userVal, handle: handleVal, city: cityVal,
+                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userVal}`,
                         banner: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
                         bio: 'New to Circle!', isAdmin: false, isVerified: false, badgeType: 'none', followers: 0, following: [], notifications: []
                     };
@@ -827,7 +848,7 @@
                     this.currentUser = null;
                     document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
                     document.getElementById('login-error').innerText = '';
-                    this.isLoginMode = false; this.toggleAuthMode(); // Resets UI back to default login mode
+                    this.isLoginMode = false; this.toggleAuthMode();
                     loginScreen.style.display = 'flex'; void loginScreen.offsetWidth; loginScreen.classList.remove('hidden');
                 }, 500);
             }
@@ -846,7 +867,7 @@
                 let escapedText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 const urlRegex = /(https?:\/\/[^\s]+)/g;
                 return escapedText.replace(urlRegex, function(url) {
-                    return `<a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-blue-500 hover:underline break-all font-medium">${url}</a>`;
+                    return `<a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-blue-500 hover:underline word-break-fix font-medium">${url}</a>`;
                 });
             }
 
@@ -1020,12 +1041,12 @@
                     list.innerHTML += `
                     <div class="flex gap-3 animate-entry">
                         <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-200/50 dark:border-white/10 flex-shrink-0 cursor-pointer shadow-sm" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
-                        <div class="flex-1">
+                        <div class="flex-1 min-w-0">
                             <div class="bg-white/60 dark:bg-black/40 backdrop-blur-md p-3.5 rounded-2xl rounded-tl-none border border-gray-200/50 dark:border-white/10 shadow-sm">
                                 <div class="flex items-center justify-between mb-1">
-                                    <span class="font-bold text-sm text-gray-900 dark:text-white cursor-pointer hover:underline" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">${u.name} ${this.getBadgeMarkup(u)}</span>
+                                    <span class="font-bold text-sm text-gray-900 dark:text-white cursor-pointer hover:underline truncate" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">${u.name} ${this.getBadgeMarkup(u)}</span>
                                 </div>
-                                <p class="text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">${this.linkify(c.text)}</p>
+                                <p class="text-sm text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap word-break-fix">${this.linkify(c.text)}</p>
                             </div>
                             <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium ml-2 mt-1 block">${c.time}</span>
                         </div>
@@ -1085,13 +1106,13 @@
                         <div class="relative w-full h-10 rounded-xl overflow-hidden bg-white/40 dark:bg-black/20 border ${borderClass} flex items-center px-4">
                             <div class="absolute left-0 top-0 h-full ${barClass} poll-bar-fill" style="width: ${percent}%;"></div>
                             <div class="relative z-10 flex justify-between w-full text-sm ${textClass}">
-                                <span>${opt} ${isSelected ? '<i class="fa-solid fa-circle-check ml-1 text-blue-500"></i>' : ''}</span>
-                                <span>${percent}%</span>
+                                <span class="truncate">${opt} ${isSelected ? '<i class="fa-solid fa-circle-check ml-1 text-blue-500"></i>' : ''}</span>
+                                <span class="ml-2 flex-shrink-0">${percent}%</span>
                             </div>
                         </div>`;
                     } else {
                         pollHTML += `
-                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200/80 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold text-sm hover:bg-blue-50/50 dark:hover:bg-blue-900/20 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm bg-white/40 dark:bg-black/20 backdrop-blur-sm">
+                        <button onclick="app.votePoll('${post.dbKey}', ${idx})" class="w-full text-left px-4 py-2.5 rounded-xl border border-blue-200/80 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold text-sm hover:bg-blue-50/50 dark:hover:bg-blue-900/20 hover:border-blue-300 transition-all active:scale-[0.98] shadow-sm bg-white/40 dark:bg-black/20 backdrop-blur-sm truncate">
                             ${opt}
                         </button>`;
                     }
@@ -1125,7 +1146,7 @@
 
                     const timeContentEl = el.querySelector('.post-time-content');
                     if (timeContentEl && post.isEdited && !timeContentEl.innerHTML.includes('(edited)')) {
-                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80">(edited)</span>`;
+                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80 flex-shrink-0">(edited)</span>`;
                     }
 
                     const likeBtn = el.querySelector('.like-btn');
@@ -1322,7 +1343,7 @@
                         extraClass = 'dev-notif-row relative overflow-hidden';
                     }
                     
-                    list.innerHTML += `<div class="p-4 border border-gray-200/50 dark:border-white/5 rounded-2xl backdrop-blur-sm flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-white/50 dark:border-white/10 shadow-sm" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed"><span class="font-bold cursor-pointer hover:underline" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
+                    list.innerHTML += `<div class="p-4 border border-gray-200/50 dark:border-white/5 rounded-2xl backdrop-blur-sm flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10 min-w-0"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-white/50 dark:border-white/10 shadow-sm flex-shrink-0" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed word-break-fix"><span class="font-bold cursor-pointer hover:underline truncate" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
                 });
             }
 
@@ -1369,7 +1390,7 @@
                 const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
 
                 const formattedText = this.linkify(post.text);
-                const editedBadgeMarkup = post.isEdited ? `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80">(edited)</span>` : '';
+                const editedBadgeMarkup = post.isEdited ? `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80 flex-shrink-0">(edited)</span>` : '';
 
                 const isOwnPostOrAdmin = post.uid === this.currentUser?.uid || this.currentUser?.isAdmin;
                 const optionsMenuHTML = `
@@ -1394,14 +1415,14 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between">
-                                <div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center flex-wrap cursor-pointer group mt-0.5">
-                                    <span class="post-user-name font-bold text-gray-900 dark:text-white text-[15px] group-hover:underline mr-1">${user.name}</span>
+                                <div onclick="app.viewUserProfile('${post.uid}')" class="flex items-center flex-wrap cursor-pointer group mt-0.5 min-w-0">
+                                    <span class="post-user-name font-bold text-gray-900 dark:text-white text-[15px] group-hover:underline mr-1 truncate max-w-full">${user.name}</span>
                                     ${badge}
-                                    <span class="post-time-content text-gray-500 dark:text-gray-400 text-xs ml-2 font-medium flex items-center">${post.time} ${editedBadgeMarkup}</span>
+                                    <span class="post-time-content text-gray-500 dark:text-gray-400 text-xs ml-2 font-medium flex items-center flex-shrink-0">${post.time} ${editedBadgeMarkup}</span>
                                 </div>
                                 ${optionsMenuHTML}
                             </div>
-                            <p class="post-text-content text-gray-800 dark:text-gray-200 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap">${formattedText}</p>
+                            <p class="post-text-content text-gray-800 dark:text-gray-200 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap word-break-fix">${formattedText}</p>
                             ${pollHTML}
                             <div class="mt-3 flex items-center gap-6">
                                 <button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors">
@@ -1490,8 +1511,8 @@
                 let newHandle = document.getElementById('edit-handle').value.trim().toLowerCase();
                 if (newHandle && !newHandle.startsWith('@')) newHandle = '@' + newHandle;
 
-                if (newHandle !== this.currentUser.handle) {
-                    const handleTaken = this.users.some(u => u.uid !== this.currentUser.uid && u.handle === newHandle);
+                if (newHandle !== (this.currentUser.handle || '').toLowerCase()) {
+                    const handleTaken = this.users.some(u => u.uid !== this.currentUser.uid && (u.handle || '').toLowerCase() === newHandle);
                     if (handleTaken) {
                         this.showToast('Error: Handle is already taken!');
                         return; 
@@ -1734,9 +1755,9 @@
                                 </div>
                             </div>
                             <div class="mt-12">
-                                <h1 class="text-2xl font-black text-gray-900 dark:text-white flex items-center flex-wrap tracking-tight drop-shadow-sm">${u.name || 'User'} ${badge}</h1>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm font-semibold mt-0.5 flex items-center flex-wrap">${u.handle || ''} ${cityHTML}</p>
-                                <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed font-medium text-[15px]">${safeBio}</p>
+                                <h1 class="text-2xl font-black text-gray-900 dark:text-white flex items-center flex-wrap tracking-tight drop-shadow-sm word-break-fix">${u.name || 'User'} ${badge}</h1>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-semibold mt-0.5 flex items-center flex-wrap word-break-fix">${u.handle || ''} ${cityHTML}</p>
+                                <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed font-medium text-[15px] word-break-fix">${safeBio}</p>
                             </div>
                             <div class="flex gap-8 mt-6 py-5 border-t border-gray-200/50 dark:border-white/10">
                                 <div><span class="font-bold text-gray-900 dark:text-white text-lg">${postCount}</span> <span class="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wide">Posts</span></div>
