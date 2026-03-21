@@ -8,7 +8,7 @@
     <!-- PWA Manifest Link -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1DA1F2">
-    <link rel="apple-touch-icon" href="./app-icon.png">
+    <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=Circle">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -274,14 +274,14 @@
                 
                 <div class="flex gap-3 pt-3">
                     <button id="btn-primary" onclick="app.handleAuthAction()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-blue-500/30 transition-transform active:scale-95 text-[15px]">Sign In</button>
-                    <button id="btn-secondary" onclick="app.toggleAuthMode()" class="flex-1 bg-white/40 dark:bg-black/40 hover:bg-white/60 dark:hover:bg-black/60 border border-white/50 dark:border-white/10 text-gray-800 dark:text-white py-3.5 rounded-2xl font-bold shadow-sm transition-all active:scale-95 text-[15px]">Create Account</button>
+                    <button id="btn-secondary" onclick="app.toggleAuthMode()" class="flex-1 bg-white/40 dark:bg-black/40 hover:bg-white/60 dark:hover:bg-black/60 border border-white/50 dark:border-white/10 text-gray-800 dark:text-white py-3.5 rounded-2xl font-bold shadow-sm transition-all active:scale-95 text-[15px] backdrop-blur-md">Create Account</button>
                 </div>
             </div>
             <div id="login-error" class="text-red-500 text-sm mt-5 h-4 font-bold text-center"></div>
         </div>
     </div>
 
-    <div id="app-root" class="bg-white dark:bg-black">
+    <div id="app-root" class="glass-app">
         <nav>
             <div class="nav-logo hidden text-3xl font-black tracking-tighter text-gray-900 dark:text-white cursor-pointer" onclick="app.router('feed')">Circle<span class="text-blue-500 text-4xl leading-none">.</span></div>
             
@@ -320,13 +320,13 @@
                 <div class="p-5">
                     <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-sm">Search</h2>
                     
-                    <div class="flex items-center bg-gray-100 dark:bg-[#121212] rounded-2xl px-4 py-3.5 mb-6 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 transition-all border border-transparent dark:border-darkborder shadow-sm">
+                    <div class="flex items-center bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-2xl px-4 py-3.5 mb-6 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 transition-all border border-white/60 dark:border-white/10 shadow-sm">
                         <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500"></i>
                         <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 dark:text-white placeholder-gray-500 font-medium" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
                     </div>
 
-                    <div id="admin-controls-banner" class="bg-red-50 dark:bg-red-900/20 p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-200/50 dark:border-red-900/30 flex gap-3 hidden shadow-sm">
-                        <div class="bg-white dark:bg-[#121212] p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
+                    <div id="admin-controls-banner" class="bg-red-50/80 dark:bg-red-900/30 backdrop-blur-md p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-200/50 dark:border-red-900/50 flex gap-3 hidden shadow-sm">
+                        <div class="bg-white dark:bg-black p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -334,7 +334,7 @@
                                     <p class="text-xs mt-0.5 mb-2 opacity-80">You can permanently delete accounts and manage specific badges.</p>
                                 </div>
                             </div>
-                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white dark:bg-[#1f1f1f] border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors">Toggle Admin Highlight</button>
+                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white/80 dark:bg-black/50 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors backdrop-blur-sm">Toggle Admin Highlight</button>
                         </div>
                     </div>
                     
@@ -346,7 +346,7 @@
                 <div class="p-5">
                     <div class="flex justify-between items-center mb-4 drop-shadow-sm">
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h2>
-                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-gray-50 dark:bg-[#121212] border border-red-200/50 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
+                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-white/50 dark:bg-black/50 border border-red-200 dark:border-red-900/30 backdrop-blur-sm hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
                     </div>
                     <div id="notification-list" class="space-y-3 pb-24"></div>
                 </div>
@@ -360,15 +360,15 @@
         <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[450px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <div class="flex items-center gap-3 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-gear text-lg text-gray-400"></i>
                         <h3 class="text-xl font-bold">Settings</h3>
                     </div>
-                    <button onclick="app.closeModal('settings-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    <button onclick="app.closeModal('settings-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-[#27272a] rounded-2xl transition-colors shadow-sm">
+                    <div class="flex items-center justify-between p-4 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 rounded-2xl transition-colors shadow-sm">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-indigo-100/80 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                                 <i class="fa-solid fa-moon text-lg"></i>
@@ -385,8 +385,8 @@
                         </label>
                     </div>
 
-                    <div class="pt-4 border-t border-gray-100 dark:border-darkborder text-center">
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v1.4.1</p>
+                    <div class="pt-4 border-t border-gray-200/50 dark:border-white/10 text-center">
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v1.5.0</p>
                     </div>
                 </div>
             </div>
@@ -395,15 +395,15 @@
         <!-- EDIT POST MODAL -->
         <div id="edit-post-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-pen text-lg"></i>
                         <h3 class="text-xl font-bold">Edit Post</h3>
                     </div>
-                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-4">
-                    <textarea id="edit-post-content" class="w-full h-32 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-darkborder rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="Update your post..."></textarea>
+                    <textarea id="edit-post-content" class="w-full h-32 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="Update your post..."></textarea>
                     <button onclick="app.saveEditedPost()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95">Save Changes</button>
                 </div>
             </div>
@@ -412,55 +412,54 @@
         <!-- POST MODAL WITH POLL FEATURE -->
         <div id="post-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-auto max-h-[90%] flex flex-col">
-                <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
-                    <button onclick="app.closeModal('post-modal')" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
+                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                    <button onclick="app.closeModal('post-modal')" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
                     <button onclick="app.submitPost()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Post</button>
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
-                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-[#18181b] object-cover border border-gray-100 dark:border-darkborder flex-shrink-0 shadow-sm">
+                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 object-cover border border-white/50 dark:border-white/10 flex-shrink-0 shadow-sm">
                     <div class="w-full flex flex-col">
                         <textarea id="post-content" class="w-full flex-1 min-h-[100px] bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed" placeholder="What's happening?"></textarea>
                         
-                        <!-- Poll Creation Container -->
-                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-gray-50 dark:bg-[#18181b] p-4 rounded-2xl border border-blue-100 dark:border-blue-900/50 shadow-sm">
+                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white/60 dark:bg-black/40 p-4 rounded-2xl border border-blue-200/50 dark:border-blue-900/30 shadow-sm">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
                                 <button onclick="app.removePoll()" class="text-gray-400 hover:text-red-500 transition-colors w-6 h-6 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                            <input type="text" id="poll-opt-1" class="w-full bg-white dark:bg-black border border-gray-100 dark:border-darkborder rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all shadow-sm" placeholder="Choice 1">
-                            <input type="text" id="poll-opt-2" class="w-full bg-white dark:bg-black border border-gray-100 dark:border-darkborder rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all shadow-sm" placeholder="Choice 2">
-                            <input type="text" id="poll-opt-3" class="w-full bg-white dark:bg-black border border-gray-100 dark:border-darkborder rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all hidden shadow-sm" placeholder="Choice 3 (optional)">
+                            <input type="text" id="poll-opt-1" class="w-full bg-white dark:bg-black/50 border border-gray-200/50 dark:border-white/10 rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all shadow-sm" placeholder="Choice 1">
+                            <input type="text" id="poll-opt-2" class="w-full bg-white dark:bg-black/50 border border-gray-200/50 dark:border-white/10 rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all shadow-sm" placeholder="Choice 2">
+                            <input type="text" id="poll-opt-3" class="w-full bg-white dark:bg-black/50 border border-gray-200/50 dark:border-white/10 rounded-xl p-3 text-sm outline-none text-gray-900 dark:text-white focus:border-blue-400 dark:focus:border-blue-500 transition-all hidden shadow-sm" placeholder="Choice 3 (optional)">
                             <button id="add-poll-opt-btn" onclick="app.addPollOption()" class="text-blue-600 dark:text-blue-400 text-xs font-bold mt-2 hover:underline px-2 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">+ Add Choice</button>
                         </div>
                     </div>
                 </div>
-                <div class="p-4 border-t border-gray-100 dark:border-darkborder flex items-center gap-4 flex-shrink-0">
-                    <button onclick="app.togglePoll()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
-                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
+                <div class="p-4 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-4 flex-shrink-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-b-[32px]">
+                    <button onclick="app.togglePoll()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
+                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="dev-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-bullhorn text-xl"></i>
                         <h3 class="text-xl font-bold">Circle Broadcast</h3>
                     </div>
-                    <button onclick="app.closeModal('dev-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    <button onclick="app.closeModal('dev-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-5">
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Broadcast Method</label>
-                        <select id="dev-broadcast-type" class="w-full bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-darkborder rounded-xl p-3.5 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors cursor-pointer shadow-sm">
+                        <select id="dev-broadcast-type" class="w-full bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/10 rounded-xl p-3.5 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors cursor-pointer shadow-sm">
                             <option value="post">Create Feed Post</option>
                             <option value="notification">Send Push Notification to All</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Update Message</label>
-                        <textarea id="dev-message" class="w-full h-32 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-darkborder rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="What's new in Circle?"></textarea>
+                        <textarea id="dev-message" class="w-full h-32 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/10 rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="What's new in Circle?"></textarea>
                     </div>
                     <button onclick="app.sendDevBroadcast()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95 mt-2">Send Broadcast</button>
                 </div>
@@ -470,24 +469,24 @@
         <!-- COMMENT / REPLIES MODAL -->
         <div id="comment-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-[600px] flex flex-col">
-                <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
-                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-100 dark:bg-[#18181b] text-gray-700 dark:text-gray-300 text-xs px-2.5 py-0.5 rounded-full font-bold">0</span></div>
-                    <button onclick="app.closeModal('comment-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-200/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 text-xs px-2.5 py-0.5 rounded-full font-bold">0</span></div>
+                    <button onclick="app.closeModal('comment-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
-                <div class="p-3 border-t border-gray-100 dark:border-darkborder flex items-center gap-3 flex-shrink-0">
-                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-darkborder shadow-sm flex-shrink-0">
-                    <div class="flex-1 bg-gray-50 dark:bg-[#18181b] rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 border border-transparent dark:border-darkborder transition-all shadow-inner">
+                <div class="p-3 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-3 bg-white/60 dark:bg-black/60 backdrop-blur-xl flex-shrink-0 rounded-b-[32px] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
+                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 shadow-sm flex-shrink-0">
+                    <div class="flex-1 bg-white dark:bg-black/50 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 border border-gray-200/50 dark:border-white/10 transition-all shadow-inner">
                         <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.submitComment()">
                     </div>
-                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex-shrink-0"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors flex-shrink-0"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="edit-profile-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-auto md:w-[500px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+                <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
                 <div class="px-6 pb-6 pt-4 flex-1 overflow-y-auto space-y-6">
                     
                     <div class="flex flex-col items-center">
@@ -498,7 +497,7 @@
                             </button>
                         </div>
                         
-                        <div class="flex items-center gap-2 bg-gray-50 dark:bg-[#18181b] px-3 py-1.5 rounded-lg border border-gray-100 dark:border-darkborder shadow-sm">
+                        <div class="flex items-center gap-2 bg-white/50 dark:bg-black/30 px-3 py-1.5 rounded-lg border border-gray-200/50 dark:border-white/10 shadow-sm">
                             <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Style:</span>
                             <select id="avatar-category" class="text-xs bg-transparent outline-none text-gray-900 dark:text-white font-bold cursor-pointer">
                                 <option value="avataaars" class="text-gray-900">Avataaars</option>
@@ -511,10 +510,10 @@
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-gray-900 dark:text-white"></div>
-                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-blue-600 dark:text-blue-400"></div>
-                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">City / Location</label><input id="edit-city" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-900 dark:text-white" placeholder="Where are you?"></div>
-                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-800 dark:text-gray-200"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-gray-900 dark:text-white"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-blue-600 dark:text-blue-400"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">City / Location</label><input id="edit-city" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-900 dark:text-white" placeholder="Where are you?"></div>
+                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-800 dark:text-gray-200"></div>
                     </div>
                     <button onclick="app.saveProfile()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 active:scale-95 transition-transform mt-4">Save Changes</button>
                 </div>
@@ -523,7 +522,7 @@
 
         <div id="ban-modal" class="modal-backdrop z-[9999]">
             <div class="modal-sheet h-auto md:w-[400px] p-8 text-center">
-                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-50 dark:bg-red-900/30 mb-6 shadow-inner">
+                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-100/80 dark:bg-red-900/30 mb-6 shadow-inner">
                     <i class="fa-solid fa-user-slash text-4xl text-red-600 dark:text-red-400"></i>
                 </div>
                 <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2 drop-shadow-sm">Account Banned</h3>
@@ -616,37 +615,27 @@
             }
 
             initDefaultUsers() {
-                const teamIndex = this.users.findIndex(u => u.uid === 'circle_team');
-                const teamData = {
-                    uid: 'circle_team', name: 'Circle Team', handle: '@circle_team', city: 'San Francisco, CA',
-                    avatar: `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' style='background-color: %23ffffff;'%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='24' fill='%23111827'%3ECircle%3Ctspan fill='%233b82f6'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E`,
-                    banner: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b',
-                    bio: 'Official updates from the Circle Developers.',
-                    isAdmin: false, isVerified: true, badgeType: 'gold',
-                    followers: 0, following: [], notifications: []
-                };
-                if (teamIndex !== -1) this.users[teamIndex] = { ...this.users[teamIndex], ...teamData };
-                else this.users.push(teamData);
-
-                const adminIndex = this.users.findIndex(u => u.uid === 'admin_saad');
-                const adminData = {
-                    uid: 'admin_saad', name: 'Saad Shaikh', handle: '@saad', city: 'Pune, India',
-                    avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=Doraemon&backgroundColor=1da1f2',
-                    banner: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80',
-                    bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple', adminGlowEnabled: true,
-                    followers: 0, following: [], notifications: [] 
-                };
-                
-                if (adminIndex !== -1) {
-                    const existingAdmin = this.users[adminIndex];
-                    adminData.badgeType = existingAdmin.badgeType !== undefined ? existingAdmin.badgeType : 'purple';
-                    this.users[adminIndex] = { ...existingAdmin, ...adminData };
-                } else {
-                    this.users.push(adminData);
+                // Ensure system accounts exist locally. DO NOT forcefully reset their Firebase values here.
+                if (!this.users.find(u => u.uid === 'circle_team')) {
+                    this.users.push({
+                        uid: 'circle_team', username: 'circle_team', name: 'Circle Team', handle: '@circle_team', city: 'San Francisco, CA',
+                        avatar: `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' style='background-color: %23ffffff;'%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='24' fill='%23111827'%3ECircle%3Ctspan fill='%233b82f6'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E`,
+                        banner: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b',
+                        bio: 'Official updates from the Circle Developers.',
+                        isAdmin: false, isVerified: true, badgeType: 'gold',
+                        followers: 0, following: [], notifications: []
+                    });
                 }
-                
-                set(ref(db, 'users/admin_saad/followers'), 0).catch(e => {});
-                set(ref(db, 'users/circle_team/followers'), 0).catch(e => {});
+
+                if (!this.users.find(u => u.uid === 'admin_saad')) {
+                    this.users.push({
+                        uid: 'admin_saad', username: 'saad_shaikh', name: 'Saad Shaikh', handle: '@saad', city: 'Pune, India',
+                        avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=Doraemon&backgroundColor=1da1f2',
+                        banner: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80',
+                        bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple', adminGlowEnabled: true,
+                        followers: 0, following: [], notifications: [] 
+                    });
+                }
 
                 localStorage.setItem('circle_users', JSON.stringify(this.users));
             }
@@ -773,7 +762,7 @@
                         let adminUser = this.users.find(u => u.uid === 'admin_saad');
                         this.loginUser(adminUser);
                     } else {
-                        const foundUser = this.users.find(u => u.username.toLowerCase() === userVal.toLowerCase() && u.password === passVal);
+                        const foundUser = this.users.find(u => (u.username || '').toLowerCase() === userVal.toLowerCase() && u.password === passVal);
                         if (foundUser) this.loginUser(foundUser);
                         else {
                             document.getElementById('login-username').classList.add('input-error'); 
@@ -792,7 +781,7 @@
                     }
 
                     const userValLower = userVal.toLowerCase();
-                    if (userValLower === "saad shaikh".toLowerCase() || this.users.find(u => u.username.toLowerCase() === userValLower)) { 
+                    if (userValLower === "saad shaikh".toLowerCase() || this.users.find(u => (u.username || '').toLowerCase() === userValLower)) { 
                         errorMsg.innerText = "Username ID is already taken"; 
                         document.getElementById('login-username').classList.add('input-error');
                         return; 
@@ -863,7 +852,7 @@
                     this.currentUser = null;
                     document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
                     document.getElementById('login-error').innerText = '';
-                    this.isLoginMode = true; this.toggleAuthMode();
+                    this.isLoginMode = false; this.toggleAuthMode(); // Resets UI back to default login mode
                     loginScreen.style.display = 'flex'; void loginScreen.offsetWidth; loginScreen.classList.remove('hidden');
                 }, 500);
             }
@@ -1358,7 +1347,7 @@
                         extraClass = 'dev-notif-row relative overflow-hidden';
                     }
                     
-                    list.innerHTML += `<div class="p-4 border border-gray-200/50 dark:border-white/5 rounded-2xl backdrop-blur-sm flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10 min-w-0"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-white/50 dark:border-white/10 shadow-sm flex-shrink-0" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed word-break-fix"><span class="font-bold cursor-pointer hover:underline truncate" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
+                    list.innerHTML += `<div class="p-4 border-b border-gray-100 dark:border-darkborder flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10 min-w-0"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-gray-100 dark:border-darkborder shadow-sm flex-shrink-0" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed word-break-fix"><span class="font-bold cursor-pointer hover:underline truncate" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
                 });
             }
 
@@ -1426,7 +1415,7 @@
                 <div class="p-4 border-b border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-black/40 backdrop-blur-sm animate-entry hover:bg-white/60 dark:hover:bg-black/60 transition-colors" data-post-id="${post.dbKey}" style="animation-delay: ${index * 0.05}s">
                     <div class="flex items-start gap-3">
                         <div onclick="app.viewUserProfile('${post.uid}')" class="cursor-pointer drop-shadow-sm">
-                            <img src="${user.avatar}" class="post-user-avatar w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 flex-shrink-0 hover:opacity-80 transition-opacity">
+                            <img src="${user.avatar}" class="post-user-avatar w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 flex-shrink-0 hover:opacity-80 transition-opacity bg-white dark:bg-[#121212]">
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between">
