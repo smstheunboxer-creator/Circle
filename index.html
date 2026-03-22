@@ -202,7 +202,7 @@
             overflow-wrap: anywhere;
         }
 
-        /* Retaining glassmorphism strictly for UI Overlays to maintain high FPS */
+        /* Nav & Headers */
         nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(0,0,0,0.05); transition: background-color 0.4s ease, border-color 0.4s ease; }
         html.dark nav { background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.05); }
         @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; padding: 40px 20px; background: transparent; backdrop-filter: none; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
@@ -212,6 +212,21 @@
             .page { padding-bottom: 20px !important; }
             .fab { display: none !important; }
         }
+
+        /* --- DM Chat Room Full Overlay --- */
+        #chat-room-view {
+            position: absolute; inset: 0; z-index: 60;
+            background: #ffffff;
+            transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex; flex-direction: column;
+            pointer-events: none;
+        }
+        html.dark #chat-room-view { background: #000000; }
+        #chat-room-view.open { transform: translateX(0); pointer-events: auto; }
+        
+        .chat-bubble-me { background: var(--primary); color: white; border-radius: 20px 20px 4px 20px; align-self: flex-end; }
+        .chat-bubble-them { background: #f3f4f6; color: #1f2937; border-radius: 20px 20px 20px 4px; align-self: flex-start; border: 1px solid rgba(0,0,0,0.05); }
+        html.dark .chat-bubble-them { background: #18181b; color: #f3f4f6; border-color: rgba(255,255,255,0.05); }
 
         .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: flex-end; }
         .modal-backdrop.open { opacity: 1; pointer-events: auto; }
@@ -291,6 +306,12 @@
             <button onclick="app.router('search')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50" data-target="search">
                 <i class="fa-solid fa-magnifying-glass text-2xl"></i><span class="hidden">Search</span>
             </button>
+            
+            <!-- NEW DM MESSAGES TAB -->
+            <button onclick="app.router('messages')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 relative" data-target="messages">
+                <i class="fa-regular fa-envelope text-2xl"></i><span class="hidden">Messages</span>
+            </button>
+
             <button onclick="app.router('notifications')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 relative" data-target="notifications">
                 <i class="fa-regular fa-bell text-2xl"></i><span class="hidden">Notifications</span>
                 <div id="nav-notif-badge" class="nav-badge hidden">0</div>
@@ -320,13 +341,13 @@
                 <div class="p-5">
                     <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-sm">Search</h2>
                     
-                    <div class="flex items-center bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-2xl px-4 py-3.5 mb-6 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 transition-all border border-white/60 dark:border-white/10 shadow-sm">
+                    <div class="flex items-center bg-gray-100 dark:bg-[#121212] rounded-2xl px-4 py-3.5 mb-6 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 transition-all border border-transparent dark:border-darkborder shadow-sm">
                         <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500"></i>
                         <input type="text" id="search-input" class="bg-transparent w-full outline-none ml-3 text-gray-900 dark:text-white placeholder-gray-500 font-medium" placeholder="Search by name or @handle..." oninput="app.handleSearch()">
                     </div>
 
-                    <div id="admin-controls-banner" class="bg-red-50/80 dark:bg-red-900/30 backdrop-blur-md p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-200/50 dark:border-red-900/50 flex gap-3 hidden shadow-sm">
-                        <div class="bg-white dark:bg-black p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
+                    <div id="admin-controls-banner" class="bg-red-50 dark:bg-red-900/20 p-4 rounded-2xl mb-6 text-sm text-red-800 dark:text-red-300 border border-red-200/50 dark:border-red-900/50 flex gap-3 hidden shadow-sm">
+                        <div class="bg-white dark:bg-[#121212] p-2 rounded-full h-8 w-8 flex items-center justify-center shadow-sm text-red-500"><i class="fa-solid fa-user-shield"></i></div>
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -334,7 +355,7 @@
                                     <p class="text-xs mt-0.5 mb-2 opacity-80">You can permanently delete accounts and manage specific badges.</p>
                                 </div>
                             </div>
-                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white/80 dark:bg-black/50 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors backdrop-blur-sm">Toggle Admin Highlight</button>
+                            <button onclick="app.toggleAdminGlow()" class="text-xs font-bold bg-white dark:bg-[#1f1f1f] border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors">Toggle Admin Highlight</button>
                         </div>
                     </div>
                     
@@ -342,11 +363,19 @@
                 </div>
             </div>
 
+            <!-- MESSAGES INBOX VIEW -->
+            <div id="messages-view" class="page">
+                <div class="p-5">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-sm">Messages</h2>
+                    <div id="chat-list" class="space-y-2 pb-24"></div>
+                </div>
+            </div>
+
             <div id="notifications-view" class="page">
                 <div class="p-5">
                     <div class="flex justify-between items-center mb-4 drop-shadow-sm">
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h2>
-                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-white/50 dark:bg-black/50 border border-red-200 dark:border-red-900/30 backdrop-blur-sm hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
+                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-gray-50 dark:bg-[#121212] border border-red-200/50 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
                     </div>
                     <div id="notification-list" class="space-y-3 pb-24"></div>
                 </div>
@@ -355,20 +384,43 @@
             <div id="profile-view" class="page"></div>
         </div>
 
+        <!-- FULL-SCREEN DM CHAT ROOM OVERLAY -->
+        <div id="chat-room-view">
+            <div class="h-[65px] md:h-[70px] glass-header flex items-center px-4 gap-3 flex-shrink-0 z-10 border-b border-gray-100 dark:border-darkborder shadow-sm">
+                <button onclick="app.closeChat()" class="text-gray-900 dark:text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                <img id="chat-room-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-darkborder shadow-sm cursor-pointer">
+                <div class="flex-1 min-w-0 cursor-pointer" onclick="app.viewUserProfile(app.activeChatUid); app.closeChat();">
+                    <div class="font-bold text-[15px] text-gray-900 dark:text-white truncate flex items-center gap-1"><span id="chat-room-name">Name</span><span id="chat-room-badge"></span></div>
+                    <div class="text-[11px] text-gray-500 dark:text-gray-400 truncate" id="chat-room-handle">@handle</div>
+                </div>
+            </div>
+            
+            <div id="chat-room-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 dark:bg-[#0a0a0a]">
+               <!-- Chat bubbles go here -->
+            </div>
+            
+            <div class="p-3 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-gray-200/50 dark:border-white/10 flex-shrink-0 pb-6 md:pb-3">
+                <div class="flex items-center gap-2 bg-gray-100 dark:bg-[#18181b] rounded-full p-1.5 border border-transparent dark:border-darkborder shadow-inner">
+                    <input id="chat-input" type="text" placeholder="Message..." class="flex-1 bg-transparent outline-none px-3 py-1 text-[15px] text-gray-900 dark:text-white placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.sendChatMessage()">
+                    <button onclick="app.sendChatMessage()" class="w-9 h-9 flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-transform active:scale-95 shadow-md flex-shrink-0"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                </div>
+            </div>
+        </div>
+
         <div id="lightbox" class="lightbox" onclick="app.closeLightbox()"><button class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl z-50"><i class="fa-solid fa-xmark"></i></button><img id="lightbox-img" src="" onclick="event.stopPropagation()"></div>
 
         <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[450px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
                     <div class="flex items-center gap-3 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-gear text-lg text-gray-400"></i>
                         <h3 class="text-xl font-bold">Settings</h3>
                     </div>
-                    <button onclick="app.closeModal('settings-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    <button onclick="app.closeModal('settings-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <div class="flex items-center justify-between p-4 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 rounded-2xl transition-colors shadow-sm">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-[#27272a] rounded-2xl transition-colors shadow-sm">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-indigo-100/80 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                                 <i class="fa-solid fa-moon text-lg"></i>
@@ -385,8 +437,8 @@
                         </label>
                     </div>
 
-                    <div class="pt-4 border-t border-gray-200/50 dark:border-white/10 text-center">
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v1.5.0</p>
+                    <div class="pt-4 border-t border-gray-100 dark:border-darkborder text-center">
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v2.0 (Live DMs)</p>
                     </div>
                 </div>
             </div>
@@ -395,15 +447,15 @@
         <!-- EDIT POST MODAL -->
         <div id="edit-post-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
                     <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-pen text-lg"></i>
                         <h3 class="text-xl font-bold">Edit Post</h3>
                     </div>
-                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    <button onclick="app.closeModal('edit-post-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="p-6 flex-1 overflow-y-auto space-y-4">
-                    <textarea id="edit-post-content" class="w-full h-32 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="Update your post..."></textarea>
+                    <textarea id="edit-post-content" class="w-full h-32 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-darkborder rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-400 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="Update your post..."></textarea>
                     <button onclick="app.saveEditedPost()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95">Save Changes</button>
                 </div>
             </div>
@@ -412,16 +464,16 @@
         <!-- POST MODAL WITH POLL FEATURE -->
         <div id="post-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-auto max-h-[90%] flex flex-col">
-                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
-                    <button onclick="app.closeModal('post-modal')" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
+                <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+                    <button onclick="app.closeModal('post-modal')" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
                     <button onclick="app.submitPost()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Post</button>
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
-                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 object-cover border border-white/50 dark:border-white/10 flex-shrink-0 shadow-sm">
+                    <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-[#18181b] object-cover border border-gray-100 dark:border-darkborder flex-shrink-0 shadow-sm">
                     <div class="w-full flex flex-col">
                         <textarea id="post-content" class="w-full flex-1 min-h-[100px] bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed" placeholder="What's happening?"></textarea>
                         
-                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-white/60 dark:bg-black/40 p-4 rounded-2xl border border-blue-200/50 dark:border-blue-900/30 shadow-sm">
+                        <div id="poll-container" class="hidden mt-3 space-y-2 bg-gray-50 dark:bg-[#18181b] p-4 rounded-2xl border border-blue-100 dark:border-blue-900/50 shadow-sm">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
                                 <button onclick="app.removePoll()" class="text-gray-400 hover:text-red-500 transition-colors w-6 h-6 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
@@ -433,16 +485,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-4 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-4 flex-shrink-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-b-[32px]">
-                    <button onclick="app.togglePoll()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
-                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
+                <div class="p-4 border-t border-gray-100 dark:border-darkborder flex items-center gap-4 flex-shrink-0">
+                    <button onclick="app.togglePoll()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
+                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
                 </div>
             </div>
         </div>
 
         <div id="dev-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
-                <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
                     <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                         <i class="fa-solid fa-bullhorn text-xl"></i>
                         <h3 class="text-xl font-bold">Circle Broadcast</h3>
@@ -452,14 +504,14 @@
                 <div class="p-6 flex-1 overflow-y-auto space-y-5">
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Broadcast Method</label>
-                        <select id="dev-broadcast-type" class="w-full bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/10 rounded-xl p-3.5 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors cursor-pointer shadow-sm">
+                        <select id="dev-broadcast-type" class="w-full bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-darkborder rounded-xl p-3.5 outline-none text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-500 transition-colors cursor-pointer shadow-sm">
                             <option value="post">Create Feed Post</option>
                             <option value="notification">Send Push Notification to All</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-2">Update Message</label>
-                        <textarea id="dev-message" class="w-full h-32 bg-white/60 dark:bg-black/40 border border-gray-200/50 dark:border-white/10 rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="What's new in Circle?"></textarea>
+                        <textarea id="dev-message" class="w-full h-32 bg-gray-50 dark:bg-[#18181b] border border-gray-100 dark:border-darkborder rounded-xl p-4 outline-none text-gray-900 dark:text-white resize-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors shadow-inner" placeholder="What's new in Circle?"></textarea>
                     </div>
                     <button onclick="app.sendDevBroadcast()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-transform active:scale-95 mt-2">Send Broadcast</button>
                 </div>
@@ -469,17 +521,17 @@
         <!-- COMMENT / REPLIES MODAL -->
         <div id="comment-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-[600px] flex flex-col">
-                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
-                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-200/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 text-xs px-2.5 py-0.5 rounded-full font-bold">0</span></div>
-                    <button onclick="app.closeModal('comment-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-darkborder flex-shrink-0">
+                    <div class="flex items-center gap-2"><h3 class="font-bold text-lg text-gray-900 dark:text-white">Replies</h3><span id="comment-count-badge" class="bg-gray-100 dark:bg-[#18181b] text-gray-700 dark:text-gray-300 text-xs px-2.5 py-0.5 rounded-full font-bold">0</span></div>
+                    <button onclick="app.closeModal('comment-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
-                <div class="p-3 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-3 bg-white/60 dark:bg-black/60 backdrop-blur-xl flex-shrink-0 rounded-b-[32px] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
-                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-white/50 dark:border-white/10 shadow-sm flex-shrink-0">
-                    <div class="flex-1 bg-white dark:bg-black/50 rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 border border-gray-200/50 dark:border-white/10 transition-all shadow-inner">
+                <div class="p-3 border-t border-gray-100 dark:border-darkborder flex items-center gap-3 flex-shrink-0">
+                    <img id="comment-input-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-darkborder shadow-sm flex-shrink-0">
+                    <div class="flex-1 bg-gray-50 dark:bg-[#18181b] rounded-full flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-900 border border-transparent dark:border-darkborder transition-all shadow-inner">
                         <input id="comment-input" type="text" placeholder="Post a reply..." class="bg-transparent w-full outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500" onkeypress="if(event.key === 'Enter') app.submitComment()">
                     </div>
-                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors flex-shrink-0"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <button onclick="app.submitComment()" class="text-blue-500 w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex-shrink-0"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                 </div>
             </div>
         </div>
@@ -497,7 +549,7 @@
                             </button>
                         </div>
                         
-                        <div class="flex items-center gap-2 bg-white/50 dark:bg-black/30 px-3 py-1.5 rounded-lg border border-gray-200/50 dark:border-white/10 shadow-sm">
+                        <div class="flex items-center gap-2 bg-gray-50 dark:bg-[#18181b] px-3 py-1.5 rounded-lg border border-gray-100 dark:border-darkborder shadow-sm">
                             <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Style:</span>
                             <select id="avatar-category" class="text-xs bg-transparent outline-none text-gray-900 dark:text-white font-bold cursor-pointer">
                                 <option value="avataaars" class="text-gray-900">Avataaars</option>
@@ -510,10 +562,10 @@
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-gray-900 dark:text-white"></div>
-                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-blue-600 dark:text-blue-400"></div>
-                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">City / Location</label><input id="edit-city" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-900 dark:text-white" placeholder="Where are you?"></div>
-                        <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-800 dark:text-gray-200"></div>
+                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Display Name</label><input id="edit-name" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-gray-900 dark:text-white"></div>
+                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Handle</label><input id="edit-handle" type="text" class="w-full bg-transparent outline-none font-bold text-[15px] text-blue-600 dark:text-blue-400"></div>
+                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">City / Location</label><input id="edit-city" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-900 dark:text-white" placeholder="Where are you?"></div>
+                        <div class="bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-100 dark:border-darkborder shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-800 dark:text-gray-200"></div>
                     </div>
                     <button onclick="app.saveProfile()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 active:scale-95 transition-transform mt-4">Save Changes</button>
                 </div>
@@ -569,7 +621,9 @@
                 this.currentUser = null;
                 this.users = JSON.parse(localStorage.getItem('circle_users')) || [];
                 this.posts = []; 
+                this.chats = {}; // NEW: Initialize chat state
                 this.activePostId = null;
+                this.activeChatUid = null; // NEW: Track currently open DM
                 this.isLoginMode = true;
                 this.activeProfileUid = null; 
                 this.editingPostId = null; 
@@ -615,7 +669,6 @@
             }
 
             initDefaultUsers() {
-                // Ensure system accounts exist locally. DO NOT forcefully reset their Firebase values here.
                 if (!this.users.find(u => u.uid === 'circle_team')) {
                     this.users.push({
                         uid: 'circle_team', username: 'circle_team', name: 'Circle Team', handle: '@circle_team', city: 'San Francisco, CA',
@@ -711,6 +764,10 @@
                             searchView.scrollTop = scrollPos;
                         }
                         
+                        if (document.getElementById('messages-view').classList.contains('active')) {
+                            this.renderMessagesList();
+                        }
+                        
                         if (document.getElementById('feed-view').classList.contains('active')) {
                             this.posts.forEach(p => this.updatePostUI(p));
                         }
@@ -722,6 +779,20 @@
                         }
                         
                         this.renderNotifications();
+                    }
+                });
+
+                // NEW: Global Chat Listener
+                const chatsRef = ref(db, 'chats');
+                onValue(chatsRef, (snapshot) => {
+                    this.chats = snapshot.val() || {};
+                    if (this.currentUser) {
+                        if (document.getElementById('messages-view').classList.contains('active')) {
+                            this.renderMessagesList();
+                        }
+                        if (this.activeChatUid && document.getElementById('chat-room-view').classList.contains('open')) {
+                            this.renderChatRoom();
+                        }
                     }
                 });
             }
@@ -841,6 +912,7 @@
 
                 this.renderFeed();
                 this.renderUserList();
+                this.renderMessagesList();
                 this.renderNotifications();
             }
 
@@ -852,7 +924,7 @@
                     this.currentUser = null;
                     document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
                     document.getElementById('login-error').innerText = '';
-                    this.isLoginMode = false; this.toggleAuthMode(); // Resets UI back to default login mode
+                    this.isLoginMode = false; this.toggleAuthMode();
                     loginScreen.style.display = 'flex'; void loginScreen.offsetWidth; loginScreen.classList.remove('hidden');
                 }, 500);
             }
@@ -875,6 +947,139 @@
                 });
             }
 
+            // --- DM Messaging Logic ---
+            getChatId(targetUid) {
+                return [this.currentUser.uid, targetUid].sort().join('_');
+            }
+
+            openChat(targetUid) {
+                if (targetUid === this.currentUser.uid) {
+                    this.showToast("You cannot message yourself.");
+                    return;
+                }
+                this.activeChatUid = targetUid;
+                const chatRoom = document.getElementById('chat-room-view');
+                chatRoom.classList.add('open');
+                this.renderChatRoom();
+                setTimeout(() => document.getElementById('chat-input').focus(), 300);
+            }
+
+            closeChat() {
+                this.activeChatUid = null;
+                document.getElementById('chat-room-view').classList.remove('open');
+            }
+
+            renderMessagesList() {
+                const list = document.getElementById('chat-list');
+                list.innerHTML = '';
+                
+                let usersWithChats = this.users.filter(u => u.uid !== this.currentUser.uid);
+                
+                // Add chat data to sort them
+                usersWithChats = usersWithChats.map(u => {
+                    const chatId = this.getChatId(u.uid);
+                    const chatData = this.chats[chatId];
+                    return {
+                        user: u,
+                        lastMsgTime: chatData && chatData.lastMsgTime ? chatData.lastMsgTime : 0,
+                        lastMsgText: chatData && chatData.lastMsgText ? chatData.lastMsgText : 'Start a conversation'
+                    };
+                });
+                
+                usersWithChats.sort((a, b) => b.lastMsgTime - a.lastMsgTime);
+                
+                if (usersWithChats.length === 0) {
+                    list.innerHTML = `<div class="text-center py-10 text-gray-400 dark:text-gray-600"><p>No users available.</p></div>`;
+                    return;
+                }
+
+                usersWithChats.forEach(item => {
+                    const u = item.user;
+                    const badge = this.getBadgeMarkup(u);
+                    const safeAvatar = u.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback';
+                    const hasHistory = item.lastMsgTime > 0;
+                    const lastMsgStyle = hasHistory ? 'text-gray-900 dark:text-gray-200 font-medium' : 'text-gray-400 dark:text-gray-500 italic';
+                    
+                    list.innerHTML += `
+                    <div class="flex items-center gap-3 p-3 bg-white dark:bg-black hover:bg-gray-50 dark:hover:bg-[#121212] border-b border-gray-100 dark:border-darkborder transition-colors cursor-pointer" onclick="app.openChat('${u.uid}')">
+                        <img src="${safeAvatar}" class="w-12 h-12 rounded-full object-cover bg-gray-100 flex-shrink-0 border border-white/50 dark:border-white/10 shadow-sm">
+                        <div class="flex flex-col flex-1 min-w-0">
+                            <div class="font-bold text-[15px] text-gray-900 dark:text-white flex items-center truncate max-w-full"><span class="truncate mr-1">${u.name}</span> ${badge}</div>
+                            <div class="text-sm ${lastMsgStyle} truncate mt-0.5">${item.lastMsgText}</div>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            renderChatRoom() {
+                if (!this.activeChatUid) return;
+                
+                const targetUser = this.getUser(this.activeChatUid);
+                document.getElementById('chat-room-avatar').src = targetUser.avatar;
+                document.getElementById('chat-room-name').innerText = targetUser.name;
+                document.getElementById('chat-room-badge').innerHTML = this.getBadgeMarkup(targetUser);
+                document.getElementById('chat-room-handle').innerText = targetUser.handle || '';
+
+                const chatId = this.getChatId(this.activeChatUid);
+                const chatData = this.chats[chatId] || { messages: {} };
+                const msgsObj = chatData.messages || {};
+                const msgs = Object.keys(msgsObj).map(key => msgsObj[key]).sort((a,b) => a.id - b.id);
+                
+                const list = document.getElementById('chat-room-messages');
+                list.innerHTML = '';
+                
+                if (msgs.length === 0) {
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-600 pt-20"><i class="fa-solid fa-hand-wave text-4xl mb-3"></i><p>Say hi to ${targetUser.name}!</p></div>`;
+                    return;
+                }
+
+                msgs.forEach(m => {
+                    const isMe = m.uid === this.currentUser.uid;
+                    const bubbleClass = isMe ? 'chat-bubble-me' : 'chat-bubble-them';
+                    const justifyClass = isMe ? 'justify-end' : 'justify-start';
+                    const paddingFix = isMe ? 'pl-10' : 'pr-10';
+                    
+                    list.innerHTML += `
+                    <div class="flex w-full ${justifyClass} ${paddingFix}">
+                        <div class="${bubbleClass} px-4 py-2.5 max-w-[85%] shadow-sm">
+                            <p class="text-[15px] leading-snug word-break-fix">${this.linkify(m.text)}</p>
+                            <span class="block text-[9px] mt-1 opacity-70 text-right font-medium">${m.time}</span>
+                        </div>
+                    </div>`;
+                });
+                
+                // Force scroll to bottom
+                list.scrollTop = list.scrollHeight;
+            }
+
+            sendChatMessage() {
+                const input = document.getElementById('chat-input');
+                const text = input.value.trim();
+                if (!text || !this.activeChatUid) return;
+
+                const chatId = this.getChatId(this.activeChatUid);
+                const msgData = {
+                    id: Date.now(),
+                    uid: this.currentUser.uid,
+                    text: text,
+                    time: new Date().toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' })
+                };
+
+                const newMsgRef = ref(db, `chats/${chatId}/messages`);
+                push(newMsgRef, msgData).then(() => {
+                    // Update metadata for inbox sorting
+                    update(ref(db, `chats/${chatId}`), {
+                        lastMsgText: text,
+                        lastMsgTime: Date.now()
+                    });
+                    input.value = '';
+                }).catch(err => {
+                    console.error("Error sending message", err);
+                    this.showToast("Failed to send message");
+                });
+            }
+
+            // --- Post & Poll Logic ---
             togglePoll() {
                 const container = document.getElementById('poll-container');
                 container.classList.toggle('hidden');
@@ -1000,7 +1205,7 @@
                     likes: 0,
                     likedBy: {},
                     comments: {}, 
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    time: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
                     isEdited: false
                 };
 
@@ -1069,7 +1274,7 @@
                     id: Date.now(),
                     uid: this.currentUser.uid,
                     text: text,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    time: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
                 };
 
                 const postRef = ref(db, `posts/${this.activePostId}/comments`);
@@ -1204,7 +1409,8 @@
                 if (type === 'post') {
                     push(ref(db, 'posts'), {
                         id: Date.now(), uid: 'circle_team', text: msg,
-                        image: null, likes: 0, likedBy: {}, comments: {}, time: 'Just now',
+                        image: null, likes: 0, likedBy: {}, comments: {}, 
+                        time: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
                         isEdited: false
                     });
                     this.showToast('Broadcast Post Sent!');
@@ -1215,7 +1421,7 @@
                         let notifs = u.notifications || [];
                         notifs.unshift({
                             id: Date.now(), type: 'dev', actorId: 'circle_team', text: msg,
-                            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                            timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
                             isRead: false
                         });
                         updates['users/' + u.uid + '/notifications'] = notifs;
@@ -1271,7 +1477,7 @@
 
                     notifs.unshift({
                         id: Date.now(), type, actorId: actor.uid, text, 
-                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 
+                        timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }), 
                         isRead: false
                     });
                     
@@ -1728,7 +1934,11 @@
                 } else if (isMe) {
                     actionButton = `<button onclick="app.openEditProfile()" class="px-6 py-2 border border-gray-200/80 dark:border-white/10 rounded-full text-xs font-bold text-gray-800 dark:text-gray-100 bg-white/80 dark:bg-gray-800/80 shadow-sm hover:shadow hover:-translate-y-0.5 active:scale-95 transition-all backdrop-blur-md">Edit Profile</button>`;
                 } else {
-                    actionButton = `<button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="px-7 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all ${isFollowing ? 'bg-white/80 dark:bg-gray-800/80 border border-gray-300/80 dark:border-white/10 text-gray-900 dark:text-white backdrop-blur-md' : 'bg-gray-900 dark:bg-white text-white dark:text-black border border-transparent'}">${isFollowing ? 'Following' : 'Follow'}</button>`;
+                    actionButton = `
+                    <div class="flex items-center">
+                        <button id="profile-follow-btn" onclick="app.toggleFollow('${targetUid}')" class="px-7 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all ${isFollowing ? 'bg-white/80 dark:bg-gray-800/80 border border-gray-300/80 dark:border-white/10 text-gray-900 dark:text-white backdrop-blur-md' : 'bg-gray-900 dark:bg-white text-white dark:text-black border border-transparent'}">${isFollowing ? 'Following' : 'Follow'}</button>
+                        <button onclick="app.openChat('${targetUid}')" class="w-9 h-9 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-900 dark:text-white flex justify-center items-center hover:bg-white dark:hover:bg-gray-700 transition-colors shadow-sm ml-2 border border-gray-200/80 dark:border-white/10 backdrop-blur-md"><i class="fa-solid fa-envelope"></i></button>
+                    </div>`;
                 }
 
                 let topButtons = isMe ? `
