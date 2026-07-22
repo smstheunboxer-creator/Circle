@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +29,10 @@
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Cropper.js for Image Cropping -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
@@ -541,15 +546,44 @@
                 <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
                 <div class="px-6 pb-6 pt-4 flex-1 overflow-y-auto space-y-6">
                     
-                    <div class="flex flex-col items-center">
+                    <!-- NEW: Banner Editor Section -->
+                    <div class="relative w-full h-32 bg-gray-200 dark:bg-gray-800 rounded-xl mb-4 overflow-hidden shadow-sm group">
+                        <img id="edit-banner-preview" src="" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors pointer-events-none"></div>
+                        
+                        <!-- Image Upload Button for Banner -->
+                        <button type="button" onclick="document.getElementById('banner-upload').click()" class="absolute bottom-2 left-2 bg-gray-800/80 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border border-white/20 backdrop-blur-md" title="Upload Banner Picture">
+                            <i class="fa-solid fa-camera text-sm"></i>
+                        </button>
+                        
+                        <!-- Shuffle Banner Button -->
+                        <button type="button" onclick="app.shuffleEditBanner(event)" class="absolute bottom-2 right-2 bg-blue-600/80 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border border-white/20 backdrop-blur-md" title="Generate Random Banner">
+                            <i class="fa-solid fa-dice text-sm"></i>
+                        </button>
+                        
+                        <!-- Hidden File Input for Banner -->
+                        <input type="file" id="banner-upload" accept="image/*" class="hidden" onchange="app.handleImageUpload(event, 'banner')">
+                    </div>
+
+                    <!-- Avatar Editor Section (Overlapping the banner slightly) -->
+                    <div class="flex flex-col items-center relative -mt-12 mb-3">
                         <div class="relative mb-3">
-                            <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-[4px] border-white dark:border-[#121212] shadow-lg">
-                            <button type="button" onclick="app.shuffleAvatar()" class="absolute bottom-0 right-[-5px] bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border-2 border-white dark:border-black" title="Generate Random Avatar">
+                            <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-[4px] border-white dark:border-[#121212] shadow-lg relative z-10 bg-white dark:bg-[#121212]">
+                            
+                            <!-- Image Upload Button for Avatar -->
+                            <button type="button" onclick="document.getElementById('avatar-upload').click()" class="absolute bottom-0 left-[-5px] bg-gray-800 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border-2 border-white dark:border-black z-20" title="Upload Profile Picture">
+                                <i class="fa-solid fa-camera text-sm"></i>
+                            </button>
+                            
+                            <button type="button" onclick="app.shuffleAvatar()" class="absolute bottom-0 right-[-5px] bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border-2 border-white dark:border-black z-20" title="Generate Random Avatar">
                                 <i class="fa-solid fa-dice text-sm"></i>
                             </button>
+                            
+                            <!-- Hidden File Input for Avatar -->
+                            <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="app.handleImageUpload(event, 'avatar')">
                         </div>
                         
-                        <div class="flex items-center gap-2 bg-white/50 dark:bg-black/30 px-3 py-1.5 rounded-lg border border-gray-200/50 dark:border-white/10 shadow-sm">
+                        <div class="flex items-center gap-2 bg-white/50 dark:bg-black/30 px-3 py-1.5 rounded-lg border border-gray-200/50 dark:border-white/10 shadow-sm relative z-20 mt-1">
                             <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Style:</span>
                             <select id="avatar-category" class="text-xs bg-transparent outline-none text-gray-900 dark:text-white font-bold cursor-pointer">
                                 <option value="avataaars" class="text-gray-900">Avataaars</option>
@@ -568,6 +602,22 @@
                         <div class="bg-white/60 dark:bg-black/40 p-3 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-sm"><label class="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Bio</label><input id="edit-bio" type="text" class="w-full bg-transparent outline-none font-medium text-[15px] text-gray-800 dark:text-gray-200"></div>
                     </div>
                     <button onclick="app.saveProfile()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-500/30 hover:bg-blue-700 active:scale-95 transition-transform mt-4">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CROPPER MODAL -->
+        <div id="cropper-modal" class="modal-backdrop" style="z-index: 105;">
+            <div class="modal-sheet h-[90%] md:h-[600px] flex flex-col md:w-[500px]">
+                <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
+                    <button onclick="app.cancelCrop()" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Crop Image</h3>
+                    <button onclick="app.saveCroppedImage()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Done</button>
+                </div>
+                <div class="flex-1 p-4 bg-black/10 dark:bg-black/50 overflow-hidden flex items-center justify-center relative w-full">
+                    <div class="w-full h-full">
+                        <img id="cropper-image" src="" class="block max-w-full">
+                    </div>
                 </div>
             </div>
         </div>
@@ -629,6 +679,12 @@
                 this.activeProfileUid = null; 
                 this.editingPostId = null; 
                 this.isDarkMode = localStorage.getItem('circle_dark') === 'true';
+                
+                // Cropper variables
+                this.cropper = null;
+                this.currentCropType = null;
+                this.tempAvatar = null;
+                this.tempBanner = null;
 
                 if (this.isDarkMode) {
                     document.documentElement.classList.add('dark');
@@ -652,6 +708,93 @@
 
                 this.listenToFirebase();
             }
+
+            // === IMAGE UPLOAD & CROPPER METHODS ===
+            handleImageUpload(event, type = 'avatar') {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                if (!file.type.startsWith('image/')) {
+                    this.showToast('Please select a valid image file');
+                    return;
+                }
+
+                this.currentCropType = type;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('cropper-image').src = e.target.result;
+                    document.getElementById('cropper-modal').classList.add('open');
+                    
+                    // Wait for the modal transition so cropper calculates sizes correctly
+                    setTimeout(() => {
+                        if (this.cropper) {
+                            this.cropper.destroy();
+                        }
+                        
+                        // Use 1:1 for avatar, 8:3 (approx) for banner
+                        const targetAspectRatio = type === 'avatar' ? 1 : (800 / 300);
+                        
+                        this.cropper = new Cropper(document.getElementById('cropper-image'), {
+                            aspectRatio: targetAspectRatio, 
+                            viewMode: 1, // restricts the crop box inside canvas
+                            dragMode: 'move',
+                            autoCropArea: 0.9,
+                            restore: false,
+                            guides: true,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false,
+                        });
+                    }, 400); 
+                };
+                reader.readAsDataURL(file);
+            }
+
+            saveCroppedImage() {
+                if (!this.cropper) return;
+                
+                const isAvatar = this.currentCropType === 'avatar';
+                
+                // Keep dimensions manageable so Firebase Database doesn't bloat
+                const canvasOptions = isAvatar ? 
+                    { width: 400, height: 400, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' } : 
+                    { width: 800, height: 300, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' };
+
+                const canvas = this.cropper.getCroppedCanvas(canvasOptions);
+                const croppedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                
+                // Update temporary variable & screen UI based on crop type
+                if (isAvatar) {
+                    this.tempAvatar = croppedImageBase64;
+                    document.getElementById('edit-avatar-preview').src = croppedImageBase64;
+                } else {
+                    this.tempBanner = croppedImageBase64;
+                    document.getElementById('edit-banner-preview').src = croppedImageBase64;
+                }
+                
+                this.closeCropperModal();
+                this.showToast('Image Cropped!');
+            }
+
+            cancelCrop() {
+                this.closeCropperModal();
+            }
+            
+            closeCropperModal() {
+                document.getElementById('cropper-modal').classList.remove('open');
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                }
+                document.getElementById('avatar-upload').value = ''; 
+                const bannerUpload = document.getElementById('banner-upload');
+                if (bannerUpload) bannerUpload.value = '';
+                this.currentCropType = null;
+            }
+            // ==========================================
+
 
             toggleDarkMode(isDark) {
                 this.isDarkMode = isDark;
@@ -1697,6 +1840,7 @@
                 this.showToast('Avatar Shuffled! 🎲');
             }
 
+            // Shuffle Banner on Main Profile Page (saves directly to DB)
             shuffleBanner(event) {
                 if (event) event.stopPropagation();
                 const randomId = Math.floor(Math.random() * 1000);
@@ -1710,14 +1854,30 @@
                     this.showToast('Banner Shuffled! 🎲');
                 });
             }
+            
+            // Shuffle Banner inside the Edit Profile Modal (saves to temp state)
+            shuffleEditBanner(event) {
+                if (event) event.stopPropagation();
+                const randomId = Math.floor(Math.random() * 1000);
+                const newBannerUrl = `https://picsum.photos/seed/${randomId}/800/300`;
+                
+                this.tempBanner = newBannerUrl;
+                document.getElementById('edit-banner-preview').src = newBannerUrl;
+                this.showToast('Banner Shuffled! 🎲');
+            }
 
             openEditProfile() { 
                 document.getElementById('edit-name').value = this.currentUser.name; 
                 document.getElementById('edit-handle').value = this.currentUser.handle || ''; 
                 document.getElementById('edit-bio').value = this.currentUser.bio; 
                 document.getElementById('edit-city').value = this.currentUser.city || ''; 
+                
                 document.getElementById('edit-avatar-preview').src = this.currentUser.avatar; 
+                document.getElementById('edit-banner-preview').src = this.currentUser.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'; 
+                
                 this.tempAvatar = this.currentUser.avatar; 
+                this.tempBanner = this.currentUser.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b';
+                
                 document.getElementById('edit-profile-modal').classList.add('open'); 
             }
             
@@ -1741,7 +1901,12 @@
                 if (this.tempAvatar) { 
                     this.currentUser.avatar = this.tempAvatar; 
                     this.tempAvatar = null; 
-                } 
+                }
+                
+                if (this.tempBanner) {
+                    this.currentUser.banner = this.tempBanner;
+                    this.tempBanner = null;
+                }
 
                 const userRef = ref(db, 'users/' + this.currentUser.uid);
                 
@@ -2011,3 +2176,6 @@
     </script>
 </body>
 </html>
+
+
+```
