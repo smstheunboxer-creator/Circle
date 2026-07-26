@@ -311,7 +311,7 @@
                 <i class="fa-solid fa-magnifying-glass text-2xl"></i><span class="hidden">Search</span>
             </button>
             
-            <!-- NEW DM MESSAGES TAB -->
+            <!-- DM MESSAGES TAB -->
             <button onclick="app.router('messages')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 relative" data-target="messages">
                 <i class="fa-regular fa-envelope text-2xl"></i><span class="hidden">Messages</span>
             </button>
@@ -324,7 +324,8 @@
                 <i class="fa-solid fa-user text-2xl"></i><span class="hidden">Profile</span>
             </button>
 
-            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 hidden" data-target="dev">
+            <!-- Only accessible by circle_team, strictly enforced by logic -->
+            <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50" data-target="dev" style="display: none;">
                 <i class="fa-solid fa-code text-2xl"></i><span class="hidden">Broadcast</span>
             </button>
 
@@ -496,6 +497,7 @@
             </div>
         </div>
 
+        <!-- BROADCAST MODAL (Strictly Circle Team Only) -->
         <div id="dev-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
                 <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
@@ -545,7 +547,7 @@
                 <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
                 <div class="px-6 pb-6 pt-4 flex-1 overflow-y-auto space-y-6">
                     
-                    <!-- NEW: Banner Editor Section -->
+                    <!-- Banner Editor Section -->
                     <div class="relative w-full h-32 bg-gray-200 dark:bg-gray-800 rounded-xl mb-4 overflow-hidden shadow-sm group">
                         <img id="edit-banner-preview" src="" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors pointer-events-none"></div>
@@ -668,7 +670,17 @@
         class CircleApp {
             constructor() {
                 this.currentUser = null;
-                const localUsers = JSON.parse(localStorage.getItem('circle_users')) || [];
+                
+                // --- ROBUST LOCAL STORAGE PARSING ---
+                let localUsers = [];
+                try {
+                    localUsers = JSON.parse(localStorage.getItem('circle_users')) || [];
+                } catch (e) {
+                    console.warn("Local storage corrupted. Resetting local users.", e);
+                    localUsers = [];
+                    localStorage.removeItem('circle_users');
+                }
+                
                 this.users = localUsers.filter(u => u !== null && u !== undefined);
                 this.posts = []; 
                 this.chats = {}; 
@@ -694,6 +706,18 @@
                 }
                 
                 this.initDefaultUsers();
+
+                // --- CHECK FOR PERSISTENT SESSION ---
+                const activeUid = localStorage.getItem('circle_active_uid');
+                if (activeUid) {
+                    const foundSession = this.users.find(u => u && u.uid === activeUid);
+                    if (foundSession) {
+                        this.currentUser = foundSession;
+                        document.getElementById('login-screen').style.display = 'none';
+                        // Wait just a moment for the DOM to settle before initializing app
+                        setTimeout(() => this.initApp(), 50); 
+                    }
+                }
 
                 document.getElementById('login-password').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') this.handleAuthAction();
@@ -724,7 +748,6 @@
                     document.getElementById('cropper-image').src = e.target.result;
                     document.getElementById('cropper-modal').classList.add('open');
                     
-                    // Wait for the modal transition so cropper calculates sizes correctly
                     setTimeout(() => {
                         if (this.cropper) {
                             this.cropper.destroy();
@@ -735,7 +758,7 @@
                         
                         this.cropper = new Cropper(document.getElementById('cropper-image'), {
                             aspectRatio: targetAspectRatio, 
-                            viewMode: 1, // restricts the crop box inside canvas
+                            viewMode: 1, 
                             dragMode: 'move',
                             autoCropArea: 0.9,
                             restore: false,
@@ -756,7 +779,7 @@
                 
                 const isAvatar = this.currentCropType === 'avatar';
                 
-                // Keep dimensions manageable so Firebase Database doesn't bloat
+                // Compress image size to prevent database overload
                 const canvasOptions = isAvatar ? 
                     { width: 400, height: 400, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' } : 
                     { width: 800, height: 300, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' };
@@ -764,7 +787,6 @@
                 const canvas = this.cropper.getCroppedCanvas(canvasOptions);
                 const croppedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
                 
-                // Update temporary variable & screen UI based on crop type
                 if (isAvatar) {
                     this.tempAvatar = croppedImageBase64;
                     document.getElementById('edit-avatar-preview').src = croppedImageBase64;
@@ -793,7 +815,6 @@
                 this.currentCropType = null;
             }
             // ==========================================
-
 
             toggleDarkMode(isDark) {
                 this.isDarkMode = isDark;
@@ -825,7 +846,7 @@
 
                 if (!this.users.find(u => u.uid === 'admin_saad')) {
                     this.users.push({
-                        uid: 'admin_saad', username: 'saad_shaikh', name: 'Saad Shaikh', handle: '@saad', city: 'Pune, India',
+                        uid: 'admin_saad', username: 'saad_shaikh', password: '@1234', name: 'Saad Shaikh', handle: '@saad', city: 'Pune, India',
                         avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=Doraemon&backgroundColor=1da1f2',
                         banner: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80',
                         bio: 'Admin of Circle 👑', isAdmin: true, isVerified: true, badgeType: 'purple', adminGlowEnabled: true,
@@ -886,6 +907,7 @@
                     if (this.currentUser) {
                         const freshUserData = this.users.find(u => u.uid === this.currentUser.uid);
                         
+                        // Safety mechanism: If user is erased from the database by an admin
                         if (!freshUserData && this.currentUser.uid !== 'circle_team' && this.currentUser.uid !== 'admin_saad') {
                             this.handleBan();
                             return;
@@ -1031,6 +1053,10 @@
 
             loginUser(user) {
                 this.currentUser = user;
+                
+                // Keep user logged in permanently
+                localStorage.setItem('circle_active_uid', user.uid);
+                
                 if(!this.currentUser.notifications) this.currentUser.notifications = [];
                 
                 if (this.currentUser.isAdmin || this.currentUser.uid === 'circle_team') {
@@ -1049,21 +1075,28 @@
                 const devBtn = document.getElementById('dev-btn');
                 const headerStatus = document.getElementById('header-status');
                 
+                // --- HARD LOCK BROADCAST VISIBILITY ---
+                if (devBtn) {
+                    if (this.currentUser.uid === 'circle_team') {
+                        devBtn.style.display = 'flex'; // Make visible exclusively to circle_team
+                    } else {
+                        devBtn.style.display = 'none'; // Erase from screen for ALL others (including admin_saad)
+                    }
+                }
+
+                // Handle top-left Badge
                 if (this.currentUser.uid === 'circle_team') {
                     headerStatus.classList.remove('opacity-0');
                     headerStatus.innerHTML = `<i class="fa-solid fa-building text-blue-600 dark:text-blue-500 text-[10px]"></i><span class="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Official</span>`;
                     headerStatus.className = "opacity-0 transition-opacity duration-500 flex items-center space-x-1.5 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-700/50 px-2.5 py-1 rounded-full";
-                    if(devBtn) devBtn.classList.remove('hidden');
                     headerStatus.style.display = 'flex';
                 } else if (this.currentUser.isAdmin) {
                     headerStatus.classList.remove('opacity-0');
                     headerStatus.innerHTML = `<i class="fa-solid fa-crown text-yellow-600 dark:text-yellow-500 text-[10px]"></i><span class="text-[10px] font-bold text-yellow-700 dark:text-yellow-400 uppercase tracking-wider">Admin</span>`;
                     headerStatus.className = "opacity-0 transition-opacity duration-500 flex items-center space-x-1.5 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-100 dark:border-yellow-700/50 px-2.5 py-1 rounded-full";
-                    if(devBtn) devBtn.classList.add('hidden');
                     headerStatus.style.display = 'flex';
                 } else {
                     headerStatus.style.display = 'none';
-                    if(devBtn) devBtn.classList.add('hidden');
                 }
 
                 this.renderFeed();
@@ -1076,6 +1109,9 @@
                 const appRoot = document.getElementById('app-root');
                 const loginScreen = document.getElementById('login-screen');
                 appRoot.classList.remove('visible');
+                
+                localStorage.removeItem('circle_active_uid');
+
                 setTimeout(() => {
                     this.currentUser = null;
                     document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
@@ -1380,7 +1416,11 @@
 
             renderComments() {
                 const post = this.posts.find(p => p.dbKey === this.activePostId);
-                if (!post) return;
+                // Safe guard in case post was deleted while viewer was looking at it
+                if (!post) {
+                    this.closeModal('comment-modal');
+                    return;
+                }
 
                 const list = document.getElementById('comments-list');
                 list.innerHTML = '';
@@ -1397,6 +1437,9 @@
 
                 commentsArray.forEach(c => {
                     const u = this.getUser(c.uid);
+                    // Double check fallback object validity
+                    if(!u) return; 
+                    
                     list.innerHTML += `
                     <div class="flex gap-3 animate-entry">
                         <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-gray-200/50 dark:border-white/10 flex-shrink-0 cursor-pointer shadow-sm" onclick="app.viewUserProfile('${u.uid}'); app.closeModal('comment-modal');">
@@ -1550,8 +1593,22 @@
                 });
             }
 
-            openDevModal() { document.getElementById('dev-modal').classList.add('open'); }
+            openDevModal() { 
+                // Hard backend lock to prevent opening the modal if not authenticated correctly
+                if (this.currentUser?.uid !== 'circle_team') {
+                    this.showToast("Unauthorized Action");
+                    return;
+                }
+                document.getElementById('dev-modal').classList.add('open'); 
+            }
+            
             sendDevBroadcast() {
+                // Hard backend lock to prevent injecting messages if not authenticated correctly
+                if (this.currentUser?.uid !== 'circle_team') {
+                    this.showToast("Unauthorized Action");
+                    return;
+                }
+
                 const msg = document.getElementById('dev-message').value.trim();
                 const type = document.getElementById('dev-broadcast-type').value;
                 if (!msg) return;
@@ -1588,10 +1645,13 @@
 
             getUser(uid) {
                 if (uid === this.currentUser?.uid) return this.currentUser;
-                return this.users.find(u => u.uid === uid) || { name: 'Unknown', avatar: '', handle: '@unknown' };
+                // Give deleted users a clean fallback UI so the app doesn't crash trying to render them
+                return this.users.find(u => u.uid === uid) || { name: 'Deleted User', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback', handle: '@deleted', badgeType: 'none' };
             }
 
             getBadgeMarkup(user) {
+                if (!user) return '';
+
                 const wrap = (inner) => `<span class="badge-wrapper">${inner}</span>`;
                 
                 if (user.badgeType === 'none') return '';
@@ -1734,6 +1794,8 @@
             }
 
             createPostCardHTML(post, user, index) {
+                if (!user) user = { name: 'Unknown User', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback' };
+                
                 const badge = this.getBadgeMarkup(user);
                 
                 let pollHTML = '';
@@ -1839,7 +1901,6 @@
                 this.showToast('Avatar Shuffled! 🎲');
             }
 
-            // Shuffle Banner on Main Profile Page (saves directly to DB)
             shuffleBanner(event) {
                 if (event) event.stopPropagation();
                 const randomId = Math.floor(Math.random() * 1000);
@@ -1854,7 +1915,6 @@
                 });
             }
             
-            // Shuffle Banner inside the Edit Profile Modal (saves to temp state)
             shuffleEditBanner(event) {
                 if (event) event.stopPropagation();
                 const randomId = Math.floor(Math.random() * 1000);
@@ -2027,11 +2087,12 @@
                 }
 
                 if(confirm('Are you sure you want to permanently delete this user and ALL their data?')) {
+                    
                     if (!uid || uid === 'undefined') {
-                        this.users = this.users.filter(u => u.uid && u.uid !== 'undefined');
+                        this.users = this.users.filter(u => u && u.uid && u.uid !== 'undefined');
                         localStorage.setItem('circle_users', JSON.stringify(this.users));
                         this.renderUserList();
-                        this.showToast('Corrupted user removed');
+                        this.showToast('Corrupted user removed locally');
                         return;
                     }
 
@@ -2070,13 +2131,13 @@
                         });
 
                         this.showToast('User deleted permanently');
-                        this.users = this.users.filter(u => u.uid !== uid);
+                        this.users = this.users.filter(u => u && u.uid !== uid);
                         localStorage.setItem('circle_users', JSON.stringify(this.users));
                         this.renderUserList();
                     }).catch(err => {
                         console.error("Delete Error", err);
                         this.showToast("User cleaned up locally");
-                        this.users = this.users.filter(u => u.uid !== uid);
+                        this.users = this.users.filter(u => u && u.uid !== uid);
                         localStorage.setItem('circle_users', JSON.stringify(this.users));
                         this.renderUserList();
                     });
@@ -2093,6 +2154,9 @@
                 const targetUid = (uid === 'me' || uid === this.currentUser?.uid) ? this.currentUser.uid : uid;
                 const isMe = targetUid === this.currentUser?.uid;
                 const u = this.getUser(targetUid);
+                
+                if (!u) return;
+
                 const badge = this.getBadgeMarkup(u);
                 const container = document.getElementById('profile-view');
                 const userPosts = this.posts.filter(p => p.uid === targetUid);
@@ -2175,3 +2239,6 @@
     </script>
 </body>
 </html>
+
+
+
