@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <title>Circle - Social</title>
     
-    <!-- PWA Manifest Link -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1DA1F2">
     <link rel="apple-touch-icon" href="https://api.dicebear.com/7.x/initials/svg?seed=Circle">
@@ -29,14 +28,13 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Cropper.js for Image Cropping -->
+    <!-- Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
 
-        /* Complete Box Sizing & Anti-aliasing */
         *, *::before, *::after { box-sizing: border-box; }
 
         :root {
@@ -57,15 +55,12 @@
             touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            
-            /* Prevent accidental text selection */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
         }
         
-        /* Allow text selection in inputs and textareas */
         input, textarea, [contenteditable="true"] {
             -webkit-user-select: auto;
             -moz-user-select: auto;
@@ -73,7 +68,6 @@
             user-select: auto;
         }
 
-        /* --- Optimized Ambient Background (Static to prevent lag) --- */
         body {
             font-family: 'Inter', sans-serif;
             display: flex; justify-content: center;
@@ -88,7 +82,12 @@
             background-attachment: fixed;
         }
 
-        /* --- Stunning New Login Screen --- */
+        /* Splash Screen */
+        #splash-screen {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
         #login-screen {
             position: fixed; inset: 0; z-index: 9999;
             background-color: transparent; 
@@ -147,7 +146,6 @@
         .login-input::placeholder { color: #9ca3af; font-weight: 500; }
         html.dark .login-input::placeholder { color: #6b7280; }
 
-        /* --- Master App Wrapper (Optimized) --- */
         #app-root {
             width: 100%; height: 100%;
             background-color: #ffffff;
@@ -163,7 +161,6 @@
             :root { --sidebar-width: 260px; } 
         }
 
-        /* --- Animations & Layout --- */
         @keyframes heartBurst { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
         .heart-pop { animation: heartBurst 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -187,7 +184,6 @@
         .dev-notif-row { animation: devNotifGlow 2.5s infinite; background: linear-gradient(90deg, rgba(245,158,11,0.05) 0%, transparent 100%); }
         html.dark .dev-notif-row { background: linear-gradient(90deg, rgba(245,158,11,0.1) 0%, transparent 100%); }
 
-        /* Hardware Accelerated Page scrolling */
         .page { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             padding-top: var(--header-height); padding-bottom: 90px; 
@@ -206,7 +202,6 @@
             overflow-wrap: anywhere;
         }
 
-        /* Nav & Headers */
         nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(0,0,0,0.05); transition: background-color 0.4s ease, border-color 0.4s ease; }
         html.dark nav { background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.05); }
         @media (min-width: 768px) { nav { position: static; width: var(--sidebar-width); height: 100%; flex-direction: column; justify-content: flex-start; align-items: flex-start; border-top: none; padding: 40px 20px; background: transparent; backdrop-filter: none; } .nav-logo { display: block !important; margin-bottom: 40px; padding-left: 15px; } .nav-item { width: 100%; padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: background 0.2s; } .nav-item span { display: inline !important; font-weight: 600; font-size: 18px; } .nav-item i { width: 30px; text-align: center; } }
@@ -217,7 +212,6 @@
             .fab { display: none !important; }
         }
 
-        /* --- DM Chat Room Full Overlay --- */
         #chat-room-view {
             position: absolute; inset: 0; z-index: 60;
             background: #ffffff;
@@ -246,11 +240,6 @@
         .fab:active { transform: scale(0.85); }
         @media (min-width: 768px) { .fab { position: static; width: 100%; height: 50px; border-radius: 30px; margin-top: 20px; font-size: 16px; font-weight: bold; } .fab i { display: none; } .fab::after { content: 'Post'; } }
 
-        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-        .lightbox.open { opacity: 1; pointer-events: auto; }
-        .lightbox img { max-width: 100%; max-height: 100%; transform: scale(0.9); transition: transform 0.3s; }
-        .lightbox.open img { transform: scale(1); }
-
         .badge-wrapper { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; margin-left: 6px; transform: translateY(-1px); }
         .badge-wrapper i { font-size: 18px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
         html.dark .badge-wrapper i { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
@@ -277,7 +266,15 @@
 </head>
 <body class="text-gray-900 dark:text-white">
 
-    <div id="login-screen">
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-white dark:bg-[#000000] flex flex-col items-center justify-center transition-all duration-700">
+        <div class="text-[54px] md:text-[72px] font-black tracking-tighter text-gray-900 dark:text-white drop-shadow-sm leading-none flex items-baseline">
+            Circle<span class="text-blue-600 text-[64px] md:text-[84px] animate-bounce ml-1">.</span>
+        </div>
+        <div class="mt-4 text-[11px] font-black text-gray-400 dark:text-gray-500 tracking-[0.3em] uppercase animate-pulse">Connect. Share. Discover.</div>
+    </div>
+
+    <div id="login-screen" class="hidden">
         <div class="login-container">
             <div class="mb-6">
                 <div class="text-[54px] font-black tracking-tighter text-gray-900 dark:text-white mb-2 drop-shadow-sm leading-none">Circle<span class="text-blue-600">.</span></div>
@@ -311,7 +308,6 @@
                 <i class="fa-solid fa-magnifying-glass text-2xl"></i><span class="hidden">Search</span>
             </button>
             
-            <!-- DM MESSAGES TAB -->
             <button onclick="app.router('messages')" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 relative" data-target="messages">
                 <i class="fa-regular fa-envelope text-2xl"></i><span class="hidden">Messages</span>
             </button>
@@ -324,7 +320,6 @@
                 <i class="fa-solid fa-user text-2xl"></i><span class="hidden">Profile</span>
             </button>
 
-            <!-- Only accessible by circle_team, strictly enforced by logic -->
             <button id="dev-btn" onclick="app.openDevModal()" class="nav-item text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50" data-target="dev" style="display: none;">
                 <i class="fa-solid fa-code text-2xl"></i><span class="hidden">Broadcast</span>
             </button>
@@ -368,7 +363,6 @@
                 </div>
             </div>
 
-            <!-- MESSAGES INBOX VIEW -->
             <div id="messages-view" class="page">
                 <div class="p-5">
                     <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-sm">Messages</h2>
@@ -380,7 +374,7 @@
                 <div class="p-5">
                     <div class="flex justify-between items-center mb-4 drop-shadow-sm">
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h2>
-                        <button onclick="app.clearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-white/50 dark:bg-black/50 border border-red-200 dark:border-red-900/30 backdrop-blur-sm hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
+                        <button onclick="app.requestClearNotifications()" class="text-[11px] font-bold text-red-500 dark:text-red-400 bg-white/50 dark:bg-black/50 border border-red-200 dark:border-red-900/30 backdrop-blur-sm hover:bg-red-50 dark:hover:bg-red-900/40 px-3 py-1.5 rounded-full transition-colors active:scale-95 shadow-sm">Clear All</button>
                     </div>
                     <div id="notification-list" class="space-y-3 pb-24"></div>
                 </div>
@@ -389,7 +383,6 @@
             <div id="profile-view" class="page"></div>
         </div>
 
-        <!-- FULL-SCREEN DM CHAT ROOM OVERLAY -->
         <div id="chat-room-view">
             <div class="h-[65px] md:h-[70px] glass-header flex items-center px-4 gap-3 flex-shrink-0 z-10 border-b border-gray-100 dark:border-darkborder shadow-sm">
                 <button onclick="app.closeChat()" class="text-gray-900 dark:text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
@@ -401,7 +394,6 @@
             </div>
             
             <div id="chat-room-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 dark:bg-[#0a0a0a]">
-               <!-- Chat bubbles go here -->
             </div>
             
             <div class="p-3 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-gray-200/50 dark:border-white/10 flex-shrink-0 pb-6 md:pb-3">
@@ -412,9 +404,31 @@
             </div>
         </div>
 
-        <div id="lightbox" class="lightbox" onclick="app.closeLightbox()"><button class="absolute top-6 right-6 text-white/80 hover:text-white text-3xl z-50"><i class="fa-solid fa-xmark"></i></button><img id="lightbox-img" src="" onclick="event.stopPropagation()"></div>
+        <!-- NEW ADVANCED LIGHTBOX -->
+        <div id="lightbox" class="fixed inset-0 bg-black/95 z-[200] hidden flex-col opacity-0 transition-opacity duration-300 pointer-events-none">
+            <!-- Top Bar -->
+            <div class="flex justify-between items-center p-4 bg-gradient-to-b from-black/60 to-transparent absolute top-0 left-0 w-full z-10 pointer-events-auto">
+                <div class="text-white/80 font-medium text-sm drop-shadow-md">Image Preview</div>
+                <button onclick="app.closeLightbox()" class="text-white/80 hover:text-white text-3xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors drop-shadow-md"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <!-- Draggable Container -->
+            <div class="flex-1 relative overflow-hidden flex items-center justify-center w-full h-full pointer-events-auto" id="lightbox-container" 
+                onmousedown="app.startLightboxDrag(event)" ontouchstart="app.startLightboxDrag(event)" 
+                onmousemove="app.doLightboxDrag(event)" ontouchmove="app.doLightboxDrag(event)" 
+                onmouseup="app.endLightboxDrag(event)" ontouchend="app.endLightboxDrag(event)" 
+                onmouseleave="app.endLightboxDrag(event)">
+                <img id="lightbox-img" src="" class="max-w-full max-h-[85vh] object-contain origin-center cursor-grab rounded-lg shadow-2xl select-none" draggable="false">
+            </div>
+            
+            <!-- Bottom Zoom Toolbar -->
+            <div class="flex justify-center items-center p-3 gap-8 absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md rounded-full border border-white/10 pointer-events-auto shadow-2xl">
+                <button onclick="app.zoomLightbox(-0.5)" class="text-white/80 hover:text-white text-xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                <button onclick="app.resetLightbox()" class="text-white/80 hover:text-white text-lg w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"><i class="fa-solid fa-rotate-right"></i></button>
+                <button onclick="app.zoomLightbox(0.5)" class="text-white/80 hover:text-white text-xl w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            </div>
+        </div>
 
-        <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[450px] flex flex-col">
                 <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
@@ -443,13 +457,12 @@
                     </div>
 
                     <div class="pt-4 border-t border-gray-200/50 dark:border-white/10 text-center">
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v2.0</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Circle App v2.5</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- EDIT POST MODAL -->
         <div id="edit-post-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
                 <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
@@ -466,18 +479,22 @@
             </div>
         </div>
 
-        <!-- POST MODAL WITH POLL FEATURE -->
         <div id="post-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-auto max-h-[90%] flex flex-col">
                 <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <button onclick="app.closeModal('post-modal')" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
-                    <button onclick="app.submitPost()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Post</button>
+                    <button id="submit-post-btn" onclick="app.submitPost()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Post</button>
                 </div>
                 <div class="flex space-x-3 flex-1 p-5 overflow-y-auto">
                     <img id="modal-avatar" src="" class="w-11 h-11 rounded-full bg-gray-100 dark:bg-[#18181b] object-cover border border-white/50 dark:border-white/10 flex-shrink-0 shadow-sm">
                     <div class="w-full flex flex-col">
                         <textarea id="post-content" class="w-full flex-1 min-h-[100px] bg-transparent outline-none resize-none text-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed" placeholder="What's happening?"></textarea>
                         
+                        <div id="post-image-preview-container" class="hidden relative mt-3 rounded-2xl overflow-hidden border border-gray-200/50 dark:border-white/10 shadow-sm w-full max-h-[400px]">
+                            <img id="post-image-preview" src="" class="w-full h-auto max-h-[400px] object-cover">
+                            <button onclick="app.removePostImage()" class="absolute top-2 right-2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md hover:bg-black/80 transition-colors shadow-lg"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+
                         <div id="poll-container" class="hidden mt-3 space-y-2 bg-white/60 dark:bg-black/40 p-4 rounded-2xl border border-blue-200/50 dark:border-blue-900/30 shadow-sm">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider"><i class="fa-solid fa-chart-simple mr-1"></i> Create Poll</span>
@@ -491,13 +508,15 @@
                     </div>
                 </div>
                 <div class="p-4 border-t border-gray-200/50 dark:border-white/10 flex items-center gap-4 flex-shrink-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-b-[32px]">
+                    <button onclick="document.getElementById('post-image-input').click()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Image"><i class="fa-solid fa-image text-xl"></i></button>
+                    <input type="file" id="post-image-input" accept="image/*" class="hidden" onchange="app.handleImageUpload(event, 'post')">
+                    
                     <button onclick="app.togglePoll()" class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors" title="Add Poll"><i class="fa-solid fa-chart-simple text-xl"></i></button>
-                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"><i class="fa-solid fa-location-dot text-xl"></i></button>
+                    <button class="text-blue-500 w-10 h-10 rounded-full hover:bg-blue-100/50 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors cursor-not-allowed opacity-50"><i class="fa-solid fa-location-dot text-xl"></i></button>
                 </div>
             </div>
         </div>
 
-        <!-- BROADCAST MODAL (Strictly Circle Team Only) -->
         <div id="dev-modal" class="modal-backdrop">
             <div class="modal-sheet h-[80%] md:h-auto md:w-[500px] flex flex-col">
                 <div class="p-5 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
@@ -524,7 +543,6 @@
             </div>
         </div>
 
-        <!-- COMMENT / REPLIES MODAL -->
         <div id="comment-modal" class="modal-backdrop">
             <div class="modal-sheet h-[85%] md:h-[600px] flex flex-col">
                 <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
@@ -547,31 +565,25 @@
                 <div class="p-5 flex justify-between items-center border-b border-transparent dark:border-darkborder flex-shrink-0"><h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h3><button onclick="app.closeModal('edit-profile-modal')" class="text-gray-500 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 w-8 h-8 rounded-full flex justify-center items-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button></div>
                 <div class="px-6 pb-6 pt-4 flex-1 overflow-y-auto space-y-6">
                     
-                    <!-- Banner Editor Section -->
                     <div class="relative w-full h-32 bg-gray-200 dark:bg-gray-800 rounded-xl mb-4 overflow-hidden shadow-sm group">
                         <img id="edit-banner-preview" src="" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors pointer-events-none"></div>
                         
-                        <!-- Image Upload Button for Banner -->
                         <button type="button" onclick="document.getElementById('banner-upload').click()" class="absolute bottom-2 left-2 bg-gray-800/80 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border border-white/20 backdrop-blur-md" title="Upload Banner Picture">
                             <i class="fa-solid fa-camera text-sm"></i>
                         </button>
                         
-                        <!-- Shuffle Banner Button -->
                         <button type="button" onclick="app.shuffleEditBanner(event)" class="absolute bottom-2 right-2 bg-blue-600/80 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border border-white/20 backdrop-blur-md" title="Generate Random Banner">
                             <i class="fa-solid fa-dice text-sm"></i>
                         </button>
                         
-                        <!-- Hidden File Input for Banner -->
                         <input type="file" id="banner-upload" accept="image/*" class="hidden" onchange="app.handleImageUpload(event, 'banner')">
                     </div>
 
-                    <!-- Avatar Editor Section (Overlapping the banner slightly) -->
                     <div class="flex flex-col items-center relative -mt-12 mb-3">
                         <div class="relative mb-3">
                             <img id="edit-avatar-preview" src="" class="w-24 h-24 rounded-full object-cover border-[4px] border-white dark:border-[#121212] shadow-lg relative z-10 bg-white dark:bg-[#121212]">
                             
-                            <!-- Image Upload Button for Avatar -->
                             <button type="button" onclick="document.getElementById('avatar-upload').click()" class="absolute bottom-0 left-[-5px] bg-gray-800 text-white w-9 h-9 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer border-2 border-white dark:border-black z-20" title="Upload Profile Picture">
                                 <i class="fa-solid fa-camera text-sm"></i>
                             </button>
@@ -580,7 +592,6 @@
                                 <i class="fa-solid fa-dice text-sm"></i>
                             </button>
                             
-                            <!-- Hidden File Input for Avatar -->
                             <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="app.handleImageUpload(event, 'avatar')">
                         </div>
                         
@@ -607,24 +618,43 @@
             </div>
         </div>
 
-        <!-- CROPPER MODAL -->
-        <div id="cropper-modal" class="modal-backdrop" style="z-index: 105;">
-            <div class="modal-sheet h-[90%] md:h-[600px] flex flex-col md:w-[500px]">
+        <!-- ENHANCED CROPPER MODAL WITH TOOLS -->
+        <div id="cropper-modal" class="modal-backdrop z-[200]">
+            <div class="modal-sheet h-[95%] md:h-[650px] flex flex-col md:w-[500px]">
                 <div class="p-4 flex justify-between items-center border-b border-gray-200/50 dark:border-white/10 flex-shrink-0">
                     <button onclick="app.cancelCrop()" class="text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50 px-4 py-1.5 rounded-full transition-colors">Cancel</button>
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">Crop Image</h3>
                     <button onclick="app.saveCroppedImage()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-full font-bold text-sm shadow-md shadow-blue-500/20 transition-transform active:scale-95">Done</button>
                 </div>
-                <div class="flex-1 p-4 bg-black/10 dark:bg-black/50 overflow-hidden flex items-center justify-center relative w-full">
-                    <div class="w-full h-full">
-                        <img id="cropper-image" src="" class="block max-w-full">
-                    </div>
+                <div class="flex-1 p-0 bg-black/90 overflow-hidden flex items-center justify-center relative w-full border-b border-gray-200/50 dark:border-white/10">
+                    <img id="cropper-image" src="" class="block max-w-full max-h-full">
+                </div>
+                <!-- Cropper Control Tools -->
+                <div class="p-4 flex items-center justify-center gap-6 bg-white dark:bg-[#121212] flex-shrink-0 rounded-b-3xl">
+                    <button onclick="app.cropperRotate(-90)" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-colors"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button onclick="app.cropperZoom(-0.1)" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-colors"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                    <button onclick="app.cropperZoom(0.1)" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-colors"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button onclick="app.cropperRotate(90)" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-colors"><i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="custom-confirm-modal" class="modal-backdrop z-[9999]">
+            <div class="modal-sheet h-auto md:w-[400px] p-6 text-center bg-white/90 dark:bg-black/90 backdrop-blur-xl rounded-3xl mx-4">
+                <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-orange-100/80 dark:bg-orange-900/30 mb-4 shadow-inner text-orange-500">
+                    <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                </div>
+                <h3 id="confirm-title" class="text-xl font-bold text-gray-900 dark:text-white mb-2">Are you sure?</h3>
+                <p id="confirm-message" class="text-gray-600 dark:text-gray-300 text-sm mb-6 font-medium leading-relaxed">This action cannot be undone.</p>
+                <div class="flex gap-3">
+                    <button id="confirm-cancel-btn" class="flex-1 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white py-3.5 rounded-xl font-bold transition-transform hover:bg-gray-300 dark:hover:bg-gray-700 active:scale-95 shadow-sm">Cancel</button>
+                    <button id="confirm-ok-btn" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-red-500/30 transition-transform active:scale-95">Confirm</button>
                 </div>
             </div>
         </div>
 
         <div id="ban-modal" class="modal-backdrop z-[9999]">
-            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center bg-white/90 dark:bg-black/90 backdrop-blur-xl">
+            <div class="modal-sheet h-auto md:w-[400px] p-8 text-center bg-white/90 dark:bg-black/90 backdrop-blur-xl mx-4 rounded-3xl">
                 <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-red-100/80 dark:bg-red-900/30 mb-6 shadow-inner">
                     <i class="fa-solid fa-user-slash text-4xl text-red-600 dark:text-red-400"></i>
                 </div>
@@ -637,7 +667,6 @@
         <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-3.5 rounded-full shadow-2xl opacity-0 transition-all pointer-events-none z-[70] flex items-center gap-3 scale-90 font-medium"><i class="fa-solid fa-check-circle text-green-400"></i> <span id="toast-msg" class="text-sm">Success</span></div>
     </div>
 
-    <!-- Service Worker Registration for PWA -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -671,7 +700,6 @@
             constructor() {
                 this.currentUser = null;
                 
-                // --- ROBUST LOCAL STORAGE PARSING ---
                 let localUsers = [];
                 try {
                     localUsers = JSON.parse(localStorage.getItem('circle_users')) || [];
@@ -691,11 +719,21 @@
                 this.editingPostId = null; 
                 this.isDarkMode = localStorage.getItem('circle_dark') === 'true';
                 
-                // Cropper variables
                 this.cropper = null;
                 this.currentCropType = null;
                 this.tempAvatar = null;
                 this.tempBanner = null;
+                this.tempPostImage = null; 
+                
+                // Advanced Lightbox Variables
+                this.lbScale = 1;
+                this.lbPanX = 0;
+                this.lbPanY = 0;
+                this.lbIsDragging = false;
+                this.lbStartX = 0;
+                this.lbStartY = 0;
+
+                this.confirmCallback = null;
 
                 if (this.isDarkMode) {
                     document.documentElement.classList.add('dark');
@@ -707,16 +745,21 @@
                 
                 this.initDefaultUsers();
 
-                // --- CHECK FOR PERSISTENT SESSION ---
                 const activeUid = localStorage.getItem('circle_active_uid');
                 if (activeUid) {
                     const foundSession = this.users.find(u => u && u.uid === activeUid);
                     if (foundSession) {
                         this.currentUser = foundSession;
                         document.getElementById('login-screen').style.display = 'none';
-                        // Wait just a moment for the DOM to settle before initializing app
+                        
+                        history.replaceState({ view: 'feed' }, '', '#feed');
+
                         setTimeout(() => this.initApp(), 50); 
+                    } else {
+                        this.hideSplashScreen();
                     }
+                } else {
+                    this.hideSplashScreen();
                 }
 
                 document.getElementById('login-password').addEventListener('keypress', (e) => {
@@ -729,10 +772,167 @@
                     }
                 });
 
+                document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+                    this.closeConfirmModal();
+                });
+                
+                document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+                    if(this.confirmCallback) {
+                        this.confirmCallback();
+                    }
+                    this.closeConfirmModal();
+                });
+
+                window.addEventListener('popstate', this.handlePopState.bind(this));
+
                 this.listenToFirebase();
             }
 
-            // === IMAGE UPLOAD & CROPPER METHODS ===
+            hideSplashScreen() {
+                const splash = document.getElementById('splash-screen');
+                if (splash && !splash.classList.contains('hidden')) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.classList.add('hidden'), 700);
+                }
+            }
+
+            handlePopState(e) {
+                // 1. Close lightbox if open
+                if(document.getElementById('lightbox').classList.contains('opacity-100')) {
+                    this.closeLightbox(false); 
+                }
+
+                // 2. Safely close all modals
+                document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+
+                // 3. Cleanup cropper if hardware back button was pressed while it was open
+                if (this.cropper && !document.getElementById('cropper-modal').classList.contains('open')) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                    this.currentCropType = null;
+                }
+
+                const state = e.state;
+                
+                // 4. Handle Chat View State
+                if (!state || state.view !== 'chat') {
+                    document.getElementById('chat-room-view').classList.remove('open');
+                    this.activeChatUid = null;
+                }
+
+                if (state) {
+                    if (state.view === 'chat') {
+                        this.activeChatUid = state.uid;
+                        document.getElementById('chat-room-view').classList.add('open');
+                        this.renderChatRoom();
+                    } else if (state.view === 'profile') {
+                        this.router('profile', false);
+                        this.renderProfile(state.uid);
+                    } else {
+                        this.router(state.view, false);
+                    }
+
+                    // Restore parent modal if required by history state
+                    if (state.modalOpen && state.modalId) {
+                        document.getElementById(state.modalId).classList.add('open');
+                    }
+                } else {
+                    this.router('feed', false);
+                }
+            }
+
+            /* --- LIGHTBOX METHODS --- */
+            openLightbox(src) { 
+                if(!src) return;
+                history.pushState({ ...history.state, modalOpen: true }, '', location.hash);
+                const img = document.getElementById('lightbox-img');
+                img.src = src; 
+                this.resetLightbox();
+                
+                const lb = document.getElementById('lightbox');
+                lb.classList.remove('hidden');
+                // Allow browser to render block before fading in
+                setTimeout(() => {
+                    lb.classList.remove('opacity-0', 'pointer-events-none');
+                    lb.classList.add('opacity-100');
+                }, 10);
+            }
+            
+            // Re-fetch from state to avoid putting megabytes of base64 inside the DOM attribute
+            openLightboxFromPost(dbKey) {
+                const post = this.posts.find(p => p.dbKey === dbKey);
+                if(post && post.image) {
+                    this.openLightbox(post.image);
+                }
+            }
+
+            closeLightbox(goBack = true) { 
+                if (goBack && history.state?.modalOpen) {
+                    history.back();
+                } else {
+                    const lb = document.getElementById('lightbox');
+                    lb.classList.remove('opacity-100');
+                    lb.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        lb.classList.add('hidden');
+                        this.resetLightbox();
+                        document.getElementById('lightbox-img').src = '';
+                    }, 300);
+                }
+            }
+
+            zoomLightbox(delta) {
+                this.lbScale += delta;
+                if (this.lbScale < 0.5) this.lbScale = 0.5;
+                if (this.lbScale > 5) this.lbScale = 5;
+                this.updateLightboxTransform(true);
+            }
+
+            resetLightbox() {
+                this.lbScale = 1;
+                this.lbPanX = 0;
+                this.lbPanY = 0;
+                this.updateLightboxTransform(true);
+            }
+
+            updateLightboxTransform(smooth) {
+                const img = document.getElementById('lightbox-img');
+                if (smooth) {
+                    img.style.transition = 'transform 0.2s ease-out';
+                } else {
+                    img.style.transition = 'none';
+                }
+                img.style.transform = `translate(${this.lbPanX}px, ${this.lbPanY}px) scale(${this.lbScale})`;
+                if (this.lbScale > 1) {
+                    img.classList.replace('cursor-grab', 'cursor-move');
+                } else {
+                    img.classList.replace('cursor-move', 'cursor-grab');
+                }
+            }
+
+            startLightboxDrag(e) {
+                if (this.lbScale <= 1) return;
+                this.lbIsDragging = true;
+                this.lbStartX = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - this.lbPanX;
+                this.lbStartY = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - this.lbPanY;
+            }
+
+            doLightboxDrag(e) {
+                if (!this.lbIsDragging) return;
+                e.preventDefault();
+                const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                this.lbPanX = clientX - this.lbStartX;
+                this.lbPanY = clientY - this.lbStartY;
+                this.updateLightboxTransform(false);
+            }
+
+            endLightboxDrag(e) {
+                this.lbIsDragging = false;
+            }
+
+
+            /* --- CROPPER METHODS --- */
             handleImageUpload(event, type = 'avatar') {
                 const file = event.target.files[0];
                 if (!file) return;
@@ -746,21 +946,22 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     document.getElementById('cropper-image').src = e.target.result;
-                    document.getElementById('cropper-modal').classList.add('open');
+                    this.openModal('cropper-modal', false);
                     
                     setTimeout(() => {
                         if (this.cropper) {
                             this.cropper.destroy();
                         }
                         
-                        // Use 1:1 for avatar, 8:3 (approx) for banner
-                        const targetAspectRatio = type === 'avatar' ? 1 : (800 / 300);
+                        let targetAspectRatio = NaN; // Free crop default for posts
+                        if (type === 'avatar') targetAspectRatio = 1;
+                        else if (type === 'banner') targetAspectRatio = 800 / 300;
                         
                         this.cropper = new Cropper(document.getElementById('cropper-image'), {
                             aspectRatio: targetAspectRatio, 
                             viewMode: 1, 
                             dragMode: 'move',
-                            autoCropArea: 0.9,
+                            autoCropArea: type === 'post' ? 1 : 0.9,
                             restore: false,
                             guides: true,
                             center: true,
@@ -774,29 +975,77 @@
                 reader.readAsDataURL(file);
             }
 
+            cropperZoom(ratio) {
+                if (this.cropper) this.cropper.zoom(ratio);
+            }
+
+            cropperRotate(degree) {
+                if (this.cropper) this.cropper.rotate(degree);
+            }
+
+            removePostImage() {
+                this.tempPostImage = null;
+                document.getElementById('post-image-preview-container').classList.add('hidden');
+                document.getElementById('post-image-preview').src = '';
+                document.getElementById('post-image-input').value = '';
+            }
+
             saveCroppedImage() {
                 if (!this.cropper) return;
                 
-                const isAvatar = this.currentCropType === 'avatar';
-                
-                // Compress image size to prevent database overload
-                const canvasOptions = isAvatar ? 
-                    { width: 400, height: 400, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' } : 
-                    { width: 800, height: 300, imageSmoothingEnabled: true, imageSmoothingQuality: 'high' };
+                try {
+                    const type = this.currentCropType;
+                    
+                    let canvasOptions = { imageSmoothingEnabled: true, imageSmoothingQuality: 'high' };
+                    if (type === 'avatar') {
+                        canvasOptions.width = 400; canvasOptions.height = 400;
+                    } else if (type === 'banner') {
+                        canvasOptions.width = 800; canvasOptions.height = 300;
+                    } else if (type === 'post') {
+                        const cropData = this.cropper.getData();
+                        // Aggressively shrink image dimensions to prevent payload limits in DB
+                        const maxDim = 800; 
+                        if (cropData.width > maxDim || cropData.height > maxDim) {
+                            if (cropData.width > cropData.height) {
+                                canvasOptions.width = maxDim;
+                            } else {
+                                canvasOptions.height = maxDim;
+                            }
+                        }
+                    }
 
-                const canvas = this.cropper.getCroppedCanvas(canvasOptions);
-                const croppedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
-                
-                if (isAvatar) {
-                    this.tempAvatar = croppedImageBase64;
-                    document.getElementById('edit-avatar-preview').src = croppedImageBase64;
-                } else {
-                    this.tempBanner = croppedImageBase64;
-                    document.getElementById('edit-banner-preview').src = croppedImageBase64;
+                    const canvas = this.cropper.getCroppedCanvas(canvasOptions);
+                    if (!canvas) {
+                        this.showToast('Could not process image. Try a smaller file.');
+                        this.closeCropperModal();
+                        return;
+                    }
+
+                    // Compress aggressively (0.6 instead of 0.8) to prevent Firebase RTDB crashing
+                    const croppedImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    
+                    if (type === 'avatar') {
+                        this.tempAvatar = croppedImageBase64;
+                        document.getElementById('edit-avatar-preview').src = croppedImageBase64;
+                    } else if (type === 'banner') {
+                        this.tempBanner = croppedImageBase64;
+                        document.getElementById('edit-banner-preview').src = croppedImageBase64;
+                    } else if (type === 'post') {
+                        this.tempPostImage = croppedImageBase64;
+                        const previewEl = document.getElementById('post-image-preview');
+                        const previewContainer = document.getElementById('post-image-preview-container');
+                        previewEl.src = croppedImageBase64;
+                        previewContainer.classList.remove('hidden');
+                        previewContainer.classList.add('animate-entry');
+                    }
+                    
+                    this.closeCropperModal();
+                    this.showToast('Image Cropped!');
+                } catch(e) {
+                    console.error("Error cropping: ", e);
+                    this.showToast("Error processing the image.");
+                    this.closeCropperModal();
                 }
-                
-                this.closeCropperModal();
-                this.showToast('Image Cropped!');
             }
 
             cancelCrop() {
@@ -804,17 +1053,36 @@
             }
             
             closeCropperModal() {
-                document.getElementById('cropper-modal').classList.remove('open');
+                this.closeModal('cropper-modal', false);
                 if (this.cropper) {
                     this.cropper.destroy();
                     this.cropper = null;
                 }
-                document.getElementById('avatar-upload').value = ''; 
+                
+                // CRITICAL: Clear file inputs so onchange can trigger if they select the exact same file again
+                const avatarUpload = document.getElementById('avatar-upload');
+                if(avatarUpload) avatarUpload.value = ''; 
+                
                 const bannerUpload = document.getElementById('banner-upload');
                 if (bannerUpload) bannerUpload.value = '';
+                
+                const postImageInput = document.getElementById('post-image-input');
+                if (postImageInput) postImageInput.value = '';
+                
                 this.currentCropType = null;
             }
-            // ==========================================
+
+            requestConfirm(title, message, callback) {
+                document.getElementById('confirm-title').innerText = title;
+                document.getElementById('confirm-message').innerText = message;
+                this.confirmCallback = callback;
+                this.openModal('custom-confirm-modal', false);
+            }
+
+            closeConfirmModal() {
+                this.closeModal('custom-confirm-modal', false);
+                this.confirmCallback = null;
+            }
 
             toggleDarkMode(isDark) {
                 this.isDarkMode = isDark;
@@ -829,7 +1097,7 @@
             openSettings() {
                 const toggle = document.getElementById('dark-mode-toggle');
                 if(toggle) toggle.checked = this.isDarkMode;
-                document.getElementById('settings-modal').classList.add('open');
+                this.openModal('settings-modal');
             }
 
             initDefaultUsers() {
@@ -887,6 +1155,8 @@
                             this.renderComments();
                         }
                     }
+                    
+                    this.hideSplashScreen();
                 });
 
                 const usersRef = ref(db, 'users');
@@ -907,7 +1177,6 @@
                     if (this.currentUser) {
                         const freshUserData = this.users.find(u => u.uid === this.currentUser.uid);
                         
-                        // Safety mechanism: If user is erased from the database by an admin
                         if (!freshUserData && this.currentUser.uid !== 'circle_team' && this.currentUser.uid !== 'admin_saad') {
                             this.handleBan();
                             return;
@@ -1053,8 +1322,6 @@
 
             loginUser(user) {
                 this.currentUser = user;
-                
-                // Keep user logged in permanently
                 localStorage.setItem('circle_active_uid', user.uid);
                 
                 if(!this.currentUser.notifications) this.currentUser.notifications = [];
@@ -1075,16 +1342,14 @@
                 const devBtn = document.getElementById('dev-btn');
                 const headerStatus = document.getElementById('header-status');
                 
-                // --- HARD LOCK BROADCAST VISIBILITY ---
                 if (devBtn) {
                     if (this.currentUser.uid === 'circle_team') {
-                        devBtn.style.display = 'flex'; // Make visible exclusively to circle_team
+                        devBtn.style.display = 'flex';
                     } else {
-                        devBtn.style.display = 'none'; // Erase from screen for ALL others (including admin_saad)
+                        devBtn.style.display = 'none';
                     }
                 }
 
-                // Handle top-left Badge
                 if (this.currentUser.uid === 'circle_team') {
                     headerStatus.classList.remove('opacity-0');
                     headerStatus.innerHTML = `<i class="fa-solid fa-building text-blue-600 dark:text-blue-500 text-[10px]"></i><span class="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Official</span>`;
@@ -1103,6 +1368,9 @@
                 this.renderUserList();
                 this.renderMessagesList();
                 this.renderNotifications();
+                
+                // Fallback to hide splash screen just in case DB connection is extremely slow
+                setTimeout(() => this.hideSplashScreen(), 4000); 
             }
 
             handleLogout() {
@@ -1122,11 +1390,11 @@
             }
 
             handleBan() {
-                document.getElementById('ban-modal').classList.add('open');
+                this.openModal('ban-modal');
             }
 
             closeBanModal() {
-                document.getElementById('ban-modal').classList.remove('open');
+                this.closeModal('ban-modal');
                 this.handleLogout();
             }
 
@@ -1143,7 +1411,7 @@
                 return [this.currentUser.uid, targetUid].sort().join('_');
             }
 
-            openChat(targetUid) {
+            openChat(targetUid, pushState = true) {
                 if (targetUid === this.currentUser.uid) {
                     this.showToast("You cannot message yourself.");
                     return;
@@ -1153,11 +1421,19 @@
                 chatRoom.classList.add('open');
                 this.renderChatRoom();
                 setTimeout(() => document.getElementById('chat-input').focus(), 300);
+                
+                if (pushState) {
+                    history.pushState({ view: 'chat', uid: targetUid }, '', '#chat-' + targetUid);
+                }
             }
 
             closeChat() {
-                this.activeChatUid = null;
-                document.getElementById('chat-room-view').classList.remove('open');
+                if (history.state?.view === 'chat') {
+                    history.back();
+                } else {
+                    this.activeChatUid = null;
+                    document.getElementById('chat-room-view').classList.remove('open');
+                }
             }
 
             renderMessagesList() {
@@ -1179,7 +1455,7 @@
                 usersWithChats.sort((a, b) => b.lastMsgTime - a.lastMsgTime);
                 
                 if (usersWithChats.length === 0) {
-                    list.innerHTML = `<div class="text-center py-10 text-gray-400 dark:text-gray-600"><p>No users available.</p></div>`;
+                    list.innerHTML = `<div class="text-center py-10 text-gray-400 dark:text-gray-600 animate-fade-in"><p>No users available.</p></div>`;
                     return;
                 }
 
@@ -1191,7 +1467,7 @@
                     const lastMsgStyle = hasHistory ? 'text-gray-900 dark:text-gray-200 font-medium' : 'text-gray-400 dark:text-gray-500 italic';
                     
                     list.innerHTML += `
-                    <div class="flex items-center gap-3 p-3 bg-white/60 dark:bg-black/40 hover:bg-white dark:hover:bg-[#121212] border-b border-gray-100 dark:border-darkborder transition-colors cursor-pointer" onclick="app.openChat('${u.uid}')">
+                    <div class="flex items-center gap-3 p-3 bg-white/60 dark:bg-black/40 hover:bg-white dark:hover:bg-[#121212] border-b border-gray-100 dark:border-darkborder transition-colors cursor-pointer animate-fade-in" onclick="app.openChat('${u.uid}')">
                         <img src="${safeAvatar}" class="w-12 h-12 rounded-full object-cover bg-gray-100 flex-shrink-0 border border-white/50 dark:border-white/10 shadow-sm">
                         <div class="flex flex-col flex-1 min-w-0">
                             <div class="font-bold text-[15px] text-gray-900 dark:text-white flex items-center truncate max-w-full"><span class="truncate mr-1">${u.name}</span> ${badge}</div>
@@ -1213,13 +1489,13 @@
                 const chatId = this.getChatId(this.activeChatUid);
                 const chatData = this.chats[chatId] || { messages: {} };
                 const msgsObj = chatData.messages || {};
-                const msgs = Object.keys(msgsObj).map(key => msgsObj[key]).sort((a,b) => a.id - b.id);
+                const msgs = Object.keys(msgsObj).map(key => ({...msgsObj[key], dbKey: key})).sort((a,b) => a.id - b.id);
                 
                 const list = document.getElementById('chat-room-messages');
                 list.innerHTML = '';
                 
                 if (msgs.length === 0) {
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-600 pt-20"><i class="fa-solid fa-hand-wave text-4xl mb-3"></i><p>Say hi to ${targetUser.name}!</p></div>`;
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-600 pt-20 animate-fade-in"><i class="fa-solid fa-hand-wave text-4xl mb-3"></i><p>Say hi to ${targetUser.name}!</p></div>`;
                     return;
                 }
 
@@ -1229,9 +1505,11 @@
                     const justifyClass = isMe ? 'justify-end' : 'justify-start';
                     const paddingFix = isMe ? 'pl-10' : 'pr-10';
                     
+                    const pressHandlers = isMe ? `onmousedown="app.startMessagePress('${m.dbKey}')" onmouseleave="app.endMessagePress()" onmouseup="app.endMessagePress()" ontouchstart="app.startMessagePress('${m.dbKey}')" ontouchend="app.endMessagePress()" ontouchmove="app.endMessagePress()"` : '';
+
                     list.innerHTML += `
-                    <div class="flex w-full ${justifyClass} ${paddingFix}">
-                        <div class="${bubbleClass} px-4 py-2.5 max-w-[85%] shadow-sm">
+                    <div class="flex w-full ${justifyClass} ${paddingFix} animate-spring-up" style="animation-duration: 0.3s">
+                        <div class="${bubbleClass} px-4 py-2.5 max-w-[85%] shadow-sm ${isMe ? 'cursor-pointer active:scale-[0.98] transition-transform' : ''}" ${pressHandlers}>
                             <p class="text-[15px] leading-snug word-break-fix">${this.linkify(m.text)}</p>
                             <span class="block text-[9px] mt-1 opacity-70 text-right font-medium">${m.time}</span>
                         </div>
@@ -1239,6 +1517,26 @@
                 });
                 
                 list.scrollTop = list.scrollHeight;
+            }
+
+            startMessagePress(dbKey) {
+                this.pressTimer = setTimeout(() => {
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    this.requestConfirm(
+                        "Delete Message",
+                        "Do you want to permanently delete this message?",
+                        () => {
+                            const chatId = this.getChatId(this.activeChatUid);
+                            remove(ref(db, `chats/${chatId}/messages/${dbKey}`)).then(() => {
+                                this.showToast("Message deleted");
+                            });
+                        }
+                    );
+                }, 600);
+            }
+
+            endMessagePress() {
+                if (this.pressTimer) clearTimeout(this.pressTimer);
             }
 
             sendChatMessage() {
@@ -1272,6 +1570,7 @@
                 container.classList.toggle('hidden');
                 if (!container.classList.contains('hidden')) {
                     document.getElementById('poll-opt-1').focus();
+                    container.classList.add('animate-spring-up');
                 }
             }
 
@@ -1317,7 +1616,7 @@
                 if (!post) return;
                 this.editingPostId = dbKey;
                 document.getElementById('edit-post-content').value = post.text;
-                document.getElementById('edit-post-modal').classList.add('open');
+                this.openModal('edit-post-modal');
             }
 
             saveEditedPost() {
@@ -1342,14 +1641,18 @@
 
             deletePost(dbKey) {
                 this.togglePostOptions(dbKey); 
-                if(confirm('Are you sure you want to delete this post permanently?')) {
-                    remove(ref(db, 'posts/' + dbKey)).then(() => {
-                        this.showToast('Post deleted');
-                    }).catch(err => {
-                        console.error(err);
-                        this.showToast('Failed to delete post');
-                    });
-                }
+                this.requestConfirm(
+                    "Delete Post",
+                    "Are you sure you want to delete this post permanently?",
+                    () => {
+                        remove(ref(db, 'posts/' + dbKey)).then(() => {
+                            this.showToast('Post deleted');
+                        }).catch(err => {
+                            console.error(err);
+                            this.showToast('Failed to delete post');
+                        });
+                    }
+                );
             }
 
             reportPost(dbKey) {
@@ -1357,7 +1660,11 @@
                 this.showToast('Post reported to administrators');
             }
 
-            openPostModal() { document.getElementById('modal-avatar').src = this.currentUser.avatar; document.getElementById('post-modal').classList.add('open'); }
+            openPostModal() { 
+                document.getElementById('modal-avatar').src = this.currentUser.avatar; 
+                this.removePostImage();
+                this.openModal('post-modal'); 
+            }
             
             submitPost() {
                 const t = document.getElementById('post-content').value.trim();
@@ -1380,13 +1687,18 @@
                     }
                 }
 
-                if (!t && !pollData) { this.showToast("Post is empty"); return; }
+                if (!t && !pollData && !this.tempPostImage) { this.showToast("Post is empty"); return; }
                 
+                const postBtn = document.getElementById('submit-post-btn');
+                const originalBtnText = postBtn.innerText;
+                postBtn.innerText = 'Posting...';
+                postBtn.disabled = true;
+
                 const newPost = {
                     id: Date.now(),
                     uid: this.currentUser.uid,
                     text: t,
-                    image: null,
+                    image: this.tempPostImage,
                     poll: pollData,
                     likes: 0,
                     likedBy: {},
@@ -1399,24 +1711,27 @@
                     this.showToast('Posted Online!');
                     document.getElementById('post-content').value = '';
                     this.removePoll();
+                    this.removePostImage();
                     this.closeModal('post-modal');
                 }).catch((err) => {
-                    console.error(err);
-                    this.showToast('Error posting');
+                    console.error("Post Error", err);
+                    this.showToast('Error: Payload might be too large for DB limits');
+                }).finally(() => {
+                    postBtn.innerText = originalBtnText;
+                    postBtn.disabled = false;
                 });
             }
 
             openCommentModal(dbKey) {
                 this.activePostId = dbKey;
                 document.getElementById('comment-input-avatar').src = this.currentUser.avatar;
-                document.getElementById('comment-modal').classList.add('open');
+                this.openModal('comment-modal');
                 this.renderComments();
                 setTimeout(() => document.getElementById('comment-input').focus(), 300);
             }
 
             renderComments() {
                 const post = this.posts.find(p => p.dbKey === this.activePostId);
-                // Safe guard in case post was deleted while viewer was looking at it
                 if (!post) {
                     this.closeModal('comment-modal');
                     return;
@@ -1431,13 +1746,12 @@
                 document.getElementById('comment-count-badge').innerText = commentsArray.length;
 
                 if (commentsArray.length === 0) {
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-400 dark:text-gray-500"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-gray-400 dark:text-gray-500 animate-fade-in"><i class="fa-regular fa-comments text-4xl mb-3"></i><p>No replies yet. Be the first!</p></div>`;
                     return;
                 }
 
                 commentsArray.forEach(c => {
                     const u = this.getUser(c.uid);
-                    // Double check fallback object validity
                     if(!u) return; 
                     
                     list.innerHTML += `
@@ -1523,276 +1837,6 @@
                 return pollHTML;
             }
 
-            updatePostUI(post) {
-                const postEls = document.querySelectorAll(`[data-post-id="${post.dbKey}"]`);
-                if (postEls.length === 0) return;
-
-                const user = this.getUser(post.uid);
-                const formattedLikes = this.formatCount(post.likes);
-                const commentsObj = post.comments || {};
-                const formattedComments = this.formatCount(Object.keys(commentsObj).length);
-                const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
-                
-                const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
-
-                postEls.forEach(el => {
-                    const avatarEl = el.querySelector('.post-user-avatar');
-                    if (avatarEl && avatarEl.src !== user.avatar) avatarEl.src = user.avatar;
-                    
-                    const nameEl = el.querySelector('.post-user-name');
-                    if (nameEl && nameEl.innerText !== user.name) nameEl.innerText = user.name;
-
-                    const textContentEl = el.querySelector('.post-text-content');
-                    if (textContentEl) textContentEl.innerHTML = this.linkify(post.text);
-
-                    const timeContentEl = el.querySelector('.post-time-content');
-                    if (timeContentEl && post.isEdited && !timeContentEl.innerHTML.includes('(edited)')) {
-                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80 flex-shrink-0">(edited)</span>`;
-                    }
-
-                    const likeBtn = el.querySelector('.like-btn');
-                    if (likeBtn) {
-                        likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
-                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50 dark:bg-red-900/20' : 'bg-gray-100/50 dark:bg-gray-800/50'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
-                    }
-
-                    const commentCount = el.querySelector('.comment-count');
-                    if (commentCount) commentCount.innerText = formattedComments;
-
-                    const pollContainer = el.querySelector('.poll-container');
-                    if (pollContainer && post.poll) {
-                        pollContainer.innerHTML = this.generatePollHTML(post);
-                    }
-                });
-            }
-
-            toggleLike(dbKey) {
-                if (!this.currentUser) return;
-                const post = this.posts.find(p => p.dbKey === dbKey);
-                if (!post) return;
-
-                let likedBy = post.likedBy || {};
-                let likesCount = post.likes || 0;
-
-                if (likedBy[this.currentUser.uid]) {
-                    delete likedBy[this.currentUser.uid]; 
-                    likesCount = Math.max(0, likesCount - 1);
-                } else {
-                    likedBy[this.currentUser.uid] = true; 
-                    likesCount++;
-                    
-                    if (post.uid !== this.currentUser.uid) {
-                        this.pushNotification(post.uid, 'like', this.currentUser, 'liked your post.');
-                    }
-                }
-
-                update(ref(db, 'posts/' + dbKey), {
-                    likes: likesCount,
-                    likedBy: likedBy
-                });
-            }
-
-            openDevModal() { 
-                // Hard backend lock to prevent opening the modal if not authenticated correctly
-                if (this.currentUser?.uid !== 'circle_team') {
-                    this.showToast("Unauthorized Action");
-                    return;
-                }
-                document.getElementById('dev-modal').classList.add('open'); 
-            }
-            
-            sendDevBroadcast() {
-                // Hard backend lock to prevent injecting messages if not authenticated correctly
-                if (this.currentUser?.uid !== 'circle_team') {
-                    this.showToast("Unauthorized Action");
-                    return;
-                }
-
-                const msg = document.getElementById('dev-message').value.trim();
-                const type = document.getElementById('dev-broadcast-type').value;
-                if (!msg) return;
-                
-                if (type === 'post') {
-                    push(ref(db, 'posts'), {
-                        id: Date.now(), uid: 'circle_team', text: msg,
-                        image: null, likes: 0, likedBy: {}, comments: {}, 
-                        time: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
-                        isEdited: false
-                    });
-                    this.showToast('Broadcast Post Sent!');
-                } else if (type === 'notification') {
-                    let updates = {};
-                    this.users.forEach(u => {
-                        if (u.uid === 'circle_team') return;
-                        let notifs = u.notifications || [];
-                        notifs.unshift({
-                            id: Date.now(), type: 'dev', actorId: 'circle_team', text: msg,
-                            timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
-                            isRead: false
-                        });
-                        updates['users/' + u.uid + '/notifications'] = notifs;
-                    });
-                    
-                    update(ref(db), updates).then(() => {
-                        this.showToast('Mass Notification Sent!');
-                    });
-                }
-                
-                this.closeModal('dev-modal');
-                document.getElementById('dev-message').value = '';
-            }
-
-            getUser(uid) {
-                if (uid === this.currentUser?.uid) return this.currentUser;
-                // Give deleted users a clean fallback UI so the app doesn't crash trying to render them
-                return this.users.find(u => u.uid === uid) || { name: 'Deleted User', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback', handle: '@deleted', badgeType: 'none' };
-            }
-
-            getBadgeMarkup(user) {
-                if (!user) return '';
-
-                const wrap = (inner) => `<span class="badge-wrapper">${inner}</span>`;
-                
-                if (user.badgeType === 'none') return '';
-                if (user.badgeType === 'purple' || (user.isAdmin && user.badgeType === undefined)) return wrap(`<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`);
-                if (user.badgeType === 'gold') return wrap(`<span class="badge-container gold" title="Premium"><i class="fa-solid fa-certificate gold-seal-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`);
-                if (user.badgeType === 'youtube') return wrap(`<i class="fa-brands fa-youtube text-red-600 text-[20px]" title="YouTube Creator"></i>`);
-                if (user.badgeType === 'dev') return wrap(`<i class="fa-solid fa-code text-green-500 text-[18px]" title="Developer"></i>`);
-                if (user.badgeType === 'diamond') return wrap(`<i class="fa-solid fa-gem text-cyan-400 text-[18px]" title="VIP Diamond"></i>`);
-                if (user.badgeType === 'trophy') return wrap(`<i class="fa-solid fa-trophy text-yellow-500 text-[18px]" title="Top Contributor"></i>`);
-                if (user.badgeType === 'rocket') return wrap(`<i class="fa-solid fa-rocket text-orange-500 text-[18px]" title="Early Adopter"></i>`);
-                if (user.badgeType === 'shield') return wrap(`<i class="fa-solid fa-shield-halved text-emerald-500 text-[18px]" title="Moderator"></i>`);
-                if (user.badgeType === 'blue' || user.isVerified) return wrap(`<i class="fa-solid fa-circle-check text-blue-500 text-[18px]" title="Verified"></i>`);
-                return '';
-            }
-
-            formatCount(num) {
-                if (num === undefined || num === null) return '0';
-                if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-                if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-                return num.toString();
-            }
-
-            pushNotification(targetUid, type, actor, text) {
-                if (targetUid === actor.uid) return; 
-
-                const targetUser = this.users.find(u => u.uid === targetUid);
-                if (targetUser) {
-                    let notifs = targetUser.notifications || [];
-
-                    if (type === 'follow') {
-                        notifs = notifs.filter(n => !(n.type === 'follow' && n.actorId === actor.uid));
-                    }
-
-                    notifs.unshift({
-                        id: Date.now(), type, actorId: actor.uid, text, 
-                        timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }), 
-                        isRead: false
-                    });
-                    
-                    update(ref(db, 'users/' + targetUid), { notifications: notifs });
-                }
-            }
-
-            markNotificationsAsRead() {
-                if (!this.currentUser || !this.currentUser.notifications) return;
-                
-                let updated = false;
-                const markedNotifs = this.currentUser.notifications.map(n => {
-                    if (!n.isRead) {
-                        updated = true;
-                        return { ...n, isRead: true };
-                    }
-                    return n;
-                });
-                
-                if (updated) {
-                    update(ref(db, 'users/' + this.currentUser.uid), { notifications: markedNotifs });
-                    document.getElementById('nav-notif-badge').classList.add('hidden');
-                }
-            }
-
-            clearNotifications() {
-                if (!this.currentUser) return;
-                if (confirm('Clear all your notifications?')) {
-                    update(ref(db, 'users/' + this.currentUser.uid), { notifications: [] }).then(() => {
-                        this.currentUser.notifications = [];
-                        this.renderNotifications();
-                        this.showToast('Notifications cleared');
-                    });
-                }
-            }
-
-            renderNotifications() {
-                const list = document.getElementById('notification-list');
-                const badge = document.getElementById('nav-notif-badge');
-                list.innerHTML = '';
-                
-                const notifs = this.currentUser.notifications || [];
-                
-                const validNotifs = notifs.filter(n => {
-                    const actor = this.users.find(u => u.uid === n.actorId);
-                    return actor && actor.uid !== 'undefined';
-                });
-
-                const unreadCount = validNotifs.filter(n => !n.isRead).length;
-                
-                if (unreadCount > 0) { 
-                    badge.innerText = unreadCount; 
-                    badge.classList.remove('hidden'); 
-                } else { 
-                    badge.classList.add('hidden'); 
-                }
-                
-                if (validNotifs.length === 0) { 
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500"><i class="fa-regular fa-bell text-4xl mb-3 drop-shadow-sm"></i><p class="font-medium">No notifications yet</p></div>`; 
-                    return; 
-                }
-                
-                validNotifs.forEach(n => {
-                    const actor = this.getUser(n.actorId);
-                    let icon = '', bgClass = n.isRead ? 'bg-white/40 dark:bg-black/20' : 'bg-blue-50/80 dark:bg-blue-900/30 shadow-sm border-blue-100/50 dark:border-blue-800/30';
-                    let extraClass = '';
-                    
-                    if (n.type === 'follow') icon = '<i class="fa-solid fa-user text-blue-500"></i>';
-                    else if (n.type === 'like') icon = '<i class="fa-solid fa-heart text-red-500"></i>';
-                    else if (n.type === 'reply') icon = '<i class="fa-solid fa-comment text-green-500"></i>';
-                    else if (n.type === 'dev') {
-                        icon = '<i class="fa-solid fa-bullhorn text-yellow-600 dark:text-yellow-500"></i>';
-                        extraClass = 'dev-notif-row relative overflow-hidden';
-                    }
-                    
-                    list.innerHTML += `<div class="p-4 border-b border-gray-100 dark:border-darkborder flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10 min-w-0"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-gray-100 dark:border-darkborder shadow-sm flex-shrink-0" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed word-break-fix"><span class="font-bold cursor-pointer hover:underline truncate" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
-                });
-            }
-
-            toggleFollow(targetUid) {
-                if (targetUid === 'circle_team') return; 
-                
-                let targetUser = this.users.find(u => u.uid === targetUid);
-                if (!targetUser) return;
-                
-                let currentFollowing = this.currentUser.following || [];
-                let targetFollowers = targetUser.followers || 0;
-                const isFollowing = currentFollowing.includes(targetUid);
-
-                if (isFollowing) {
-                    currentFollowing = currentFollowing.filter(id => id !== targetUid);
-                    targetFollowers = Math.max(0, targetFollowers - 1);
-                } else {
-                    currentFollowing.push(targetUid);
-                    targetFollowers++;
-                }
-
-                update(ref(db, 'users/' + this.currentUser.uid), { following: currentFollowing });
-                update(ref(db, 'users/' + targetUid), { followers: targetFollowers });
-
-                if (!isFollowing) {
-                    this.pushNotification(targetUid, 'follow', this.currentUser, 'started following you.');
-                }
-            }
-
             createPostCardHTML(post, user, index) {
                 if (!user) user = { name: 'Unknown User', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback' };
                 
@@ -1801,6 +1845,17 @@
                 let pollHTML = '';
                 if (post.poll && post.poll.options) {
                     pollHTML = `<div class="poll-container w-full">${this.generatePollHTML(post)}</div>`;
+                }
+
+                let imageHTML = '';
+                if (post.image) {
+                    // CHANGED to use dbKey reference instead of injecting huge Base64 strings into the DOM
+                    imageHTML = `
+                        <div class="mt-3 rounded-2xl overflow-hidden border border-gray-200/50 dark:border-white/10 cursor-pointer shadow-sm relative group max-h-[400px] w-full" onclick="app.openLightboxFromPost('${post.dbKey}')">
+                            <img src="${post.image}" class="w-full h-auto max-h-[400px] object-cover transition-transform duration-500 group-hover:scale-[1.02]">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none"></div>
+                        </div>
+                    `;
                 }
 
                 const formattedLikes = this.formatCount(post.likes);
@@ -1845,6 +1900,7 @@
                                 ${optionsMenuHTML}
                             </div>
                             <p class="post-text-content text-gray-800 dark:text-gray-200 mt-1 text-[15px] leading-relaxed whitespace-pre-wrap word-break-fix">${formattedText}</p>
+                            ${imageHTML}
                             ${pollHTML}
                             <div class="mt-3 flex items-center gap-6">
                                 <button onclick="app.toggleLike('${post.dbKey}')" class="like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors">
@@ -1861,17 +1917,72 @@
                 </div>`;
             }
 
+            updatePostUI(post) {
+                const postEls = document.querySelectorAll(`[data-post-id="${post.dbKey}"]`);
+                if (postEls.length === 0) return;
+
+                const user = this.getUser(post.uid);
+                const formattedLikes = this.formatCount(post.likes);
+                const commentsObj = post.comments || {};
+                const formattedComments = this.formatCount(Object.keys(commentsObj).length);
+                const isLiked = post.likedBy && this.currentUser && post.likedBy[this.currentUser.uid];
+                
+                const heartIconClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                const heartColorClass = isLiked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400';
+
+                postEls.forEach(el => {
+                    const avatarEl = el.querySelector('.post-user-avatar');
+                    if (avatarEl && avatarEl.src !== user.avatar) avatarEl.src = user.avatar;
+                    
+                    const nameEl = el.querySelector('.post-user-name');
+                    if (nameEl && nameEl.innerText !== user.name) nameEl.innerText = user.name;
+
+                    const textContentEl = el.querySelector('.post-text-content');
+                    if (textContentEl) textContentEl.innerHTML = this.linkify(post.text);
+
+                    const timeContentEl = el.querySelector('.post-time-content');
+                    if (timeContentEl && post.isEdited && !timeContentEl.innerHTML.includes('(edited)')) {
+                        timeContentEl.innerHTML += `<span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium ml-1.5 italic opacity-80 flex-shrink-0">(edited)</span>`;
+                    }
+
+                    const likeBtn = el.querySelector('.like-btn');
+                    if (likeBtn) {
+                        likeBtn.className = `like-btn flex items-center gap-1.5 group ${heartColorClass} transition-colors`;
+                        likeBtn.innerHTML = `<div class="p-1.5 -ml-2 rounded-full group-hover:${isLiked ? 'bg-red-50 dark:bg-red-900/20' : 'bg-gray-100/50 dark:bg-gray-800/50'} transition-colors"><i class="${heartIconClass} text-lg"></i></div><span class="text-xs font-bold like-count">${formattedLikes}</span>`;
+                    }
+
+                    const commentCount = el.querySelector('.comment-count');
+                    if (commentCount) commentCount.innerText = formattedComments;
+
+                    const pollContainer = el.querySelector('.poll-container');
+                    if (pollContainer && post.poll) {
+                        pollContainer.innerHTML = this.generatePollHTML(post);
+                    }
+                });
+            }
+
             renderFeed() {
                 const list = document.getElementById('feed-list'); list.innerHTML = '';
-                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-400 dark:text-gray-600"><i class="fa-regular fa-pen-to-square text-5xl mb-4 drop-shadow-sm"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
+                if (this.posts.length === 0) { list.innerHTML = `<div class="flex flex-col items-center justify-center h-[60vh] text-gray-400 dark:text-gray-600 animate-fade-in"><i class="fa-regular fa-pen-to-square text-5xl mb-4 drop-shadow-sm"></i><p class="font-medium">It's quiet here.</p><p class="text-sm mt-2">Tap + to create the first post.</p></div>`; return; }
                 this.posts.forEach((post, index) => list.innerHTML += this.createPostCardHTML(post, this.getUser(post.uid), index));
             }
 
-            openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); }
-            closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-            closeModal(id) { document.getElementById(id).classList.remove('open'); }
+            openModal(id, pushState = true) {
+                if (pushState) {
+                    history.pushState({ ...history.state, modalOpen: true, modalId: id }, '', location.hash);
+                }
+                document.getElementById(id).classList.add('open');
+            }
+
+            closeModal(id, popHistory = true) {
+                if (popHistory && history.state?.modalOpen && history.state?.modalId === id) {
+                    history.back(); // Popstate will handle closing it
+                } else {
+                    document.getElementById(id).classList.remove('open');
+                }
+            }
             
-            router(view) {
+            router(view, pushState = true) {
                 document.querySelectorAll('.nav-item').forEach(n => {
                     const active = n.dataset.target === view;
                     if(view === 'profile' && n.dataset.target === 'profile') n.classList.add('text-blue-500');
@@ -1885,6 +1996,10 @@
                 if (view === 'notifications') {
                     this.renderNotifications();
                     this.markNotificationsAsRead();
+                }
+
+                if (pushState) {
+                    history.pushState({ view: view }, '', '#' + view);
                 }
             }
 
@@ -1937,7 +2052,7 @@
                 this.tempAvatar = this.currentUser.avatar; 
                 this.tempBanner = this.currentUser.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b';
                 
-                document.getElementById('edit-profile-modal').classList.add('open'); 
+                this.openModal('edit-profile-modal'); 
             }
             
             saveProfile() { 
@@ -2037,7 +2152,7 @@
                 }
 
                 if (displayUsers.length === 0) { 
-                    list.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-sm mt-8 text-center font-medium">No users found.</p>`; 
+                    list.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-sm mt-8 text-center font-medium animate-fade-in">No users found.</p>`; 
                     return; 
                 }
                 
@@ -2051,24 +2166,22 @@
                     let actionsHTML = '';
                     if (this.currentUser.uid === 'circle_team') {
                         actionsHTML = `
-                        <div class="flex gap-2 items-center">
+                        <div class="flex gap-2 items-center z-10">
                             <select onchange="app.setBadge('${safeUid}', this.value)" class="text-[11px] font-bold border border-gray-200/80 dark:border-white/10 rounded-lg p-2 bg-white/60 dark:bg-black/60 text-gray-900 dark:text-white outline-none hover:bg-white dark:hover:bg-black/80 cursor-pointer shadow-sm">
                                 <option value="none" ${!u.badgeType || u.badgeType === 'none' ? 'selected' : ''}>No Badge</option>
-                                <option value="blue" ${u.badgeType === 'blue' ? 'selected' : ''}>Verified (Blue)</option>
-                                <option value="gold" ${u.badgeType === 'gold' ? 'selected' : ''}>Premium (Gold)</option>
-                                <option value="purple" ${u.badgeType === 'purple' ? 'selected' : ''}>Admin (Purple)</option>
-                                <option value="youtube" ${u.badgeType === 'youtube' ? 'selected' : ''}>YouTube (Red)</option>
-                                <option value="dev" ${u.badgeType === 'dev' ? 'selected' : ''}>Dev (Green)</option>
-                                <option value="diamond" ${u.badgeType === 'diamond' ? 'selected' : ''}>VIP (Diamond)</option>
-                                <option value="trophy" ${u.badgeType === 'trophy' ? 'selected' : ''}>Top (Trophy)</option>
-                                <option value="rocket" ${u.badgeType === 'rocket' ? 'selected' : ''}>Early (Rocket)</option>
-                                <option value="shield" ${u.badgeType === 'shield' ? 'selected' : ''}>Mod (Shield)</option>
+                                <option value="blue" ${u.badgeType === 'blue' ? 'selected' : ''}>Verified</option>
+                                <option value="gold" ${u.badgeType === 'gold' ? 'selected' : ''}>Premium</option>
+                                <option value="purple" ${u.badgeType === 'purple' ? 'selected' : ''}>Admin</option>
+                                <option value="youtube" ${u.badgeType === 'youtube' ? 'selected' : ''}>YouTube</option>
+                                <option value="dev" ${u.badgeType === 'dev' ? 'selected' : ''}>Dev</option>
+                                <option value="diamond" ${u.badgeType === 'diamond' ? 'selected' : ''}>VIP</option>
+                                <option value="trophy" ${u.badgeType === 'trophy' ? 'selected' : ''}>Top</option>
                             </select>
                             <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2.5 rounded-lg transition-all active:scale-95 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40 shadow-sm border border-red-100 dark:border-red-900/30"><i class="fa-solid fa-trash"></i></button>
                         </div>`;
                     } else if (this.currentUser.isAdmin) {
                         actionsHTML = `
-                        <div class="flex gap-2 items-center">
+                        <div class="flex gap-2 items-center z-10">
                             <button onclick="app.deleteUser('${safeUid}')" class="text-xs font-bold px-3 py-2.5 rounded-lg transition-all active:scale-95 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40 shadow-sm border border-red-100 dark:border-red-900/30"><i class="fa-solid fa-trash"></i></button>
                         </div>`;
                     }
@@ -2076,7 +2189,7 @@
                     const isGlowingAdmin = (u.isAdmin || u.uid === 'circle_team') && u.adminGlowEnabled;
                     const rowClass = isGlowingAdmin ? 'admin-glow-row' : 'border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-black/40 backdrop-blur-md';
 
-                    list.innerHTML += `<div class="flex justify-between items-center p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0 border border-white/50 dark:border-white/10 shadow-sm"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 dark:text-white flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
+                    list.innerHTML += `<div class="flex justify-between items-center p-3.5 rounded-2xl border ${rowClass} shadow-sm transition-all gap-2 text-left animate-fade-in"><div class="flex items-center gap-3 flex-1 min-w-0" onclick="app.viewUserProfile('${safeUid}')"><img src="${safeAvatar}" class="w-10 h-10 rounded-full object-cover bg-gray-100 cursor-pointer flex-shrink-0 border border-white/50 dark:border-white/10 shadow-sm"><div class="flex flex-col items-start flex-1 min-w-0"><div class="font-bold text-sm text-gray-900 dark:text-white flex items-center cursor-pointer hover:underline max-w-full w-full"><span class="truncate">${safeName}</span> ${badge}</div><div class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-0.5 w-full text-left">${followersStr}</div></div></div>${actionsHTML}</div>`;
                 });
             }
 
@@ -2086,68 +2199,301 @@
                     return;
                 }
 
-                if(confirm('Are you sure you want to permanently delete this user and ALL their data?')) {
-                    
-                    if (!uid || uid === 'undefined') {
-                        this.users = this.users.filter(u => u && u.uid && u.uid !== 'undefined');
-                        localStorage.setItem('circle_users', JSON.stringify(this.users));
-                        this.renderUserList();
-                        this.showToast('Corrupted user removed locally');
-                        return;
+                this.requestConfirm(
+                    "Delete User",
+                    "Are you sure you want to permanently delete this user and ALL their data?",
+                    () => {
+                        if (!uid || uid === 'undefined') {
+                            this.users = this.users.filter(u => u && u.uid && u.uid !== 'undefined');
+                            localStorage.setItem('circle_users', JSON.stringify(this.users));
+                            this.renderUserList();
+                            this.showToast('Corrupted user removed locally');
+                            return;
+                        }
+
+                        remove(ref(db, 'users/' + uid)).then(() => {
+                            this.posts.forEach(post => {
+                                if (post.uid === uid) {
+                                    remove(ref(db, 'posts/' + post.dbKey));
+                                } else {
+                                    let updates = {};
+                                    let needsUpdate = false;
+
+                                    if (post.likedBy && post.likedBy[uid]) {
+                                        updates['likedBy/' + uid] = null;
+                                        updates['likes'] = Math.max(0, (post.likes || 1) - 1);
+                                        needsUpdate = true;
+                                    }
+
+                                    if (post.poll && post.poll.votes && post.poll.votes[uid] !== undefined) {
+                                        updates['poll/votes/' + uid] = null;
+                                        needsUpdate = true;
+                                    }
+
+                                    if (post.comments) {
+                                        Object.keys(post.comments).forEach(cKey => {
+                                            if (post.comments[cKey].uid === uid) {
+                                                updates['comments/' + cKey] = null;
+                                                needsUpdate = true;
+                                            }
+                                        });
+                                    }
+
+                                    if (needsUpdate) {
+                                        update(ref(db, 'posts/' + post.dbKey), updates);
+                                    }
+                                }
+                            });
+
+                            this.showToast('User deleted permanently');
+                            this.users = this.users.filter(u => u && u.uid !== uid);
+                            localStorage.setItem('circle_users', JSON.stringify(this.users));
+                            this.renderUserList();
+                        }).catch(err => {
+                            console.error("Delete Error", err);
+                            this.showToast("User cleaned up locally");
+                            this.users = this.users.filter(u => u && u.uid !== uid);
+                            localStorage.setItem('circle_users', JSON.stringify(this.users));
+                            this.renderUserList();
+                        });
+                    }
+                );
+            }
+
+            pushNotification(targetUid, type, actor, text) {
+                if (targetUid === actor.uid) return; 
+
+                const targetUser = this.users.find(u => u.uid === targetUid);
+                if (targetUser) {
+                    let notifs = targetUser.notifications || [];
+
+                    if (type === 'follow') {
+                        notifs = notifs.filter(n => !(n.type === 'follow' && n.actorId === actor.uid));
                     }
 
-                    remove(ref(db, 'users/' + uid)).then(() => {
-                        this.posts.forEach(post => {
-                            if (post.uid === uid) {
-                                remove(ref(db, 'posts/' + post.dbKey));
-                            } else {
-                                let updates = {};
-                                let needsUpdate = false;
-
-                                if (post.likedBy && post.likedBy[uid]) {
-                                    updates['likedBy/' + uid] = null;
-                                    updates['likes'] = Math.max(0, (post.likes || 1) - 1);
-                                    needsUpdate = true;
-                                }
-
-                                if (post.poll && post.poll.votes && post.poll.votes[uid] !== undefined) {
-                                    updates['poll/votes/' + uid] = null;
-                                    needsUpdate = true;
-                                }
-
-                                if (post.comments) {
-                                    Object.keys(post.comments).forEach(cKey => {
-                                        if (post.comments[cKey].uid === uid) {
-                                            updates['comments/' + cKey] = null;
-                                            needsUpdate = true;
-                                        }
-                                    });
-                                }
-
-                                if (needsUpdate) {
-                                    update(ref(db, 'posts/' + post.dbKey), updates);
-                                }
-                            }
-                        });
-
-                        this.showToast('User deleted permanently');
-                        this.users = this.users.filter(u => u && u.uid !== uid);
-                        localStorage.setItem('circle_users', JSON.stringify(this.users));
-                        this.renderUserList();
-                    }).catch(err => {
-                        console.error("Delete Error", err);
-                        this.showToast("User cleaned up locally");
-                        this.users = this.users.filter(u => u && u.uid !== uid);
-                        localStorage.setItem('circle_users', JSON.stringify(this.users));
-                        this.renderUserList();
+                    notifs.unshift({
+                        id: Date.now(), type, actorId: actor.uid, text, 
+                        timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }), 
+                        isRead: false
                     });
+                    
+                    update(ref(db, 'users/' + targetUid), { notifications: notifs });
                 }
             }
 
-            viewUserProfile(uid) { 
+            markNotificationsAsRead() {
+                if (!this.currentUser || !this.currentUser.notifications) return;
+                
+                let updated = false;
+                const markedNotifs = this.currentUser.notifications.map(n => {
+                    if (!n.isRead) {
+                        updated = true;
+                        return { ...n, isRead: true };
+                    }
+                    return n;
+                });
+                
+                if (updated) {
+                    update(ref(db, 'users/' + this.currentUser.uid), { notifications: markedNotifs });
+                    document.getElementById('nav-notif-badge').classList.add('hidden');
+                }
+            }
+
+            requestClearNotifications() {
+                if (!this.currentUser) return;
+                this.requestConfirm(
+                    "Clear Notifications",
+                    "Clear all your notifications?",
+                    () => {
+                        update(ref(db, 'users/' + this.currentUser.uid), { notifications: [] }).then(() => {
+                            this.currentUser.notifications = [];
+                            this.renderNotifications();
+                            this.showToast('Notifications cleared');
+                        });
+                    }
+                );
+            }
+
+            renderNotifications() {
+                const list = document.getElementById('notification-list');
+                const badge = document.getElementById('nav-notif-badge');
+                list.innerHTML = '';
+                
+                const notifs = this.currentUser.notifications || [];
+                
+                const validNotifs = notifs.filter(n => {
+                    const actor = this.users.find(u => u.uid === n.actorId);
+                    return actor && actor.uid !== 'undefined';
+                });
+
+                const unreadCount = validNotifs.filter(n => !n.isRead).length;
+                
+                if (unreadCount > 0) { 
+                    badge.innerText = unreadCount; 
+                    badge.classList.remove('hidden'); 
+                } else { 
+                    badge.classList.add('hidden'); 
+                }
+                
+                if (validNotifs.length === 0) { 
+                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-gray-400 dark:text-gray-500 animate-fade-in"><i class="fa-regular fa-bell text-4xl mb-3 drop-shadow-sm"></i><p class="font-medium">No notifications yet</p></div>`; 
+                    return; 
+                }
+                
+                validNotifs.forEach(n => {
+                    const actor = this.getUser(n.actorId);
+                    let icon = '', bgClass = n.isRead ? 'bg-white/40 dark:bg-black/20' : 'bg-blue-50/80 dark:bg-blue-900/30 shadow-sm border-blue-100/50 dark:border-blue-800/30';
+                    let extraClass = 'animate-fade-in';
+                    
+                    if (n.type === 'follow') icon = '<i class="fa-solid fa-user text-blue-500"></i>';
+                    else if (n.type === 'like') icon = '<i class="fa-solid fa-heart text-red-500"></i>';
+                    else if (n.type === 'reply') icon = '<i class="fa-solid fa-comment text-green-500"></i>';
+                    else if (n.type === 'dev') {
+                        icon = '<i class="fa-solid fa-bullhorn text-yellow-600 dark:text-yellow-500"></i>';
+                        extraClass += ' dev-notif-row relative overflow-hidden';
+                    }
+                    
+                    list.innerHTML += `<div class="p-4 border-b border-gray-100 dark:border-darkborder flex gap-4 items-start ${bgClass} ${extraClass}"><div class="mt-1 text-xl w-8 text-center z-10">${icon}</div><div class="flex-1 z-10 min-w-0"><div class="flex justify-between items-start"><img src="${actor.avatar}" class="w-8 h-8 rounded-full mb-2 cursor-pointer border border-gray-100 dark:border-darkborder shadow-sm flex-shrink-0" onclick="app.viewUserProfile('${actor.uid}')"><span class="text-xs text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">${n.timestamp}</span></div><p class="text-sm text-gray-900 dark:text-white leading-relaxed word-break-fix"><span class="font-bold cursor-pointer hover:underline truncate" onclick="app.viewUserProfile('${actor.uid}')">${actor.name}</span> ${n.text}</p></div></div>`;
+                });
+            }
+
+            toggleFollow(targetUid) {
+                if (targetUid === 'circle_team') return; 
+                
+                let targetUser = this.users.find(u => u.uid === targetUid);
+                if (!targetUser) return;
+                
+                let currentFollowing = this.currentUser.following || [];
+                let targetFollowers = targetUser.followers || 0;
+                const isFollowing = currentFollowing.includes(targetUid);
+
+                if (isFollowing) {
+                    currentFollowing = currentFollowing.filter(id => id !== targetUid);
+                    targetFollowers = Math.max(0, targetFollowers - 1);
+                } else {
+                    currentFollowing.push(targetUid);
+                    targetFollowers++;
+                }
+
+                update(ref(db, 'users/' + this.currentUser.uid), { following: currentFollowing });
+                update(ref(db, 'users/' + targetUid), { followers: targetFollowers });
+
+                if (!isFollowing) {
+                    this.pushNotification(targetUid, 'follow', this.currentUser, 'started following you.');
+                }
+            }
+
+            toggleLike(dbKey) {
+                if (!this.currentUser) return;
+                const post = this.posts.find(p => p.dbKey === dbKey);
+                if (!post) return;
+
+                let likedBy = post.likedBy || {};
+                let likesCount = post.likes || 0;
+
+                if (likedBy[this.currentUser.uid]) {
+                    delete likedBy[this.currentUser.uid]; 
+                    likesCount = Math.max(0, likesCount - 1);
+                } else {
+                    likedBy[this.currentUser.uid] = true; 
+                    likesCount++;
+                    
+                    if (post.uid !== this.currentUser.uid) {
+                        this.pushNotification(post.uid, 'like', this.currentUser, 'liked your post.');
+                    }
+                }
+
+                update(ref(db, 'posts/' + dbKey), {
+                    likes: likesCount,
+                    likedBy: likedBy
+                });
+            }
+
+            openDevModal() { 
+                if (this.currentUser?.uid !== 'circle_team') {
+                    this.showToast("Unauthorized Action");
+                    return;
+                }
+                this.openModal('dev-modal'); 
+            }
+            
+            sendDevBroadcast() {
+                if (this.currentUser?.uid !== 'circle_team') {
+                    this.showToast("Unauthorized Action");
+                    return;
+                }
+
+                const msg = document.getElementById('dev-message').value.trim();
+                const type = document.getElementById('dev-broadcast-type').value;
+                if (!msg) return;
+                
+                if (type === 'post') {
+                    push(ref(db, 'posts'), {
+                        id: Date.now(), uid: 'circle_team', text: msg,
+                        image: null, likes: 0, likedBy: {}, comments: {}, 
+                        time: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+                        isEdited: false
+                    });
+                    this.showToast('Broadcast Post Sent!');
+                } else if (type === 'notification') {
+                    let updates = {};
+                    this.users.forEach(u => {
+                        if (u.uid === 'circle_team') return;
+                        let notifs = u.notifications || [];
+                        notifs.unshift({
+                            id: Date.now(), type: 'dev', actorId: 'circle_team', text: msg,
+                            timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+                            isRead: false
+                        });
+                        updates['users/' + u.uid + '/notifications'] = notifs;
+                    });
+                    
+                    update(ref(db), updates).then(() => {
+                        this.showToast('Mass Notification Sent!');
+                    });
+                }
+                
+                this.closeModal('dev-modal');
+                document.getElementById('dev-message').value = '';
+            }
+
+            getUser(uid) {
+                if (uid === this.currentUser?.uid) return this.currentUser;
+                return this.users.find(u => u.uid === uid) || { name: 'Deleted User', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback', handle: '@deleted', badgeType: 'none' };
+            }
+
+            getBadgeMarkup(user) {
+                if (!user) return '';
+                const wrap = (inner) => `<span class="badge-wrapper">${inner}</span>`;
+                
+                if (user.badgeType === 'none') return '';
+                if (user.badgeType === 'purple' || (user.isAdmin && user.badgeType === undefined)) return wrap(`<span class="badge-container purple" title="Admin"><i class="fa-solid fa-certificate purple-badge-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`);
+                if (user.badgeType === 'gold') return wrap(`<span class="badge-container gold" title="Premium"><i class="fa-solid fa-certificate gold-seal-bg"></i><i class="fa-solid fa-check badge-check"></i></span>`);
+                if (user.badgeType === 'youtube') return wrap(`<i class="fa-brands fa-youtube text-red-600 text-[20px]" title="YouTube Creator"></i>`);
+                if (user.badgeType === 'dev') return wrap(`<i class="fa-solid fa-code text-green-500 text-[18px]" title="Developer"></i>`);
+                if (user.badgeType === 'diamond') return wrap(`<i class="fa-solid fa-gem text-cyan-400 text-[18px]" title="VIP Diamond"></i>`);
+                if (user.badgeType === 'trophy') return wrap(`<i class="fa-solid fa-trophy text-yellow-500 text-[18px]" title="Top Contributor"></i>`);
+                if (user.badgeType === 'rocket') return wrap(`<i class="fa-solid fa-rocket text-orange-500 text-[18px]" title="Early Adopter"></i>`);
+                if (user.badgeType === 'shield') return wrap(`<i class="fa-solid fa-shield-halved text-emerald-500 text-[18px]" title="Moderator"></i>`);
+                if (user.badgeType === 'blue' || user.isVerified) return wrap(`<i class="fa-solid fa-circle-check text-blue-500 text-[18px]" title="Verified"></i>`);
+                return '';
+            }
+
+            formatCount(num) {
+                if (num === undefined || num === null) return '0';
+                if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+                if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+                return num.toString();
+            }
+
+            viewUserProfile(uid, pushState = true) { 
                 this.activeProfileUid = (uid === 'me' || uid === this.currentUser?.uid) ? this.currentUser.uid : uid;
-                this.router('profile'); 
+                this.router('profile', false); 
                 this.renderProfile(this.activeProfileUid); 
+                
+                if (pushState) {
+                    history.pushState({ view: 'profile', uid: this.activeProfileUid }, '', '#profile-' + this.activeProfileUid);
+                }
             }
             
             renderProfile(uid) {
@@ -2161,7 +2507,7 @@
                 const container = document.getElementById('profile-view');
                 const userPosts = this.posts.filter(p => p.uid === targetUid);
                 
-                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400 dark:text-gray-500"><i class="fa-regular fa-file-lines text-4xl mb-3 drop-shadow-sm"></i><p class="font-medium">No posts yet</p></div>`;
+                let postsHTML = userPosts.length > 0 ? '' : `<div class="text-center py-12 text-gray-400 dark:text-gray-500 animate-fade-in"><i class="fa-regular fa-file-lines text-4xl mb-3 drop-shadow-sm"></i><p class="font-medium">No posts yet</p></div>`;
                 userPosts.forEach((post, idx) => postsHTML += this.createPostCardHTML(post, u, idx));
                 
                 const followerCount = this.formatCount((u.followers !== undefined) ? u.followers : 0);
@@ -2202,7 +2548,7 @@
                 const cityHTML = u.city ? `<span class="ml-3 inline-flex items-center text-gray-500 dark:text-gray-400"><i class="fa-solid fa-location-dot text-[10px] mr-1.5 text-blue-500"></i>${u.city}</span>` : '';
 
                 container.innerHTML = `
-                    <div class="relative pb-0 border-b border-gray-200/50 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md">
+                    <div class="relative pb-0 border-b border-gray-200/50 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md animate-fade-in">
                         ${topButtons}
                         <div class="h-40 bg-gray-200 dark:bg-gray-800 relative overflow-hidden group cursor-pointer" onclick="app.openLightbox('${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}')">
                             <img src="${u.banner || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'}" class="w-full h-full object-cover">
@@ -2239,6 +2585,3 @@
     </script>
 </body>
 </html>
-
-
-
