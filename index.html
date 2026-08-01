@@ -756,10 +756,10 @@
 
                         setTimeout(() => this.initApp(), 50); 
                     } else {
-                        this.hideSplashScreen();
+                        this.showLoginScreen();
                     }
                 } else {
-                    this.hideSplashScreen();
+                    this.showLoginScreen();
                 }
 
                 document.getElementById('login-password').addEventListener('keypress', (e) => {
@@ -794,6 +794,17 @@
                     splash.style.opacity = '0';
                     setTimeout(() => splash.classList.add('hidden'), 700);
                 }
+            }
+
+            showLoginScreen() {
+                const loginScreen = document.getElementById('login-screen');
+                if (loginScreen) {
+                    loginScreen.style.display = 'flex';
+                    // Trigger a quick DOM reflow for a smooth transition
+                    void loginScreen.offsetWidth; 
+                    loginScreen.classList.remove('hidden');
+                }
+                this.hideSplashScreen();
             }
 
             handlePopState(e) {
@@ -1385,7 +1396,7 @@
                     document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
                     document.getElementById('login-error').innerText = '';
                     this.isLoginMode = false; this.toggleAuthMode();
-                    loginScreen.style.display = 'flex'; void loginScreen.offsetWidth; loginScreen.classList.remove('hidden');
+                    this.showLoginScreen();
                 }, 500);
             }
 
